@@ -1,0 +1,1 @@
+{"indexes":[{"v":{"$numberInt":"2"},"key":{"_id":{"$numberInt":"1"}},"name":"_id_"},{"v":{"$numberInt":"2"},"key":{"sender":{"$numberInt":"1"},"receiver":{"$numberInt":"1"}},"name":"sender_1_receiver_1"},{"v":{"$numberInt":"2"},"key":{"createdAt":{"$numberInt":"-1"}},"name":"createdAt_-1"}],"uuid":"8c8d63aa15fb48b89a9a0448de3dcb6e","collectionName":"messages","type":"collection"}

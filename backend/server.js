@@ -6,6 +6,7 @@ const socketIo = require("socket.io");
 const Message = require("./src/models/Message");
 const User = require("./src/models/User");
 const Notification = require("./src/models/Notification");
+const mongoose = require('mongoose');
 
 dotenv.config();
 connectDB();
@@ -82,9 +83,8 @@ io.on("connection", (socket) => {
 });
 
 server.listen(PORT, () => {
-  console.log(`✅ Server running on http://localhost:${PORT}`);
+  console.log(`✅ Server running on ${PORT}`);
 });
-
 
 // Handle unhandled rejections
 process.on("unhandledRejection", (err, promise) => {
