@@ -85,6 +85,7 @@ server.listen(PORT, () => {
   console.log(`✅ Server running on http://localhost:${PORT}`);
 });
 
+
 // Handle unhandled rejections
 process.on("unhandledRejection", (err, promise) => {
   console.log(`❌ Unhandled Rejection: ${err.message}`);
