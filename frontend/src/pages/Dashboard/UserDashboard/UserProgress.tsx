@@ -1,3 +1,4 @@
+//! NOT Used
 import { useState, useEffect } from 'react'
 import Card from '../../../components/ui/Card'
 import { toast } from 'react-hot-toast'
@@ -5,7 +6,7 @@ import { userService, type UserProgress } from '../../../services/userService'
 
 
 export default function UserProgress() {
-  const [progress, setProgress] = useState<Progress[]>([])
+  const [progress, setProgress] = useState<UserProgress[]>([])
   const [loading, setLoading] = useState(true)
 
   useEffect(() => {

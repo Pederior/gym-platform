@@ -13,6 +13,7 @@ export interface User {
     expiresAt: string;
     status: 'active' | 'expired';
   };
+  createdAt: string;
 }
 
 export interface AuthState {

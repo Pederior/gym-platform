@@ -1,6 +1,5 @@
 import React from "react";
 import KpiCard from "./KpiCard";
-import PieChartComponent from "./PieChartComponent";
 import LineChartComponent from "./LineChartComponent";
 
 const App: React.FC = () => {
@@ -122,7 +121,6 @@ const App: React.FC = () => {
                 </label>
               </div>
             </div>
-            <PieChartComponent />
           </div>
         </div>
         <div className="lg:col-span-1">

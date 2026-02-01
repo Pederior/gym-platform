@@ -1,8 +1,4 @@
-import { useParams } from 'react-router-dom'
-
 export default function WorkoutDetail() {
-  const { id } = useParams()
-
   // در عمل این داده از API باید بیاد
   const workout = {
     title: 'برنامه قدرتی ۸ هفته‌ای',

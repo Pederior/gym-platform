@@ -2,14 +2,14 @@ import { configureStore } from '@reduxjs/toolkit'
 import authReducer from './features/authSlice'
 // import userReducer from './features/userSlice'
 // import workoutReducer from './features/workoutSlice'
-// import chatReducer from './features/chatSlice'
+import chatReducer from './features/chatSlice'
 
 export const store = configureStore({
   reducer: {
     auth: authReducer,
     // user: userReducer,
     // workouts: workoutReducer,
-    // chat: chatReducer,
+    chat: chatReducer,
   },
 })
 

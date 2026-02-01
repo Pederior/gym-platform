@@ -2,50 +2,29 @@ import { useState, useEffect } from 'react'
 import Card from '../../../components/ui/Card'
 import { toast } from 'react-hot-toast'
 import { FaShoppingCart, FaCreditCard, FaTag } from 'react-icons/fa'
-import { userService } from "../../../services/userService";
-
-interface Payment {
-  _id: string
-  amount: number
-  type: 'subscription' | 'order' | 'other'
-  method: string
-  status: 'completed' | 'pending' | 'failed' | 'refunded'
-  description: string
-  details?: {
-    orderId?: string
-    productCount?: number
-    totalAmount?: number
-    orderStatus?: string
-    subscriptionId?: string
-    plan?: string
-    amount?: number
-    status?: string
-  }
-  transactionId?: string
-  createdAt: string
-}
+import { userService, type Payment } from "../../../services/userService"; // ✅ وارد کردن تایپ از سرویس
 
 export default function UserPayments() {
   const [payments, setPayments] = useState<Payment[]>([])
   const [loading, setLoading] = useState(true)
 
   useEffect(() => {
-  const fetchPayments = async () => {
-    try {
-      // ✅ استفاده از سرویس
-      const payments = await userService.getUserPayments();
-      setPayments(payments);
-    } catch (err: any) {
-      toast.error('خطا در بارگذاری تاریخچه پرداخت‌ها');
-    } finally {
-      setLoading(false);
-    }
-  };
-  fetchPayments();
-}, []);
+    const fetchPayments = async () => {
+      try {
+        const paymentsData = await userService.getUserPayments();
+        setPayments(paymentsData); // ✅ بدون خطا - تایپ‌ها یکسان هستن
+      } catch (err: any) {
+        console.error('Fetch payments error:', err)
+        toast.error('خطا در بارگذاری تاریخچه پرداخت‌ها')
+      } finally {
+        setLoading(false)
+      }
+    };
+    fetchPayments();
+  }, []);
 
   const getStatusBadge = (status: string) => {
-    const config: Record<string, { label: string; color: string; icon?: string }> = {
+    const config: Record<string, { label: string; color: string }> = {
       completed: { label: 'تکمیل شده', color: 'bg-green-100 text-green-800' },
       pending: { label: 'در انتظار', color: 'bg-yellow-100 text-yellow-800' },
       failed: { label: 'ناموفق', color: 'bg-red-100 text-red-800' },
@@ -80,15 +59,28 @@ export default function UserPayments() {
     }
   }
 
+  // ✅ تابع ایمن برای نمایش تاریخ فارسی
+  const formatDate = (dateString: string): string => {
+    try {
+      return new Date(dateString).toLocaleDateString('fa-IR', {
+        year: 'numeric',
+        month: 'long',
+        day: 'numeric'
+      })
+    } catch {
+      return 'تاریخ نامعتبر'
+    }
+  }
+
   return (
     <div className="space-y-6">
       <div className="flex justify-between items-center">
         <h1 className="text-2xl font-bold text-gray-800">تاریخچه پرداخت‌ها</h1>
         <div className="flex gap-2">
-          <span className={`px-3 py-1 rounded-full text-xs font-medium bg-blue-100 text-blue-800`}>
+          <span className="px-3 py-1 rounded-full text-xs font-medium bg-blue-100 text-blue-800">
             {payments.filter(p => p.type === 'order').length} خرید
           </span>
-          <span className={`px-3 py-1 rounded-full text-xs font-medium bg-purple-100 text-purple-800`}>
+          <span className="px-3 py-1 rounded-full text-xs font-medium bg-purple-100 text-purple-800">
             {payments.filter(p => p.type === 'subscription').length} اشتراک
           </span>
         </div>
@@ -105,7 +97,8 @@ export default function UserPayments() {
             <div className="w-20 h-20 bg-gray-100 rounded-full flex items-center justify-center mx-auto mb-4">
               <FaCreditCard className="text-4xl text-gray-400" />
             </div>
-            <p className="text-gray-500">پرداختی ثبت نشده‌است</p>
+            <p className="text-gray-500 text-lg font-medium">پرداختی ثبت نشده‌است</p>
+            <p className="text-gray-400 mt-2">شما هنوز هیچ پرداختی انجام نداده‌اید</p>
           </div>
         ) : (
           <div className="divide-y divide-gray-200">
@@ -122,11 +115,24 @@ export default function UserPayments() {
                     <div className="flex justify-between items-start">
                       <div>
                         <h3 className="font-bold text-gray-800">{getTypeLabel(payment.type)}</h3>
-                        <p className="text-sm text-gray-600 mt-1">{payment.description}</p>
-                        {payment.details && payment.type === 'order' && (
+                        <p className="text-sm text-gray-600 mt-1">
+                          {payment.description || 'بدون توضیحات'}
+                        </p>
+                        
+                        {/* نمایش جزئیات سفارش */}
+                        {payment.type === 'order' && payment.details?.productCount && (
                           <p className="text-xs text-gray-500 mt-1">
                             تعداد محصولات: {payment.details.productCount} | 
-                            مبلغ کل: {payment.details.totalAmount?.toLocaleString()} تومان
+                            مبلغ کل: {(payment.details.totalAmount ?? payment.amount).toLocaleString()} تومان
+                          </p>
+                        )}
+                        
+                        {/* نمایش جزئیات اشتراک */}
+                        {payment.type === 'subscription' && payment.details?.plan && (
+                          <p className="text-xs text-gray-500 mt-1">
+                            پلن: {payment.details.plan === 'bronze' ? 'برنز' : 
+                                  payment.details.plan === 'silver' ? 'نقره‌ای' : 'طلایی'} | 
+                            مبلغ: {(payment.details.amount ?? payment.amount).toLocaleString()} تومان
                           </p>
                         )}
                       </div>
@@ -135,7 +141,7 @@ export default function UserPayments() {
                           {payment.amount.toLocaleString()} تومان
                         </p>
                         <p className="text-xs text-gray-500 mt-1">
-                          {new Date(payment.createdAt).toLocaleDateString('fa-IR')}
+                          {formatDate(payment.createdAt)}
                         </p>
                       </div>
                     </div>
@@ -152,10 +158,12 @@ export default function UserPayments() {
                       <span className={`px-2 py-1 rounded text-xs font-medium ${
                         payment.method === 'online' ? 'bg-blue-100 text-blue-800' :
                         payment.method === 'cash' ? 'bg-green-100 text-green-800' :
+                        payment.method === 'wallet' ? 'bg-amber-100 text-amber-800' :
                         'bg-gray-100 text-gray-800'
                       }`}>
                         {payment.method === 'online' ? 'آنلاین' :
-                         payment.method === 'cash' ? 'نقدی' : 'کیف پول'}
+                         payment.method === 'cash' ? 'نقدی' :
+                         payment.method === 'wallet' ? 'کیف پول' : 'سایر'}
                       </span>
                     </div>
                   </div>

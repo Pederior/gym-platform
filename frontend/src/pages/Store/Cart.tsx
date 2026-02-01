@@ -13,7 +13,6 @@ export default function Cart() {
   const [checkoutLoading, setCheckoutLoading] = useState(false);
   const [showForm, setShowForm] = useState(false);
   const { token } = useAppSelector((state) => state.auth);
-  // فرم اطلاعات خریدار
   const [formData, setFormData] = useState({
     fullName: "",
     phone: "",
@@ -26,7 +25,6 @@ export default function Cart() {
 
   const navigate = useNavigate();
 
-  // لود سبد خرید از localStorage
   useEffect(() => {
     const savedCart = localStorage.getItem("cart");
     if (savedCart) {
@@ -34,7 +32,6 @@ export default function Cart() {
     }
   }, []);
 
-  // حذف محصول از سبد خرید
   const removeFromCart = (productId: string) => {
     const newCart = cart.filter((item) => item._id !== productId);
     setCart(newCart);
@@ -42,7 +39,6 @@ export default function Cart() {
     toast.success("محصول از سبد خرید حذف شد");
   };
 
-  // خالی کردن سبد خرید
   const clearCart = () => {
     if (!confirm("آیا مطمئن هستید که می‌خواهید سبد خرید را خالی کنید؟")) {
       return;
@@ -52,12 +48,10 @@ export default function Cart() {
     toast.success("سبد خرید خالی شد");
   };
 
-  // محاسبه مجموع قیمت
   const calculateTotal = () => {
     return cart.reduce((total, item) => total + item.price, 0);
   };
 
-  // تغییرات فرم
   const handleInputChange = (
     e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>,
   ) => {
@@ -65,7 +59,6 @@ export default function Cart() {
     setFormData((prev) => ({ ...prev, [name]: value }));
   };
 
-  // اعتبارسنجی فرم
   const validateForm = () => {
     if (!formData.fullName.trim()) {
       toast.error("لطفاً نام و نام خانوادگی را وارد کنید");
@@ -90,7 +83,6 @@ export default function Cart() {
     return true;
   };
 
-  // پرداخت/خرید
   const handleCheckout = async () => {
     if (cart.length === 0) {
       toast.error("سبد خرید شما خالی است");
@@ -115,16 +107,15 @@ export default function Cart() {
           })),
           customer: formData,
           totalAmount: calculateTotal(),
-          type: 'order'
+          type: "order",
         },
         {
           headers: {
-            Authorization: `Bearer ${token}`, // ✅ اضافه کن
+            Authorization: `Bearer ${token}`,
           },
         },
       );
 
-      // پاک کردن سبد خرید
       setCart([]);
       localStorage.removeItem("cart");
 
@@ -133,19 +124,28 @@ export default function Cart() {
         icon: "✅",
       });
 
-      // ریدایرکت به صفحه موفقیت
       setTimeout(() => {
         navigate("/order-success", { state: { order: response.data } });
       }, 2000);
-    } catch (err) {
-      console.error("Error placing order:", err);
-      toast.error(err.response?.data?.message || "خطا در ثبت سفارش");
+    } catch (error) {
+      let errorMessage = "خطا در ثبت سفارش";
+
+      if (error && typeof error === "object" && "response" in error) {
+        const axiosError = error as {
+          response?: { data?: { message?: string } };
+        };
+        errorMessage = axiosError.response?.data?.message || errorMessage;
+      } else if (error instanceof Error) {
+        errorMessage = error.message;
+      }
+
+      console.error("Error placing order:", error);
+      toast.error(errorMessage);
     } finally {
       setCheckoutLoading(false);
     }
   };
 
-  // ادامه خرید
   const continueShopping = () => {
     navigate("/store");
   };
@@ -171,7 +171,6 @@ export default function Cart() {
         </div>
 
         {cart.length === 0 ? (
-          // سبد خرید خالی
           <div className="bg-white rounded-lg shadow-sm p-12 text-center">
             <RiShoppingBag4Fill className="text-6xl mx-auto mb-4 text-gray-300" />
             <h2 className="text-2xl font-bold text-gray-800 mb-2">

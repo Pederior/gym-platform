@@ -40,7 +40,7 @@ import CoachChat from "../pages/Dashboard/CoachDashboard/CoachChat";
 import UserChat from "../pages/Dashboard/UserDashboard/UserChat";
 import UserStore from "../pages/Dashboard/UserDashboard/UserStore";
 import UserClasses from "../pages/Dashboard/UserDashboard/UserClasses";
-import UserProgress from "../pages/Dashboard/UserDashboard/UserProgress";
+// import UserProgress from "../pages/Dashboard/UserDashboard/UserProgress";
 import UserPayments from "../pages/Dashboard/UserDashboard/UserPayments";
 import UserWorkouts from "../pages/Dashboard/UserDashboard/UserWorkouts";
 import UserSubscriptions from "../pages/Dashboard/UserDashboard/UserSubscriptions";
@@ -332,14 +332,14 @@ export const router = createBrowserRouter([
           </ProtectedRoute>
         ),
       },
-      {
-        path: "user/progress",
-        element: (
-          <ProtectedRoute>
-            <UserProgress />
-          </ProtectedRoute>
-        ),
-      },
+      // {
+      //   path: "user/progress",
+      //   element: (
+      //     <ProtectedRoute>
+      //       <UserProgress />
+      //     </ProtectedRoute>
+      //   ),
+      // },
       {
         path: "user/payments",
         element: (

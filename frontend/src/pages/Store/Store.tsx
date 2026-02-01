@@ -8,7 +8,7 @@ import { useEffect, useState } from "react";
 import { Swiper, SwiperSlide } from "swiper/react";
 import { FaRegFolder } from "react-icons/fa6";
 import api from "../../services/api";
-import "swiper/css";
+import 'swiper/css';
 import ProductSorting from "./ProductSorting";
 import ProductsPerPage from "./ProductsPerPage";
 import type { Product } from "../../types";
@@ -148,13 +148,13 @@ export default function Store() {
           slidesPerView="auto"
           spaceBetween={20}
           dir="rtl"
-          className="pb-6 mb-8"
+          className="pb-6 mb-8 cursor-grab"
         >
           {categories.map((cat) => (
             <SwiperSlide key={cat.id} style={{ width: "230px" }}>
               <button
                 onClick={() => setActiveId(cat.id)}
-                className={`w-full flex items-center justify-start gap-4 px-4 py-4 rounded-lg transition ${
+                className={`w-full flex items-center justify-start gap-4 px-4 py-4 rounded-lg transition cursor-grab hover:cursor-grabbing ${
                   activeId === cat.id
                     ? "bg-red-500 text-white"
                     : "bg-gray-100 text-gray-700 hover:bg-gray-200"

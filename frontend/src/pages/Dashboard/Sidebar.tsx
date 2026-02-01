@@ -215,11 +215,11 @@ const Sidebar = ({ isCollapsed, onToggle }: SidebarProps) => {
           icon: <MdClass />,
           to: "/dashboard/user/classes",
         },
-        {
-          title: "پیگیری پیشرفت",
-          icon: <FaChartLine />,
-          to: "/dashboard/user/progress",
-        },
+        // {
+        //   title: "پیگیری پیشرفت",
+        //   icon: <FaChartLine />,
+        //   to: "/dashboard/user/progress",
+        // },
         {
           title: "اعضایت و پرداخت",
           icon: <AiFillDollarCircle />,

@@ -127,7 +127,6 @@ export default function UserSubscriptions() {
     }, 500);
   }, []);
 
-  // بررسی وضعیت پلن‌ها نسبت به اشتراک فعلی
   const getPlanStatus = (planId: 'bronze' | 'silver' | 'gold') => {
     if (subscriptionLoading || !currentSubscription) {
       return { 
@@ -213,7 +212,7 @@ export default function UserSubscriptions() {
     const planStatus = getPlanStatus(planId);
     
     if (planStatus.status === 'active' || planStatus.status === 'unavailable') {
-      toast.info(planStatus.description || 'این پلن در دسترس نیست');
+      toast.error(planStatus.description || 'این پلن در دسترس نیست');
       return;
     }
 

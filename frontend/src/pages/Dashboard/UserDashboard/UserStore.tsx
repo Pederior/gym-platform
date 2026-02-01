@@ -3,7 +3,8 @@ import { useNavigate } from "react-router-dom";
 import Card from "../../../components/ui/Card";
 import api from "../../../services/api";
 import { useAppSelector } from "../../../store/hook";
-import { RiShoppingBag4Fill, RiShoppingCart2Line, RiCloseLine } from "react-icons/ri";
+import { RiShoppingBag4Fill, RiShoppingCart2Line, RiCloseLine, RiDeleteBin6Line } from "react-icons/ri";
+import { FaArrowLeft, FaCheckCircle } from "react-icons/fa";
 import { toast } from "react-hot-toast";
 
 interface Product {
@@ -23,9 +24,9 @@ export default function UserStore() {
   const [loading, setLoading] = useState(true);
   const [activeTab, setActiveTab] = useState<'recommended' | 'all' | 'bundles'>('recommended');
   const [cart, setCart] = useState<Product[]>([]);
-  const [showCart, setShowCart] = useState(false);
+  const [showCartModal, setShowCartModal] = useState(false); // تغییر نام برای وضوح بیشتر
   const [selectedProduct, setSelectedProduct] = useState<Product | null>(null);
-  const [showModal, setShowModal] = useState(false);
+  const [showProductModal, setShowProductModal] = useState(false);
   
   const { user } = useAppSelector((state) => state.auth);
   const userPlan = user?.subscription?.plan || 'bronze';
@@ -38,6 +39,7 @@ export default function UserStore() {
         setProducts(res.data.products || []);
       } catch (err) {
         console.error('Error fetching products:', err);
+        toast.error('خطا در بارگذاری محصولات');
       } finally {
         setLoading(false);
       }
@@ -96,97 +98,118 @@ export default function UserStore() {
     return price - (price * discount / 100);
   };
 
+  // محاسبه مجموع سبد خرید
+  const calculateTotal = () => {
+    return cart.reduce((total, item) => total + getDiscountedPrice(item.price), 0);
+  };
+
   // Add to cart function
   const addToCart = (product: Product) => {
-    // Check if product is already in cart
     const existingItem = cart.find(item => item._id === product._id);
     
     if (existingItem) {
-      toast.error('این محصول قبلاً به سبد خرید اضافه شده است', {
-        duration: 2000,
-      });
+      toast.error('این محصول قبلاً به سبد خرید اضافه شده است', { duration: 2000 });
       return;
     }
 
-    // Add product to cart
     const newCart = [...cart, product];
     setCart(newCart);
 
-    // Show success toast
     toast.success(`${product.name} به سبد خرید اضافه شد`, {
       duration: 2000,
       icon: '🛒',
     });
 
-    setShowCart(true);
-    setTimeout(() => setShowCart(false), 3000);
+    // نمایش خودکار سبد خرید بعد از اضافه کردن محصول
+    setShowCartModal(true);
   };
 
-  // const removeFromCart = (productId: string) => {
-  //   const newCart = cart.filter(item => item._id !== productId);
-  //   setCart(newCart);
-  //   toast.success('محصول از سبد خرید حذف شد');
-  // };
-  // const clearCart = () => {
-  //   if (!confirm('آیا مطمئن هستید که می‌خواهید سبد خرید را خالی کنید؟')) {
-  //     return;
-  //   }
-  //   setCart([]);
-  //   localStorage.removeItem('cart');
-  //   toast.success('سبد خرید خالی شد');
-  // };
-  // const calculateTotal = () => {
-  //   return cart.reduce((total, item) => total + getDiscountedPrice(item.price), 0);
-  // };
+  // Remove from cart
+  const removeFromCart = (productId: string) => {
+    const newCart = cart.filter(item => item._id !== productId);
+    setCart(newCart);
+    toast.success('محصول از سبد خرید حذف شد');
+    
+    // اگه سبد خالی شد، مودال رو ببند
+    if (newCart.length === 0) {
+      setShowCartModal(false);
+    }
+  };
 
-  const viewCart = () => {
+  // Clear cart
+  const clearCart = () => {
+    if (!confirm('آیا مطمئن هستید که می‌خواهید سبد خرید را خالی کنید؟')) {
+      return;
+    }
+    setCart([]);
+    localStorage.removeItem('cart');
+    setShowCartModal(false);
+    toast.success('سبد خرید خالی شد');
+  };
+
+  // نمایش صفحه سبد خرید کامل
+  const viewFullCart = () => {
+    setShowCartModal(false);
     navigate('/cart');
+  };
+
+  // ادامه خرید
+  const continueShopping = () => {
+    setShowCartModal(false);
   };
 
   const openProductModal = (product: Product) => {
     setSelectedProduct(product);
-    setShowModal(true);
-    document.body.style.overflow = 'hidden'; // Prevent background scroll
+    setShowProductModal(true);
+    document.body.style.overflow = 'hidden';
   };
 
   const closeProductModal = () => {
     setSelectedProduct(null);
-    setShowModal(false);
+    setShowProductModal(false);
     document.body.style.overflow = 'auto';
   };
 
+  // بستن مودال سبد خرید
+  const closeCartModal = () => {
+    setShowCartModal(false);
+    document.body.style.overflow = 'auto';
+  };
+
+  // بستن با کلید ESC
   useEffect(() => {
     const handleEsc = (event: KeyboardEvent) => {
       if (event.key === 'Escape') {
-        closeProductModal();
+        if (showProductModal) closeProductModal();
+        if (showCartModal) closeCartModal();
       }
     };
 
-    if (showModal) {
-      window.addEventListener('keydown', handleEsc);
-    }
+    window.addEventListener('keydown', handleEsc);
+    return () => window.removeEventListener('keydown', handleEsc);
+  }, [showProductModal, showCartModal]);
 
-    return () => {
-      window.removeEventListener('keydown', handleEsc);
-    };
-  }, [showModal]);
-
-  const handleModalClick = (e: React.MouseEvent<HTMLDivElement>) => {
+  // بستن با کلیک خارج از مودال
+  const handleModalClick = (e: React.MouseEvent<HTMLDivElement>, closeFn: () => void) => {
     if (e.target === e.currentTarget) {
-      closeProductModal();
+      closeFn();
     }
   };
 
   if (loading) {
     return (
       <div className="container mx-auto px-4 py-8">
-        <div className="text-center py-12">در حال بارگذاری محصولات...</div>
+        <div className="text-center py-12">
+          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-red-500 mx-auto"></div>
+          <p className="mt-4 text-gray-600">در حال بارگذاری محصولات...</p>
+        </div>
       </div>
     );
   }
 
   return (
     <div className="min-h-screen bg-gray-50 pb-12">
+      {/* Header with Cart Button */}
       <div className="sticky top-0 z-50 bg-white shadow-sm py-4 px-4">
         <div className="container mx-auto flex justify-between items-center">
           <div>
@@ -199,7 +222,7 @@ export default function UserStore() {
           </div>
           
           <button
-            onClick={viewCart}
+            onClick={() => setShowCartModal(true)} // نمایش مودال سبد خرید
             className="relative bg-red-500 text-white px-6 py-3 rounded-lg hover:bg-red-600 transition flex items-center gap-2 shadow-lg"
           >
             {cart.length > 0 && (
@@ -214,6 +237,7 @@ export default function UserStore() {
       </div>
 
       <div className="container mx-auto px-4 py-8">
+        {/* تب‌ها */}
         <div className="flex justify-center mb-8">
           <div className="bg-gray-100 p-1 rounded-lg flex">
             {([
@@ -236,6 +260,7 @@ export default function UserStore() {
           </div>
         </div>
 
+        {/* محتوای تب‌ها - بدون تغییر */}
         {activeTab === 'recommended' && (
           <div>
             <h2 className="text-xl font-bold mb-4 text-gray-800">محصولات مناسب پلن {userPlan}</h2>
@@ -379,8 +404,9 @@ export default function UserStore() {
         )}
       </div>
 
+      {/* Floating Cart Button (Mobile) */}
       <button
-        onClick={viewCart}
+        onClick={() => setShowCartModal(true)}
         className="fixed bottom-6 left-6 bg-red-500 text-white w-16 h-16 rounded-full flex items-center justify-center shadow-2xl hover:bg-red-600 transition z-50 lg:hidden"
       >
         {cart.length > 0 && (
@@ -391,13 +417,13 @@ export default function UserStore() {
         <RiShoppingBag4Fill className="text-2xl" />
       </button>
 
-      {showModal && selectedProduct && (
+      {/* Product Detail Modal - بدون تغییر */}
+      {showProductModal && selectedProduct && (
         <div
-          className="fixed inset-0 bg-black bg-opacity-50 z-50 flex items-center justify-center p-4"
-          onClick={handleModalClick}
+          className="fixed inset-0 bg-black/50 z-50 flex items-center justify-center p-4"
+          onClick={(e) => handleModalClick(e, closeProductModal)}
         >
           <div className="bg-white rounded-2xl max-w-2xl w-full max-h-[90vh] overflow-y-auto relative">
-            {/* Close Button */}
             <button
               onClick={closeProductModal}
               className="absolute top-4 left-4 z-10 bg-white rounded-full w-10 h-10 flex items-center justify-center shadow-lg hover:bg-gray-100 transition"
@@ -422,7 +448,6 @@ export default function UserStore() {
                   )}
                 </div>
 
-                {/* Product Info */}
                 <div className="space-y-6">
                   <div>
                     <h2 className="text-3xl font-bold text-gray-800 mb-2">
@@ -431,7 +456,6 @@ export default function UserStore() {
                     <p className="text-lg text-gray-600">{selectedProduct.category}</p>
                   </div>
 
-                  {/* Price Section */}
                   <div className="bg-red-50 p-4 rounded-lg">
                     <div className="flex items-center justify-between">
                       <span className="text-gray-600">قیمت:</span>
@@ -456,7 +480,6 @@ export default function UserStore() {
                     )}
                   </div>
 
-                  {/* Description */}
                   <div>
                     <h3 className="font-bold text-lg text-gray-800 mb-3">توضیحات:</h3>
                     <p className="text-gray-700 leading-relaxed whitespace-pre-line">
@@ -464,7 +487,6 @@ export default function UserStore() {
                     </p>
                   </div>
 
-                  {/* Product Type */}
                   <div>
                     <h3 className="font-bold text-lg text-gray-800 mb-3">نوع محصول:</h3>
                     <span className={`px-4 py-2 rounded-full text-sm font-medium ${
@@ -479,7 +501,6 @@ export default function UserStore() {
                     </span>
                   </div>
 
-                  {/* Compatible Plans */}
                   {selectedProduct.compatiblePlans.length > 0 && (
                     <div>
                       <h3 className="font-bold text-lg text-gray-800 mb-3">پلن‌های سازگار:</h3>
@@ -493,7 +514,6 @@ export default function UserStore() {
                     </div>
                   )}
 
-                  {/* Add to Cart Button */}
                   <div className="pt-4 border-t border-gray-200">
                     <button
                       onClick={() => {
@@ -505,13 +525,128 @@ export default function UserStore() {
                       <RiShoppingCart2Line className="text-2xl" />
                       افزودن به سبد خرید
                     </button>
-                    
-                    <p className="text-center text-sm text-gray-500 mt-3">
-                      با کلیک بر روی دکمه، محصول به سبد خرید شما اضافه می‌شود
-                    </p>
                   </div>
                 </div>
               </div>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Cart Preview Modal - جدید و کامل */}
+      {showCartModal && (
+        <div
+          className="fixed inset-0 bg-black bg-opacity-50 z-50 flex items-center justify-center p-4"
+          onClick={(e) => handleModalClick(e, closeCartModal)}
+        >
+          <div className="bg-white rounded-2xl w-full max-w-md max-h-[90vh] overflow-y-auto relative">
+            {/* Close Button */}
+            <button
+              onClick={closeCartModal}
+              className="absolute top-4 left-4 z-10 bg-white rounded-full w-10 h-10 flex items-center justify-center shadow-lg hover:bg-gray-100 transition"
+              aria-label="بستن سبد خرید"
+            >
+              <RiCloseLine className="text-2xl text-gray-600" />
+            </button>
+
+            <div className="p-6">
+              <div className="flex items-center justify-between mb-6 pb-4 border-b">
+                <h2 className="text-2xl font-bold text-gray-800 flex items-center gap-2">
+                  <RiShoppingBag4Fill className="text-red-500" />
+                  سبد خرید شما ({cart.length})
+                </h2>
+                {cart.length > 0 && (
+                  <button
+                    onClick={clearCart}
+                    className="text-sm text-red-500 hover:text-red-700 flex items-center gap-1"
+                  >
+                    <RiDeleteBin6Line />
+                    خالی کردن سبد
+                  </button>
+                )}
+              </div>
+
+              {cart.length === 0 ? (
+                <div className="text-center py-12">
+                  <div className="w-20 h-20 bg-gray-100 rounded-full flex items-center justify-center mx-auto mb-4">
+                    <RiShoppingBag4Fill className="text-4xl text-gray-400" />
+                  </div>
+                  <p className="text-gray-500 text-lg font-medium">سبد خرید شما خالی است</p>
+                  <p className="text-gray-400 mt-2">محصولی برای خرید انتخاب نکرده‌اید</p>
+                </div>
+              ) : (
+                <>
+                  <div className="space-y-4 mb-6 max-h-96 overflow-y-auto pr-2">
+                    {cart.map((item) => (
+                      <div key={item._id} className="flex gap-3 pb-3 border-b border-gray-100">
+                        <div className="w-20 h-20 shrink-0">
+                          {item.image ? (
+                            <img
+                              src={item.image}
+                              alt={item.name}
+                              className="w-full h-full object-cover rounded-lg"
+                            />
+                          ) : (
+                            <div className="w-full h-full bg-gray-200 rounded-lg flex items-center justify-center">
+                              <span className="text-gray-400 text-xs">بدون تصویر</span>
+                            </div>
+                          )}
+                        </div>
+                        <div className="flex-1 min-w-0">
+                          <div className="flex justify-between">
+                            <h3 className="font-bold text-gray-800 line-clamp-1">{item.name}</h3>
+                            <button
+                              onClick={() => removeFromCart(item._id)}
+                              className="text-red-500 hover:text-red-700 p-1"
+                              title="حذف"
+                            >
+                              <RiDeleteBin6Line />
+                            </button>
+                          </div>
+                          <p className="text-sm text-gray-500 mt-1 line-clamp-1">{item.category}</p>
+                          <div className="mt-2 flex justify-between items-end">
+                            <span className="text-xs text-gray-400">
+                              پلن {userPlan === 'bronze' ? 'برنز' : userPlan === 'silver' ? 'نقره‌ای' : 'طلایی'}
+                            </span>
+                            <span className="font-bold text-red-500 text-sm">
+                              {formatPrice(getDiscountedPrice(item.price))}
+                            </span>
+                          </div>
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+
+                  <div className="bg-gray-50 p-4 rounded-lg mb-6">
+                    <div className="flex justify-between text-lg font-bold text-gray-800 mb-2">
+                      <span>مجموع کل:</span>
+                      <span className="text-red-500">{formatPrice(calculateTotal())}</span>
+                    </div>
+                    {userPlan !== 'bronze' && (
+                      <p className="text-xs text-green-600 text-center mt-1">
+                        شامل تخفیف {userPlan === 'silver' ? '10%' : '15%'} برای کاربران {userPlan === 'silver' ? 'نقره‌ای' : 'طلایی'}
+                      </p>
+                    )}
+                  </div>
+
+                  <div className="space-y-3">
+                    <button
+                      onClick={viewFullCart}
+                      className="w-full bg-red-500 text-white py-3 rounded-lg hover:bg-red-600 transition flex items-center justify-center gap-2 font-bold text-lg shadow-lg"
+                    >
+                      <FaCheckCircle />
+                      ادامه و پرداخت
+                    </button>
+                    <button
+                      onClick={continueShopping}
+                      className="w-full bg-white border-2 border-red-500 text-red-500 py-3 rounded-lg hover:bg-red-50 hover:text-red-600 transition font-medium"
+                    >
+                      <FaArrowLeft className="inline ml-1" />
+                      ادامه خرید
+                    </button>
+                  </div>
+                </>
+              )}
             </div>
           </div>
         </div>

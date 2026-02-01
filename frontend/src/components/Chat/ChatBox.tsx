@@ -1,10 +1,7 @@
 import { useState } from 'react'
 import MessageList from './MessageList'
-import { useAppSelector } from '../../store/hook'
-
 export default function ChatBox() {
   const [message, setMessage] = useState('')
-  const { user } = useAppSelector((state) => state.auth)
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault()

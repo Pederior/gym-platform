@@ -1,5 +1,3 @@
-import { Calendar } from "lucide-react";
-
 export default function SideCalendarButton() {
   return (
     <div className="relative">
