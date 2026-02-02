@@ -54,4 +54,13 @@ const admin = (req, res, next) => {
   }
 }
 
+const isMatch = await bcrypt.compare(password, user.password);
+console.log("Password match:", isMatch); // ← این خط رو اضافه کن
+console.log("Input password:", password);
+console.log("Stored hash:", user.password);
+
+if (!isMatch) {
+  return res.status(400).json({ message: "ایمیل یا رمز عبور اشتباه است" });
+}
+
 module.exports = { protect, admin }
