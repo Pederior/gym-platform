@@ -30,7 +30,7 @@ app.use(
   cors({
     origin:
       process.env.NODE_ENV === "production"
-        ? "https://fynixclub.vercel.app"
+        ? "https://fynixclub-872myzubz-ahdreza2000-8103s-projects.vercel.app"
         : "http://localhost:5173",
     credentials: true,
     methods: ["GET", "POST", "PUT", "DELETE", "PATCH", "OPTIONS"],
