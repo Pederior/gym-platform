@@ -38,11 +38,18 @@ const register = async (req, res) => {
 const login = async (req, res) => {
   const { email, password } = req.body;
 
-  const user = await User.findOne({ email }).select('+password')
-  if (!user || !(await user.correctPassword(password, user.password))) {
+  const user = await User.findOne({ email }).select("+password");
+  if (!user || !(await user.correctPassword(password))) {
     return res
       .status(400)
       .json({ success: false, message: "ایمیل یا رمز عبور اشتباه است" });
+  }
+
+  const isMatch = await bcrypt.compare(password, user.password);
+  console.log("Password match:", isMatch);
+
+  if (!isMatch) {
+    return res.status(400).json({ message: "رمز عبور اشتباه است" });
   }
 
   const token = generateToken(user._id);
