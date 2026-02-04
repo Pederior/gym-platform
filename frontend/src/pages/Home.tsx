@@ -8,8 +8,10 @@ import PricingSection from "../components/layout/PricingSection";
 import TestimonialsSection from "../components/layout/TestimonialsSection";
 import ImageFitnessSection from "../components/layout/ImageFitnessSection";
 import Footer from "../components/layout/Footer";
+import useDocumentTitle from '../hooks/useDocumentTitle';
 
 export default function Home() {
+  useDocumentTitle('صفحه اصلی');
   return (
     <div className="min-h-screen">
       {/* Navbar */}

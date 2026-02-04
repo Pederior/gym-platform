@@ -1,9 +1,11 @@
 import { Link } from "react-router-dom";
 import { useAppSelector } from "../store/hook";
+import useDocumentTitle from '../hooks/useDocumentTitle';
 
 export default function Profile() {
   const { user } = useAppSelector((state) => state.auth);
-
+  useDocumentTitle('پروفایل کاربری');
+  
   return (
     <div className="max-w-2xl mx-auto">
       <h1 className="text-2xl font-bold mb-6 text-center">پروفایل کاربری</h1>

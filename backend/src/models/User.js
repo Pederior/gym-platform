@@ -22,14 +22,19 @@ const UserSchema = new mongoose.Schema(
       minlength: 6,
       select: false,
     },
-     avatar: {
-      type: String, 
+    avatar: {
+      type: String,
       default: null,
     },
     role: {
       type: String,
       enum: ["admin", "coach", "user"],
       default: "user",
+    },
+    coach: {
+      type: mongoose.Schema.ObjectId,
+      ref: "User",
+      default: null,
     },
     currentSubscription: {
       type: mongoose.Schema.ObjectId,

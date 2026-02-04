@@ -1,6 +1,6 @@
 import { useState, useMemo, type ReactNode } from "react";
 import { TbSmartHome, TbUser } from "react-icons/tb";
-import { GiMuscleUp } from "react-icons/gi";
+import { GiFoodChain, GiMuscleUp } from "react-icons/gi";
 import { useAppSelector } from "../../store/hook";
 import { Link } from "react-router-dom";
 import {
@@ -204,6 +204,11 @@ const Sidebar = ({ isCollapsed, onToggle }: SidebarProps) => {
           title: "برنامه تمرینی",
           icon: <GiMuscleUp />,
           to: "/dashboard/user/workouts",
+        },
+        {
+          title: "برنامه غذایی",
+          icon: <GiFoodChain />,
+          to: "/dashboard/user/diet",
         },
         {
           title: "خرید اشتراک",

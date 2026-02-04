@@ -4,6 +4,7 @@ import KpiCard from "./KpiCard";
 import { TbMoneybag, TbCalendarEvent, TbShoppingCart } from "react-icons/tb";
 import { IoPeopleSharp } from "react-icons/io5";
 import api from "../../../services/api";
+import useDocumentTitle from '../../../hooks/useDocumentTitle';
 
 interface DashboardSummary {
   activeUsers: number;
@@ -21,7 +22,7 @@ const AdminDashboard: React.FC = () => {
   const [summary, setSummary] = useState<DashboardSummary | null>(null);
   const [loading, setLoading] = useState(true);
   const { token } = useAppSelector((state) => state.auth);
-
+  useDocumentTitle('داشبورد ادمین');
   useEffect(() => {
     const fetchDashboardData = async () => {
       try {

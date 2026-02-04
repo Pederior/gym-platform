@@ -71,4 +71,38 @@ router.get('/admin/summary', protect, admin, async (req, res) => {
   }
 });
 
+router.get('/coach/summary', protect, async (req, res) => {
+  try {
+    if (req.user.role !== 'coach') {
+      return res.status(403).json({ success: false, message: 'دسترسی غیرمجاز' });
+    }
+
+    const [
+      supervisedUsers,
+      createdWorkouts,
+      activeClasses
+    ] = await Promise.all([
+      User.countDocuments({ coach: req.user.id }),
+      WorkoutPlan.countDocuments({ coach: req.user.id }),
+      Class.countDocuments({ 
+        coach: req.user.id, 
+        dateTime: { $gt: new Date() } 
+      })
+    ]);
+    
+
+    res.json({
+      success: true,
+      data: {
+        supervisedUsers,
+        createdWorkouts,
+        activeClasses
+      }
+    });
+  } catch (err) {
+    console.error('Coach dashboard error:', err);
+    res.status(500).json({ success: false, message: 'خطای سرور' });
+  }
+});
+
 module.exports = router;
