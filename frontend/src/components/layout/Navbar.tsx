@@ -44,7 +44,7 @@ export default function Navbar() {
 
   // بارگذاری سبد خرید از localStorage
   useEffect(() => {
-    const savedCart = localStorage.getItem('cart');
+    const savedCart = localStorage.getItem("cart");
     if (savedCart) {
       setCart(JSON.parse(savedCart));
     }
@@ -110,15 +110,15 @@ export default function Navbar() {
 
   // حذف محصول از سبد خرید
   const removeFromCart = (productId: string) => {
-    const newCart = cart.filter(item => item._id !== productId);
+    const newCart = cart.filter((item) => item._id !== productId);
     setCart(newCart);
-    localStorage.setItem('cart', JSON.stringify(newCart));
+    localStorage.setItem("cart", JSON.stringify(newCart));
   };
 
   // خالی کردن سبد خرید
   const clearCart = () => {
     setCart([]);
-    localStorage.removeItem('cart');
+    localStorage.removeItem("cart");
   };
 
   // محاسبه مجموع قیمت
@@ -176,9 +176,11 @@ export default function Navbar() {
                   <span className="block text-base font-medium group-hover:text-red-500 transition-colors duration-200">
                     {item.title}
                   </span>
-                  <span className={`block text-xs group-hover:text-red-500 transition-colors duration-200 ${
-                    isActive ? "text-red-500" : "text-gray-500"
-                  }`}>
+                  <span
+                    className={`block text-xs group-hover:text-red-500 transition-colors duration-200 ${
+                      isActive ? "text-red-500" : "text-gray-500"
+                    }`}
+                  >
                     {item.subtitle}
                   </span>
 
@@ -234,7 +236,15 @@ export default function Navbar() {
                   onClick={toggleMenu}
                   className="w-10 h-10 rounded-full bg-red-500 flex items-center justify-center font-bold text-sm cursor-pointer"
                 >
-                  <FaUser className="inline-block text-white" />
+                  {user?.avatar ? (
+                    <img
+                      src={user.avatar}
+                      alt="پروفایل"
+                      className="w-full h-full object-cover rounded-full border border-red-500 shadow-md"
+                    />
+                  ) : (
+                    <span className="text-white"><FaUser /></span>
+                  )}
                 </button>
 
                 {isMenuOpen && (
@@ -243,17 +253,6 @@ export default function Navbar() {
                       <p className="font-medium">{user.name}</p>
                       <p className="text-xs text-gray-400">{user.email}</p>
                     </div>
-
-                    <Link
-                      to="/dashboard/profile"
-                      className="block px-4 py-2 text-sm hover:bg-red-600"
-                      onClick={() => setIsMenuOpen(false)}
-                    >
-                      <span className="inline-block mr-2">
-                        <TbUser />
-                      </span>{" "}
-                      پروفایل
-                    </Link>
 
                     <Link
                       to={
@@ -270,6 +269,17 @@ export default function Navbar() {
                         <TbSmartHome />
                       </span>{" "}
                       داشبورد
+                    </Link>
+
+                    <Link
+                      to="/dashboard/profile"
+                      className="block px-4 py-2 text-sm hover:bg-red-600"
+                      onClick={() => setIsMenuOpen(false)}
+                    >
+                      <span className="inline-block mr-2">
+                        <TbUser />
+                      </span>{" "}
+                      پروفایل
                     </Link>
 
                     <Link
@@ -398,7 +408,9 @@ export default function Navbar() {
           className="fixed top-36 left-16 w-80 bg-white rounded-lg shadow-lg py-2 z-50 border border-gray-200 max-h-[calc(100vh-150px)] overflow-y-auto"
         >
           <div className="px-4 py-3 border-b border-gray-200 flex justify-between items-center">
-            <h3 className="font-semibold text-gray-800">سبد خرید ({cart.length})</h3>
+            <h3 className="font-semibold text-gray-800">
+              سبد خرید ({cart.length})
+            </h3>
             <button
               onClick={() => setIsCartOpen(false)}
               className="text-gray-400 hover:text-gray-600"
@@ -415,7 +427,10 @@ export default function Navbar() {
           ) : (
             <div className="divide-y divide-gray-100">
               {cart.map((item) => (
-                <div key={item._id} className="px-4 py-3 hover:bg-gray-50 relative">
+                <div
+                  key={item._id}
+                  className="px-4 py-3 hover:bg-gray-50 relative"
+                >
                   <button
                     onClick={() => removeFromCart(item._id!)}
                     className="absolute left-4 top-1/2 transform -translate-y-1/2 text-red-500 hover:text-red-700"
@@ -432,12 +447,18 @@ export default function Navbar() {
                       />
                     ) : (
                       <div className="w-16 h-16 bg-gray-200 rounded flex items-center justify-center">
-                        <span className="text-gray-400 text-xs">بدون تصویر</span>
+                        <span className="text-gray-400 text-xs">
+                          بدون تصویر
+                        </span>
                       </div>
                     )}
                     <div className="flex-1">
-                      <h4 className="font-medium text-gray-800 text-sm">{item.name}</h4>
-                      <p className="text-xs text-gray-500 mt-1">{item.category}</p>
+                      <h4 className="font-medium text-gray-800 text-sm">
+                        {item.name}
+                      </h4>
+                      <p className="text-xs text-gray-500 mt-1">
+                        {item.category}
+                      </p>
                       <p className="text-sm font-bold text-red-500 mt-2">
                         {item.price.toLocaleString()} تومان
                       </p>
@@ -453,7 +474,7 @@ export default function Navbar() {
                     {calculateTotal().toLocaleString()} تومان
                   </span>
                 </div>
-                
+
                 <div className="flex gap-2">
                   <button
                     onClick={clearCart}
@@ -464,7 +485,7 @@ export default function Navbar() {
                   <button
                     onClick={() => {
                       setIsCartOpen(false);
-                      navigate('/cart');
+                      navigate("/cart");
                     }}
                     className="flex-1 px-3 py-2 text-sm bg-red-500 text-white rounded hover:bg-red-600 transition"
                   >

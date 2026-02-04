@@ -14,6 +14,7 @@ export interface User {
     status: 'active' | 'expired';
   };
   createdAt: string;
+  avatar?: string | null;
 }
 
 export interface AuthState {

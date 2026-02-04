@@ -13,9 +13,15 @@ interface AuthState {
   error: string | null;
 }
 
+// ✅ بهتره توکن رو فقط از localStorage بخونیم
+const getInitialToken = () => {
+  if (typeof window === "undefined") return null;
+  return localStorage.getItem("token");
+};
+
 const initialState: AuthState = {
   user: null,
-  token: typeof window !== "undefined" ? localStorage.getItem("token") : null,
+  token: getInitialToken(),
   loading: false,
   error: null,
 };
@@ -28,8 +34,8 @@ export const login = createAsyncThunk(
     { rejectWithValue }
   ) => {
     try {
-      const res = await api.post("/auth/login", credentials);
-      return res.data; // { token, user }
+      const res = await api.post<{ token: string; user: User }>("/auth/login", credentials);
+      return res.data;
     } catch (err: any) {
       return rejectWithValue(
         err.response?.data?.message || "ورود با خطا مواجه شد"
@@ -45,7 +51,7 @@ export const register = createAsyncThunk(
     { rejectWithValue }
   ) => {
     try {
-      const res = await api.post("/auth/register", data);
+      const res = await api.post<{ token: string; user: User }>("/auth/register", data);
       return res.data;
     } catch (err: any) {
       return rejectWithValue(
@@ -59,7 +65,7 @@ export const fetchProfile = createAsyncThunk(
   "auth/fetchProfile",
   async (_, { rejectWithValue }) => {
     try {
-      const res = await api.get("/users/profile");
+      const res = await api.get<{ user: User }>("/users/profile");
       return res.data.user;
     } catch (err: any) {
       return rejectWithValue("خطا در بارگیری پروفایل");
@@ -74,7 +80,9 @@ const authSlice = createSlice({
     logout: (state) => {
       state.user = null;
       state.token = null;
-      localStorage.removeItem("token");
+      if (typeof window !== "undefined") {
+        localStorage.removeItem("token");
+      }
     },
     clearError: (state) => {
       state.error = null;
@@ -82,38 +90,41 @@ const authSlice = createSlice({
   },
   extraReducers: (builder) => {
     // Login
-    builder.addCase(login.pending, (state) => {
-      state.loading = true;
-      state.error = null;
-    });
-    builder.addCase(
-      login.fulfilled,
-      (state, action: PayloadAction<{ token: string; user: User }>) => {
+    builder
+      .addCase(login.pending, (state) => {
+        state.loading = true;
+        state.error = null;
+      })
+      .addCase(login.fulfilled, (state, action: PayloadAction<{ token: string; user: User }>) => {
+        state.loading = false;
+        state.token = action.payload.token;
+        state.user = action.payload.user; // ✅ حالا avatar هم ذخیره می‌شه
+        if (typeof window !== "undefined") {
+          localStorage.setItem("token", action.payload.token);
+        }
+      })
+      .addCase(login.rejected, (state, action) => {
+        state.loading = false;
+        state.error = action.payload as string;
+      });
+
+    // Register
+    builder
+      .addCase(register.fulfilled, (state, action: PayloadAction<{ token: string; user: User }>) => {
         state.loading = false;
         state.token = action.payload.token;
         state.user = action.payload.user;
-        localStorage.setItem("token", action.payload.token);
-      }
-    );
-    builder.addCase(login.rejected, (state, action) => {
-      state.loading = false;
-      state.error = action.payload as string;
-    });
-
-    // Register
-    builder.addCase(register.fulfilled, (state, action) => {
-      state.loading = false;
-      state.token = action.payload.token;
-      state.user = action.payload.user;
-      localStorage.setItem("token", action.payload.token);
-    });
-    builder.addCase(register.rejected, (state, action) => {
-      state.loading = false;
-      state.error = action.payload as string;
-    });
+        if (typeof window !== "undefined") {
+          localStorage.setItem("token", action.payload.token);
+        }
+      })
+      .addCase(register.rejected, (state, action) => {
+        state.loading = false;
+        state.error = action.payload as string;
+      });
 
     // Fetch Profile
-    builder.addCase(fetchProfile.fulfilled, (state, action) => {
+    builder.addCase(fetchProfile.fulfilled, (state, action: PayloadAction<User>) => {
       state.user = action.payload;
     });
   },

@@ -31,39 +31,40 @@ interface AggregatedChatNotification extends BaseNotification {
   count: number;
 }
 
-type Notification = 
+type Notification =
   | ChatNotification
-  | ClassRegistrationNotification  
+  | ClassRegistrationNotification
   | WorkoutAssignedNotification
   | AggregatedChatNotification;
 
 const PAGE_TITLES: Record<string, string> = {
-  '/dashboard/admin': 'داشبورد مدیر',
-  '/dashboard/coach': 'داشبورد مربی',
-  '/dashboard/user': 'داشبورد کاربر',
-  '/dashboard/admin/users': 'لیست اعضا',
-  '/dashboard/admin/users/create': 'افزودن عضو',
-  '/dashboard/admin/subscriptions': 'وضعیت اشتراک‌ها',
-  '/dashboard/admin/invoices': 'صورت‌حساب‌ها',
-  '/dashboard/admin/payments': 'پرداخت‌ها',
-  '/dashboard/admin/reports': 'گزارش‌های مالی',
-  '/dashboard/admin/classes': 'مدیریت کلاس‌ها',
-  '/dashboard/admin/reservations': 'رزرو تجهیزات',
-  '/dashboard/admin/settings/club': 'تنظیمات باشگاه',
-  '/dashboard/admin/settings/pricing': 'تنظیمات قیمت‌ها',
-  '/dashboard/admin/logs': 'لاگ‌ها و امنیت',
-  '/dashboard/coach/workouts': 'برنامه‌های تمرینی',
-  '/dashboard/coach/progress': 'پیگیری پیشرفت',
-  '/dashboard/coach/classes': 'کلاس‌ها',
-  '/dashboard/coach/chat': 'چت با کاربران',
-  '/dashboard/user/workouts': 'برنامه تمرینی',
-  '/dashboard/user/subscriptions': 'خرید اشتراک',
-  '/dashboard/user/classes': 'کلاس‌ها',
-  '/dashboard/user/progress': 'پیگیری پیشرفت',
-  '/dashboard/user/payments': 'اعضایت و پرداخت',
-  '/dashboard/user/chat': 'چت با مربی',
-  '/dashboard/profile': 'پروفایل',
-  '/': 'صفحه اصلی'
+  "/dashboard/admin": "داشبورد مدیر",
+  "/dashboard/coach": "داشبورد مربی",
+  "/dashboard/user": "داشبورد کاربر",
+  "/dashboard/admin/users": "لیست اعضا",
+  "/dashboard/admin/users/create": "افزودن عضو",
+  "/dashboard/admin/subscriptions": "وضعیت اشتراک‌ها",
+  "/dashboard/admin/invoices": "صورت‌حساب‌ها",
+  "/dashboard/admin/payments": "پرداخت‌ها",
+  "/dashboard/admin/reports": "گزارش‌های مالی",
+  "/dashboard/admin/classes": "مدیریت کلاس‌ها",
+  "/dashboard/admin/reservations": "رزرو تجهیزات",
+  "/dashboard/admin/settings/club": "تنظیمات باشگاه",
+  "/dashboard/admin/settings/pricing": "تنظیمات قیمت‌ها",
+  "/dashboard/admin/logs": "لاگ‌ها و امنیت",
+  "/dashboard/coach/workouts": "برنامه‌های تمرینی",
+  "/dashboard/coach/progress": "پیگیری پیشرفت",
+  "/dashboard/coach/classes": "کلاس‌ها",
+  "/dashboard/coach/chat": "چت با کاربران",
+  "/dashboard/user/workouts": "برنامه تمرینی",
+  "/dashboard/user/subscriptions": "خرید اشتراک",
+  "/dashboard/user/classes": "کلاس‌ها",
+  "/dashboard/user/progress": "پیگیری پیشرفت",
+  "/dashboard/user/payments": "اعضایت و پرداخت",
+  "/dashboard/user/chat": "چت با مربی",
+  "/dashboard/profile": "پروفایل",
+  "/dashboard/profile/edit": "ویرایش پروفایل",
+  "/": "صفحه اصلی",
 };
 
 const Header = () => {
@@ -165,45 +166,59 @@ const Header = () => {
 
   // تابع تجمیع نوتیفیکیشن‌های چت
   const getAggregatedChatNotifications = (): AggregatedChatNotification[] => {
-    const chatNotifs = notifications.filter((n): n is ChatNotification => n.type === 'chat');
+    const chatNotifs = notifications.filter(
+      (n): n is ChatNotification => n.type === "chat",
+    );
     if (chatNotifs.length === 0) return [];
 
-    const grouped = chatNotifs.reduce((acc, notif) => {
-      const key = `${notif.relatedId}-${notif.senderName || 'ناشناس'}`;
-      if (!acc[key]) {
-        acc[key] = {
-          count: 0,
-          senderName: notif.senderName || 'ناشناس',
-          senderRole: notif.senderRole || 'user',
-          notifications: [] as ChatNotification[]
-        };
-      }
-      acc[key].count++;
-      acc[key].notifications.push(notif);
-      return acc;
-    }, {} as Record<string, { count: number; senderName: string; senderRole: string; notifications: ChatNotification[] }>);
+    const grouped = chatNotifs.reduce(
+      (acc, notif) => {
+        const key = `${notif.relatedId}-${notif.senderName || "ناشناس"}`;
+        if (!acc[key]) {
+          acc[key] = {
+            count: 0,
+            senderName: notif.senderName || "ناشناس",
+            senderRole: notif.senderRole || "user",
+            notifications: [] as ChatNotification[],
+          };
+        }
+        acc[key].count++;
+        acc[key].notifications.push(notif);
+        return acc;
+      },
+      {} as Record<
+        string,
+        {
+          count: number;
+          senderName: string;
+          senderRole: string;
+          notifications: ChatNotification[];
+        }
+      >,
+    );
 
-    return Object.values(grouped).map(group => {
-      const roleLabel = group.senderRole === 'coach' ? 'مربی' : 'کاربر';
-      const message = group.count === 1 
-        ? `شما 1 پیام از ${roleLabel} ${group.senderName} دریافت کردید`
-        : `شما ${group.count} پیام از ${roleLabel} ${group.senderName} دریافت کردید`;
-      
+    return Object.values(grouped).map((group) => {
+      const roleLabel = group.senderRole === "coach" ? "مربی" : "کاربر";
+      const message =
+        group.count === 1
+          ? `شما 1 پیام از ${roleLabel} ${group.senderName} دریافت کردید`
+          : `شما ${group.count} پیام از ${roleLabel} ${group.senderName} دریافت کردید`;
+
       return {
         _id: `aggregated-${group.notifications[0]._id}`,
-        type: 'chat_aggregated',
+        type: "chat_aggregated",
         message,
         relatedId: group.notifications[0].relatedId,
         createdAt: group.notifications[0].createdAt,
         senderName: group.senderName,
         senderRole: group.senderRole,
-        count: group.count
+        count: group.count,
       };
     });
   };
 
   // فیلتر نوتیفیکیشن‌ها بر اساس صفحه
-  const nonChatNotifications = notifications.filter(n => n.type !== 'chat');
+  const nonChatNotifications = notifications.filter((n) => n.type !== "chat");
   const aggregatedChatNotifications = getAggregatedChatNotifications();
 
   // نمایش نوتیفیکیشن‌ها
@@ -211,7 +226,10 @@ const Header = () => {
   if (isChatPage) {
     displayNotifications = nonChatNotifications;
   } else {
-    displayNotifications = [...nonChatNotifications, ...aggregatedChatNotifications];
+    displayNotifications = [
+      ...nonChatNotifications,
+      ...aggregatedChatNotifications,
+    ];
   }
 
   const unreadCount = displayNotifications.length;
@@ -222,7 +240,9 @@ const Header = () => {
       <div className="flex items-center space-x-2 text-sm text-gray-600">
         <span>داشبورد</span>
         <span>›</span>
-        <span className="text-gray-800 font-medium">{getCurrentPageTitle()}</span>
+        <span className="text-gray-800 font-medium">
+          {getCurrentPageTitle()}
+        </span>
       </div>
 
       <div className="flex items-center space-x-4">
@@ -309,7 +329,19 @@ const Header = () => {
             onClick={() => setIsMenuOpen(!isMenuOpen)}
             className="w-10 h-10 rounded-full bg-red-500 flex items-center justify-center text-white font-bold text-sm hover:bg-red-600 transition cursor-pointer"
           >
-            {user?.name.charAt(0).toUpperCase() || "U"}
+            {user?.avatar ? (
+              <img
+                src={user.avatar}
+                alt="پروفایل"
+                className="w-full h-full object-cover rounded-full border border-red-500 shadow-md"
+              />
+            ) : user?.name ? (
+              <span className="text-white font-medium">
+                {user.name.charAt(0).toUpperCase()}
+              </span>
+            ) : (
+              <span className="text-white">👤</span>
+            )}
           </button>
 
           {/* منوی کشویی */}

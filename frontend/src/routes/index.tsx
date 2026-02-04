@@ -9,6 +9,7 @@ import AdminDashboard from "../pages/Dashboard/AdminDashboard/AdminDashboard";
 import CoachDashboard from "../pages/Dashboard/CoachDashboard/CoachDashboard";
 import UserDashboard from "../pages/Dashboard/UserDashboard/UserDashboard";
 import Profile from "../pages/Profile";
+import ProfileEdit from "../pages/ProfileEdit";
 
 // صفحات مدیر
 import AdminUsers from "../pages/Dashboard/AdminDashboard/AdminUsers";
@@ -363,6 +364,14 @@ export const router = createBrowserRouter([
         element: (
           <ProtectedRoute>
             <Profile />
+          </ProtectedRoute>
+        ),
+      },
+      {
+        path: "profile/edit",
+        element: (
+          <ProtectedRoute>
+            <ProfileEdit />
           </ProtectedRoute>
         ),
       },
