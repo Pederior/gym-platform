@@ -3,6 +3,7 @@ import { useNavigate, useParams } from 'react-router-dom'
 import Card from '../../../components/ui/Card'
 import { toast } from 'react-hot-toast'
 import { coachService, type Exercise } from '../../../services/coachService'
+import useDocumentTitle from '../../../hooks/useDocumentTitle';
 
 export default function CoachWorkoutsEdit() {
   const { id } = useParams<{ id: string }>()
@@ -18,6 +19,7 @@ export default function CoachWorkoutsEdit() {
   const [submitting, setSubmitting] = useState(false)
   const navigate = useNavigate()
 
+  useDocumentTitle(`ویرایش برنامه ${formData.title}`)
   useEffect(() => {
     const fetchWorkout = async () => {
       try {

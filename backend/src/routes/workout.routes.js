@@ -9,6 +9,8 @@ const {
   getWorkoutUsers
 } = require('../controllers/workout.controller')
 
+// const { createActivityLogger } = require('../middleware/activityLogger');
+
 const router = express.Router()
 
 // فقط کاربران لاگین‌شده (مربی یا مدیر)
@@ -27,5 +29,18 @@ router.put('/:id', updateWorkout)
 router.delete('/:id', deleteWorkout)
 
 router.get('/:id/users',authorize('coach'), getWorkoutUsers)
+
+
+// For Logs
+// router.post(
+//   '/progress',
+//   protect,
+//   createActivityLogger(
+//     'complete_workout',
+//     (req) => `تکمیل روز ${req.body.completedDays} از برنامه`,
+//     (req) => ({ workoutId: req.body.workoutId, completedDays: req.body.completedDays })
+//   ),
+//   submitWorkoutProgress
+// );
 
 module.exports = router

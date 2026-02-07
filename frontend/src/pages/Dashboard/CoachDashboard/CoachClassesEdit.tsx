@@ -3,6 +3,7 @@ import { useNavigate, useParams } from 'react-router-dom'
 import Card from '../../../components/ui/Card'
 import { toast } from 'react-hot-toast'
 import api from '../../../services/api'
+import useDocumentTitle from '../../../hooks/useDocumentTitle';
 
 export default function CoachClassesEdit() {
   const { id } = useParams<{ id: string }>()
@@ -17,6 +18,7 @@ export default function CoachClassesEdit() {
   const [submitting, setSubmitting] = useState(false)
   const navigate = useNavigate()
 
+  useDocumentTitle(`ویرایش کلاس ${formData.title}`)
   useEffect(() => {
     const fetchClass = async () => {
       try {

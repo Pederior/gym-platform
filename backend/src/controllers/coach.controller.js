@@ -226,11 +226,11 @@ const students = async (req, res) => {
 
     const students = await User.find({
       role: 'user',
-      coach: coachId // ← استفاده از ObjectId
+      coach: coachId
     })
     .populate('currentSubscription')
     .select('name email currentSubscription');
-
+    
     console.log('🔍 DEBUG: Found students count:', students.length);
 
     const studentsWithWorkouts = await Promise.all(

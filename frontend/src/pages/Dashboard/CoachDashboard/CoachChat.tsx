@@ -4,9 +4,12 @@ import { toast } from "react-hot-toast";
 import api from "../../../services/api";
 import { useSocket } from "../../../components/Chat/SocketContext";
 import { useAppSelector } from "../../../store/hook";
-interface User {
+import useDocumentTitle from '../../../hooks/useDocumentTitle';
+
+interface Student {
   _id: string;
   name: string;
+  email: string;
 }
 
 interface Message {
@@ -18,61 +21,58 @@ interface Message {
 }
 
 export default function CoachChat() {
+  useDocumentTitle("چت");
   const { socket, isConnected } = useSocket();
   const { user: currentUser } = useAppSelector((state) => state.auth);
 
-  const [users, setUsers] = useState<User[]>([]);
-  const [selectedUser, setSelectedUser] = useState<User | null>(null);
+  const [students, setStudents] = useState<Student[]>([]);
+  const [selectedStudent, setSelectedStudent] = useState<Student | null>(null);
   const [messages, setMessages] = useState<Message[]>([]);
   const [newMessage, setNewMessage] = useState("");
   const messagesEndRef = useRef<HTMLDivElement>(null);
-  // ✅ تعریف loadMessages با useCallback
-  const loadMessages = useCallback(async (userId: string) => {
+
+  const loadMessages = useCallback(async (studentId: string) => {
     try {
-      const res = await api.get(`/chat/${userId}`);
-      setMessages(res.data.messages);
+      const res = await api.get(`/chat/${studentId}`);
+      setMessages(res.data.messages || []);
     } catch (err: any) {
       toast.error("خطا در بارگذاری پیام‌ها");
     }
   }, []);
 
-  // بارگذاری لیست کاربران (یک‌بار در ابتدا)
+  // بارگذاری لیست شاگردها
   useEffect(() => {
-    const fetchUsers = async () => {
+    const fetchStudents = async () => {
       try {
-        const res = await api.get("/chat/users");
-        setUsers(res.data.users);
-        if (res.data.users.length > 0) {
-          setSelectedUser(res.data.users[0]);
-          // ✅ لود پیام‌ها همین‌جا
-          loadMessages(res.data.users[0]._id);
+        const res = await api.get("/coach/students");
+        setStudents(res.data.data || []);
+        if (res.data.data?.length > 0) {
+          setSelectedStudent(res.data.data[0]);
+          loadMessages(res.data.data[0]._id);
         }
       } catch (err: any) {
-        toast.error("خطا در بارگذاری لیست کاربران");
+        toast.error("خطا در بارگذاری لیست شاگردها");
       }
     };
-    fetchUsers();
-  }, [loadMessages]); // ⚠️ loadMessages dependency هست
+    fetchStudents();
+  }, [loadMessages]);
 
-  // ✅ تغییر selectedUser → لود پیام‌ها
-  const handleSelectUser = (user: User) => {
-    setSelectedUser(user);
-    loadMessages(user._id); // ✅ مستقیم در event handler
+  const handleSelectStudent = (student: Student) => {
+    setSelectedStudent(student);
+    loadMessages(student._id);
   };
 
   // مدیریت eventهای socket
   useEffect(() => {
-    if (!socket || !isConnected) return;
+    if (!socket || !isConnected || !selectedStudent) return;
 
     const handleReceiveMessage = (message: Message) => {
-      // فقط پیام‌های کاربر رو نشون بده
       if (message.sender === "user") {
         setMessages((prev) => [...prev, message]);
       }
     };
 
     const handleMessageSent = (message: Message) => {
-      // پیام‌های ارسالی مربی
       if (message.sender === "coach") {
         setMessages((prev) => [...prev, message]);
       }
@@ -85,18 +85,18 @@ export default function CoachChat() {
       socket.off("receive_message", handleReceiveMessage);
       socket.off("message_sent", handleMessageSent);
     };
-  }, [socket, isConnected, selectedUser]);
+  }, [socket, isConnected, selectedStudent]);
 
   useEffect(() => {
     messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
   }, [messages]);
 
   const handleSendMessage = () => {
-    if (!newMessage.trim() || !selectedUser || !socket || !isConnected) return;
+    if (!newMessage.trim() || !selectedStudent || !socket || !isConnected) return;
 
     const messageData = {
       senderId: currentUser?._id,
-      receiverId: selectedUser._id,
+      receiverId: selectedStudent._id,
       content: newMessage,
     };
 
@@ -116,37 +116,44 @@ export default function CoachChat() {
 
   return (
     <div>
-      <h1 className="text-2xl font-bold mb-6">چت با کاربران</h1>
+      <h1 className="text-2xl font-bold mb-6">چت با شاگردها</h1>
 
       <div className="flex gap-6">
-        {/* لیست کاربران */}
+        {/* لیست شاگردها */}
         <div className="w-1/3">
           <Card>
-            <h2 className="font-bold mb-4">کاربران</h2>
+            <h2 className="font-bold mb-4">شاگردها</h2>
             <div className="space-y-2 max-h-96 overflow-y-auto">
-              {users.map((user) => (
-                <button
-                  key={user._id}
-                  onClick={() => handleSelectUser(user)} // ✅ تغییر اینجا
-                  className={`w-full text-right p-3 rounded-lg transition ${
-                    selectedUser?._id === user._id
-                      ? "bg-red-100 text-red-800"
-                      : "hover:bg-gray-100"
-                  }`}
-                >
-                  {user.name}
-                </button>
-              ))}
+              {students.length === 0 ? (
+                <div className="text-center py-4 text-gray-500">
+                  شاگردی یافت نشد
+                </div>
+              ) : (
+                students.map((student) => (
+                  <button
+                    key={student._id}
+                    onClick={() => handleSelectStudent(student)}
+                    className={`w-full text-right p-3 rounded-lg transition ${
+                      selectedStudent?._id === student._id
+                        ? "bg-red-100 text-red-800"
+                        : "hover:bg-gray-100"
+                    }`}
+                  >
+                    {student.name}
+                    <div className="text-xs text-gray-500 mt-1">{student.email}</div>
+                  </button>
+                ))
+              )}
             </div>
           </Card>
         </div>
 
         {/* چت */}
         <div className="flex-1">
-          {selectedUser ? (
+          {selectedStudent ? (
             <Card>
               <div className="border-b pb-3 mb-4">
-                <h2 className="font-bold">چت با {selectedUser.name}</h2>
+                <h2 className="font-bold">چت با {selectedStudent.name}</h2>
               </div>
 
               <div className="h-96 overflow-y-auto mb-4">
@@ -199,7 +206,7 @@ export default function CoachChat() {
           ) : (
             <Card>
               <div className="text-center py-12 text-gray-500">
-                لطفاً یک کاربر را از لیست انتخاب کنید
+                لطفاً یک شاگرد را از لیست انتخاب کنید
               </div>
             </Card>
           )}

@@ -14,7 +14,7 @@ const classRoutes = require("./routes/class.routes");
 const chatRoutes = require("./routes/chat.routes");
 const financialRoutes = require("./routes/financial.routes");
 const adminRoutes = require("./routes/admin.routes");
-const logRoutes = require("./routes/log.routes");
+const logRoutes = require('./routes/log.routes');
 const coachRoutes = require("./routes/coach.routes");
 const userWorkoutRoutes = require("./routes/userWorkout.routes");
 const notificationRoutes = require("./routes/notification.routes");
@@ -91,7 +91,7 @@ app.use("/api/admin/tickets", adminTicketRoutes);
 
 app.use("/api/financial", financialRoutes);
 app.use("/api/admin", adminRoutes);
-app.use("/api/logs", logRoutes);
+app.use("/api/admin/logs", logRoutes);
 
 // Health check
 app.get("/api/health", (req, res) => {

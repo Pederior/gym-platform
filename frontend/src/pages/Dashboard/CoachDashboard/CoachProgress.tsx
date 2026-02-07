@@ -2,8 +2,10 @@ import { useState, useEffect } from 'react'
 import Card from '../../../components/ui/Card'
 import { toast } from 'react-hot-toast'
 import { getUserProgress, type UserProgress } from '../../../services/coachService'
+import useDocumentTitle from '../../../hooks/useDocumentTitle';
 
 export default function CoachProgress() {
+  useDocumentTitle('پیشرفت کاربران')
   const [progress, setProgress] = useState<UserProgress[]>([])
   const [loading, setLoading] = useState(true)
 

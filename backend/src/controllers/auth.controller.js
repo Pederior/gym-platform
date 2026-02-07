@@ -79,4 +79,8 @@ const login = async (req, res) => {
   });
 };
 
-module.exports = { register, login };
+const logout = (req, res) => {
+  res.status(200).json({ success: true, message: 'خروج موفقیت‌آمیز' });
+};
+
+module.exports = { register, login, logout };

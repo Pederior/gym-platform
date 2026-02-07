@@ -209,37 +209,57 @@ export default function AboutUs() {
           </div>
           {/* //! FIX MEEEEEEEEEEEEEEEEE */}
           <div className="lg:w-1/2">
-          <span>نابرده رنج گنج میسر نمی شود</span>
+            <span>نابرده رنج گنج میسر نمی شود</span>
             <h2 className="text-3xl md:text-4xl font-bold text-gray-800 mb-12 text-right">
               مهارت‌های ما
             </h2>
 
-            <div className="space-y-6">
+            <div className="space-y-8">
               {progressData.map((item) => (
-                <div
-                  key={item.key}
-                  className="flex items-center justify-between"
-                >
-                  <div className="text-right w-32">
-                    <div className="text-xl font-bold text-red-600">
+                <div key={item.key} className="relative">
+                  {/* Floating Label - سمت چپ progress bar (در RTL) */}
+                  <div
+                    className="absolute -top-6 left-0 transition-all duration-300 ease-out"
+                    style={{
+                      opacity: item.value > 0 ? 1 : 0,
+                      transform:
+                        item.value > 0 ? "translateY(0)" : "translateY(-10px)",
+                    }}
+                  >
+                    <span className="text-xl font-bold text-red-600 bg-white px-2 py-1 rounded shadow-sm">
                       {item.value}%
-                    </div>
-                    <div className="text-gray-700">{item.label}</div>
+                    </span>
                   </div>
 
-                  <div className="w-full max-w-xs">
-                    <div className="w-full bg-gray-200 rounded-full h-3">
-                      <div
-                        className="bg-red-600 h-3 rounded-full transition-all duration-1500 ease-out"
-                        style={{ width: `${item.value}%` }}
-                      ></div>
+                  {/* Progress Bar Container */}
+                  <div className="flex items-center gap-4">
+                    {/* Label - سمت راست */}
+                    <div className="text-right min-w-32">
+                      <div className="text-gray-700 font-medium">
+                        {item.label}
+                      </div>
+                    </div>
+
+                    {/* Animated Progress Bar - سمت چپ */}
+                    <div className="flex-1 relative">
+                      <div className="w-full bg-gray-200 rounded-full h-3 overflow-hidden">
+                        <div
+                          className="bg-gradient-to-r from-red-500 to-red-600 h-3 rounded-full transition-all duration-1500 ease-out relative"
+                          style={{
+                            width: `${item.value}%`,
+                            transitionDelay: `${parseInt(item.key, 36) * 100}ms`,
+                          }}
+                        >
+                          {/* Shine Effect */}
+                          <div className="absolute inset-0 bg-white opacity-20 animate-pulse"></div>
+                        </div>
+                      </div>
                     </div>
                   </div>
                 </div>
               ))}
             </div>
           </div>
-
         </div>
       </div>
       <Footer />

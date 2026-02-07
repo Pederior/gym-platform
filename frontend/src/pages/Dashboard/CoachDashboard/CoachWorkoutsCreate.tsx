@@ -3,8 +3,10 @@ import { useNavigate } from 'react-router-dom'
 import Card from '../../../components/ui/Card'
 import { toast } from 'react-hot-toast'
 import { coachService, type Exercise } from '../../../services/coachService'
+import useDocumentTitle from '../../../hooks/useDocumentTitle';
 
 export default function CoachWorkoutsCreate() {
+  useDocumentTitle('ایجاد برنامه تمرینی جدید')
   const [formData, setFormData] = useState({
     title: '',
     description: '',

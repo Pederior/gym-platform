@@ -3,6 +3,7 @@ import { Link } from "react-router-dom";
 import Card from "../../../components/ui/Card";
 import { toast } from "react-hot-toast";
 import api from "../../../services/api";
+import useDocumentTitle from '../../../hooks/useDocumentTitle';
 
 interface Class {
   _id: string;
@@ -14,6 +15,7 @@ interface Class {
 }
 
 export default function CoachClasses() {
+  useDocumentTitle("لیست کلاس ها");
   const [classes, setClasses] = useState<Class[]>([]);
   const [loading, setLoading] = useState(true);
 

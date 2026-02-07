@@ -1,10 +1,11 @@
-const express = require('express')
-const { register, login } = require('../controllers/auth.controller')
+const express = require('express');
+const { register, login, logout } = require('../controllers/auth.controller');
 const upload = require('../middleware/upload');
 const User = require('../models/User');
 const { protect } = require('../middleware/auth.middleware');
+const { createActivityLogger } = require('../middleware/activityLogger');
 
-const router = express.Router()
+const router = express.Router();
 
 // PUT /api/auth/profile
 router.put('/profile', protect, async (req, res) => {
@@ -12,23 +13,19 @@ router.put('/profile', protect, async (req, res) => {
     const { name, email, password } = req.body;
     const userId = req.user.id;
 
-    // پیدا کردن کاربر
     const user = await User.findById(userId);
     if (!user) {
       return res.status(404).json({ success: false, message: "کاربر یافت نشد" });
     }
 
-    // آپدیت فیلدها
     user.name = name;
     user.email = email;
     
-    // فقط اگر پسورد فرستاده شده
     if (password) {
-      user.password = password; // ← middleware هش می‌کنه
+      user.password = password;
     }
 
-    await user.save(); // ← اینجا pre('save') فعال می‌شه
-
+    await user.save();
     const updatedUser = await User.findById(userId).select('-password');
     res.json({ success: true, user: updatedUser });
   } catch (err) {
@@ -43,7 +40,6 @@ router.put('/profile/avatar', protect, upload.single('avatar'), async (req, res)
       return res.status(400).json({ success: false, message: "فایل آواتار ارسال نشده" });
     }
 
-    // آدرس فایل آپلود شده
     const avatarUrl = `${req.protocol}://${req.get('host')}/uploads/${req.file.filename}`;
     
     const updatedUser = await User.findByIdAndUpdate(
@@ -58,7 +54,35 @@ router.put('/profile/avatar', protect, upload.single('avatar'), async (req, res)
   }
 });
 
-router.route('/register').post(register)
-router.route('/login').post(login)
+// POST /api/auth/register
+router.post(
+  '/register', 
+  createActivityLogger(
+    'register',
+    (req) => `ثبت‌نام کاربر جدید: ${req.body.email}`,
+    (req) => ({ email: req.body.email, name: req.body.name })
+  ),
+  register
+);
 
-module.exports = router
+// POST /api/auth/login  
+router.post(
+  '/login',
+  createActivityLogger(
+    'login',
+    (req) => `ورود کاربر: ${req.body.email}`,
+    (req, res) => ({ email: req.body.email, ip: req.ip })
+  ),
+  login
+);
+
+// POST /api/auth/logout
+router.post(
+  '/logout',
+  protect,
+  createActivityLogger('logout', (req) => `خروج کاربر: ${req.user.email}`),
+  logout 
+);
+
+
+module.exports = router;

@@ -35,8 +35,7 @@ export default function CoachStudents() {
     try {
       const res = await api.get('/coach/students');
       
-      setStudents(res.data.studentsWithWorkouts || []);
-      console.log(res.data.studentsWithWorkouts)
+      setStudents(res.data.data || []);
     } catch (error) {
       console.error('Failed to fetch students:', error);
       setStudents([]);

@@ -204,7 +204,7 @@ const Sidebar = ({ isCollapsed, onToggle }: SidebarProps) => {
           to: "/dashboard/coach/classes",
         },
         {
-          title: "چت با کاربران",
+          title: "چت با شاگردان",
           icon: <IoChatboxEllipses />,
           to: "/dashboard/coach/chat",
         },
