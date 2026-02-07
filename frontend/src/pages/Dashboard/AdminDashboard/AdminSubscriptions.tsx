@@ -2,8 +2,10 @@ import { useState, useEffect } from 'react'
 import Card from '../../../components/ui/Card'
 import { financialService, type Subscription } from '../../../services/financialService'
 import { toast } from 'react-hot-toast'
+import useDocumentTitle from '../../../hooks/useDocumentTitle'
 
 export default function AdminSubscriptions() {
+  useDocumentTitle('اشتراک‌ها')
   const [subs, setSubs] = useState<Subscription[]>([])
   const [loading, setLoading] = useState(true)
 
@@ -42,23 +44,23 @@ export default function AdminSubscriptions() {
             <table className="w-full">
               <thead>
                 <tr className="text-right text-sm text-gray-500 border-b">
-                  <th>کاربر</th>
-                  <th>طرح</th>
-                  <th>مبلغ</th>
-                  <th>شروع</th>
-                  <th>پایان</th>
-                  <th>وضعیت</th>
+                  <th className="py-3 px-2">کاربر</th>
+                  <th className="py-3 px-2">طرح</th>
+                  <th className="py-3 px-2">مبلغ</th>
+                  <th className="py-3 px-2">شروع</th>
+                  <th className="py-3 px-2">پایان</th>
+                  <th className="py-3 px-2">وضعیت</th>
                 </tr>
               </thead>
               <tbody>
                 {subs.map(sub => (
                   <tr key={sub._id} className="border-b">
-                    <td>{sub.user.name}</td>
-                    <td>{sub.plan}</td>
-                    <td>{sub.amount.toLocaleString()} تومان</td>
-                    <td>{new Date(sub.startDate).toLocaleDateString('fa-IR')}</td>
-                    <td>{new Date(sub.endDate).toLocaleDateString('fa-IR')}</td>
-                    <td>{getStatusBadge(sub.status)}</td>
+                    <td className="py-3 px-2">{sub.user.name}</td>
+                    <td className="py-3 px-2">{sub.plan}</td>
+                    <td className="py-3 px-2">{sub.amount.toLocaleString()} تومان</td>
+                    <td className="py-3 px-2">{new Date(sub.startDate).toLocaleDateString('fa-IR')}</td>
+                    <td className="py-3 px-2">{new Date(sub.endDate).toLocaleDateString('fa-IR')}</td>
+                    <td className="py-3 px-2">{getStatusBadge(sub.status)}</td>
                   </tr>
                 ))}
               </tbody>

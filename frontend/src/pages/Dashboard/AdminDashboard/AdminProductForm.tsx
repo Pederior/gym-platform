@@ -4,8 +4,10 @@ import type { ProductFormData, ProductType, PlanType, ProductStatus } from '../.
 import { productService } from '../../../services/productService';
 import { toast } from 'react-hot-toast';
 import { FaArrowRight } from 'react-icons/fa';
+import useDocumentTitle from '../../../hooks/useDocumentTitle'
 
 export default function AdminProductForm() {
+  useDocumentTitle('افزودن محصول جدید');
   const { id } = useParams<{ id?: string }>();
   const navigate = useNavigate();
   const isEdit = !!id;

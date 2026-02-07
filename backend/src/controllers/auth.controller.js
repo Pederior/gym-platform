@@ -39,20 +39,31 @@ const register = async (req, res) => {
 const login = async (req, res) => {
   const { email, password } = req.body;
 
+  console.log("Login attempt:", { email, passwordLength: password?.length });
+
   const user = await User.findOne({ email }).select("+password");
-  if (!user || !(await user.correctPassword(password))) {
+  if (!user) {
+    console.log("User not found for email:", email);
     return res
-      .status(400)
+      .status(401)
       .json({ success: false, message: "ایمیل یا رمز عبور اشتباه است" });
   }
 
-  const isMatch = await bcrypt.compare(password, user.password);
-  console.log("Password match:", isMatch);
+  console.log(
+    "User found:",
+    user._id,
+    "Password hash length:",
+    user.password?.length,
+  );
 
-  if (!isMatch) {
-    return res.status(400).json({ message: "رمز عبور اشتباه است" });
+  const isPasswordCorrect = await user.correctPassword(password);
+  console.log("Password correct:", isPasswordCorrect);
+
+  if (!isPasswordCorrect) {
+    return res
+      .status(401)
+      .json({ success: false, message: "ایمیل یا رمز عبور اشتباه است" });
   }
-
   const token = generateToken(user._id);
 
   res.status(200).json({
@@ -63,7 +74,7 @@ const login = async (req, res) => {
       name: user.name,
       email: user.email,
       role: user.role,
-      avatar: user.avatar
+      avatar: user.avatar,
     },
   });
 };

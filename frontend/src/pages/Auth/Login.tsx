@@ -13,10 +13,14 @@ export default function Login() {
   const { loading, error } = useAppSelector((state) => state.auth);
   const dispatch = useAppDispatch();
   const navigate = useNavigate();
+  
+  // ✅ state برای نمایش/پنهان کردن رمز عبور
+  const [showPassword, setShowPassword] = useState(false);
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
   };
+  
   useEffect(() => {
     dispatch(clearError());
   }, [dispatch]);
@@ -65,23 +69,31 @@ export default function Login() {
               name="email"
               value={formData.email}
               onChange={handleChange}
-              className="w-full px-3 py-2 border rounded focus:outline-none focus:ring-2 focus:ring-red-500 bg-white flex items-center"
+              className="w-full px-3 py-2 border rounded focus:outline-none focus:ring-2 focus:ring-red-500 bg-white"
               required
             />
           </div>
 
-          <div className="mb-6">
+          {/* ✅ فیلد رمز عبور با دکمه چشم */}
+          <div className="mb-6 relative">
             <label className="block text-sm font-medium mb-1 text-white text-right">
               رمز عبور
             </label>
             <input
-              type="password"
+              type={showPassword ? "text" : "password"}
               name="password"
               value={formData.password}
               onChange={handleChange}
-              className="w-full px-3 py-2 border rounded focus:outline-none focus:ring-2 focus:ring-red-500 bg-white"
+              className="w-full px-3 py-2 border rounded focus:outline-none focus:ring-2 focus:ring-red-500 bg-white pr-10"
               required
             />
+            <button
+              type="button"
+              onClick={() => setShowPassword(!showPassword)}
+              className="absolute right-3 top-8 text-gray-500 hover:text-gray-700"
+            >
+              {showPassword ? '🙈' : '👁️'}
+            </button>
           </div>
 
           <Button

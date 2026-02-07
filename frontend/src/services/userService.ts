@@ -25,21 +25,19 @@ export interface UserProgress {
   status: "active" | "completed" | "paused";
 }
 
-// ✅ اصلاح مدل اشتراک بر اساس بک‌اند
-export interface Subscription {
-  _id: string;
-  user: string;
-  plan: 'bronze' | 'silver' | 'gold';
-  duration: 'monthly' | 'quarterly' | 'yearly';
-  amount: number;
-  startDate: string;
-  expiresAt: string;
-  status: 'active' | 'expired' | 'cancelled';
-  createdAt?: string;
-  updatedAt?: string;
+export interface UserSubscriptionPlan {
+  id: 'bronze' | 'silver' | 'gold';
+  name: string;
+  description: string;
+  isPopular: boolean;
+  features: string[];
+  price: {
+    monthly: number;
+    quarterly: number;
+    yearly: number;
+  };
 }
 
-// ✅ اصلاح مدل پرداخت بر اساس بک‌اند
 export interface Payment {
   _id: string;
   user: string;
@@ -75,7 +73,6 @@ export interface WorkoutDetail {
   exercises: Exercise[];
 }
 
-// ✅ اضافه کردن مدل خرید اشتراک
 export interface CreateSubscriptionDTO {
   planId: 'bronze' | 'silver' | 'gold';
   duration: 'monthly' | 'quarterly' | 'yearly';
@@ -102,6 +99,14 @@ export const userService = {
     );
     return res.data.user;
   },
+  
+  async updateUserPassword(userId: string, data: { password: string }) {
+    const res = await api.put<{ success: true; message: string }>(
+      `/users/${userId}/password`,
+      data
+    );
+    return res.data;
+  },
 
   async deleteUser(userId: string) {
     const res = await api.delete<{ success: true; message: string }>(
@@ -124,29 +129,26 @@ export const userService = {
     return res.data.progress;
   },
 
-  // ✅ اصلاح توابع کامنت شده
+  async getSubscriptionPlans() {
+    const res = await api.get<{ success: true; plans: UserSubscriptionPlan[] }>('/subscriptions/plans');
+    return res.data.plans;
+  },
+
+  async createSubscription(data: { planId: 'bronze' | 'silver' | 'gold'; duration: 'monthly' | 'quarterly' | 'yearly' }) {
+    const res = await api.post<{ success: true; message: string }>('/users/subscription', data);
+    return res.data;
+  },
+
   async getUserSubscription() {
-    const res = await api.get<{ success: true; subscription: Subscription | null }>(
-      "/users/subscription",
-    );
+    const res = await api.get<{ success: true; subscription: any }>('/users/subscription');
     return res.data.subscription;
   },
 
   async getUserPayments() {
     const res = await api.get<{ success: true; payments: Payment[] }>(
-      "/payments", // ✅ تغییر به /payments بر اساس بک‌اند
+      "/payments",
     );
     return res.data.payments;
-  },
-
-  // ✅ اضافه کردن تابع خرید اشتراک
-  async createSubscription(data: CreateSubscriptionDTO) {
-    const res = await api.post<{ 
-      success: true; 
-      message: string; 
-      subscription: Subscription 
-    }>("/users/subscription", data);
-    return res.data;
   },
 
   async submitWorkoutProgress(workoutId: string) {

@@ -1,23 +1,16 @@
 import { useState, useEffect } from 'react'
 import Card from '../../../components/ui/Card'
 import { toast } from 'react-hot-toast'
-import api from '../../../services/api'
+import { 
+  adminService, 
+  type Equipment, 
+  type Room 
+} from '../../../services/adminService';
+import useDocumentTitle from '../../../hooks/useDocumentTitle'
 
-interface Equipment {
-  _id: string
-  name: string
-  type: string
-  status: 'available' | 'reserved' | 'maintenance'
-}
-
-interface Room {
-  _id: string
-  name: string
-  capacity: number
-  status: 'available' | 'reserved' | 'maintenance'
-}
 
 export default function AdminReservations() {
+  useDocumentTitle('مدیریت رزرو‌ها')
   const [activeTab, setActiveTab] = useState<'equipment' | 'rooms'>('equipment')
   const [equipment, setEquipment] = useState<Equipment[]>([])
   const [rooms, setRooms] = useState<Room[]>([])
@@ -35,20 +28,21 @@ export default function AdminReservations() {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const [eqRes, roomRes] = await Promise.all([
-          api.get('/equipment'),
-          api.get('/rooms')
-        ])
-        setEquipment(eqRes.data.equipment)
-        setRooms(roomRes.data.rooms)
+        const [eqData, roomData] = await Promise.all([
+          adminService.getEquipment(), 
+          adminService.getRooms()    
+        ]);
+        setEquipment(eqData);
+        setRooms(roomData);
       } catch (err: any) {
-        toast.error(err.response?.data?.message || 'خطا در بارگذاری داده‌ها')
+        toast.error(err.response?.data?.message || 'خطا در بارگذاری داده‌ها');
       } finally {
-        setLoading(false)
+        setLoading(false);
       }
-    }
-    fetchData()
-  }, [])
+    };
+    fetchData();
+  }, []);
+
 
   const getStatusBadge = (status: string) => {
     const config: Record<string, { label: string; color: string }> = {
@@ -69,21 +63,19 @@ export default function AdminReservations() {
   }
 
   const handleEquipmentSubmit = async (e: React.FormEvent) => {
-    e.preventDefault()
-    setSubmitting(true)
+    e.preventDefault();
+    setSubmitting(true);
     try {
-      await api.post('/equipment', equipmentForm)
-      toast.success('تجهیزات جدید اضافه شد')
-      // رفرش
-      const res = await api.get('/equipment')
-      setEquipment(res.data.equipment)
-      closeEquipmentModal()
+      const newEquipment = await adminService.createEquipment(equipmentForm);
+      setEquipment(prev => [...prev, newEquipment]);
+      toast.success('تجهیزات جدید اضافه شد');
+      closeEquipmentModal();
     } catch (err: any) {
-      toast.error(err.response?.data?.message || 'خطا در افزودن تجهیزات')
+      toast.error(err.response?.data?.message || 'خطا در افزودن تجهیزات');
     } finally {
-      setSubmitting(false)
+      setSubmitting(false);
     }
-  }
+  };
 
   // --- مدال سالن‌ها ---
   const openRoomModal = () => setIsRoomModalOpen(true)
@@ -95,21 +87,19 @@ export default function AdminReservations() {
   }
 
   const handleRoomSubmit = async (e: React.FormEvent) => {
-    e.preventDefault()
-    setSubmitting(true)
+    e.preventDefault();
+    setSubmitting(true);
     try {
-      await api.post('/rooms', roomForm)
-      toast.success('سالن جدید اضافه شد')
-      // رفرش
-      const res = await api.get('/rooms')
-      setRooms(res.data.rooms)
-      closeRoomModal()
+      const newRoom = await adminService.createRoom(roomForm);
+      setRooms(prev => [...prev, newRoom]);
+      toast.success('سالن جدید اضافه شد');
+      closeRoomModal();
     } catch (err: any) {
-      toast.error(err.response?.data?.message || 'خطا در افزودن سالن')
+      toast.error(err.response?.data?.message || 'خطا در افزودن سالن');
     } finally {
-      setSubmitting(false)
+      setSubmitting(false);
     }
-  }
+  };
 
   return (
     <div>

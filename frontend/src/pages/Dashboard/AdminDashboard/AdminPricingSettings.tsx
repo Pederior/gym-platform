@@ -1,57 +1,54 @@
-import { useState, useEffect } from 'react'
-import Card from '../../../components/ui/Card'
-import { toast } from 'react-hot-toast'
-import api from '../../../services/api'
-
-interface Pricing {
-  monthly: number
-  quarterly: number
-  yearly: number
-}
+//! not used
+import { useState, useEffect } from "react";
+import Card from "../../../components/ui/Card";
+import { toast } from "react-hot-toast";
+import { adminService, type Pricing } from "../../../services/adminService";
+import useDocumentTitle from '../../../hooks/useDocumentTitle'
 
 export default function AdminClubSettings() {
+  useDocumentTitle("تنظیمات قیمت‌ها")
   const [pricing, setPricing] = useState<Pricing>({
     monthly: 0,
     quarterly: 0,
-    yearly: 0
-  })
-  const [loading, setLoading] = useState(true)
-  const [submitting, setSubmitting] = useState(false)
+    yearly: 0,
+  });
+  const [loading, setLoading] = useState(true);
+  const [submitting, setSubmitting] = useState(false);
 
   useEffect(() => {
     const fetchPricing = async () => {
       try {
-        const res = await api.get('/settings/pricing')
-        setPricing(res.data.pricing)
+        const data = await adminService.getPricing();
+        setPricing(data);
       } catch (err: any) {
-        toast.error(err.response?.data?.message || 'خطا در بارگذاری قیمت‌ها')
+        toast.error(err.response?.data?.message || "خطا در بارگذاری قیمت‌ها");
       } finally {
-        setLoading(false)
+        setLoading(false);
       }
-    }
-    fetchPricing()
-  }, [])
+    };
+    fetchPricing();
+  }, []);
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const value = parseInt(e.target.value) || 0
-    setPricing({ ...pricing, [e.target.name]: value })
-  }
+    const value = parseInt(e.target.value) || 0;
+    setPricing({ ...pricing, [e.target.name]: value });
+  };
 
   const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault()
-    setSubmitting(true)
+    e.preventDefault();
+    setSubmitting(true);
     try {
-      await api.put('/settings/pricing', pricing)
-      toast.success('قیمت‌ها با موفقیت به‌روز شد')
+      await adminService.updatePricing(pricing);
+      toast.success("قیمت‌ها با موفقیت به‌روز شد");
     } catch (err: any) {
-      toast.error(err.response?.data?.message || 'خطا در به‌روزرسانی قیمت‌ها')
+      toast.error(err.response?.data?.message || "خطا در به‌روزرسانی قیمت‌ها");
     } finally {
-      setSubmitting(false)
+      setSubmitting(false);
     }
-  }
+  };
 
   if (loading) {
-    return <div className="p-8">در حال بارگذاری...</div>
+    return <div className="p-8">در حال بارگذاری...</div>;
   }
 
   return (
@@ -107,10 +104,10 @@ export default function AdminClubSettings() {
             disabled={submitting}
             className="bg-red-600 text-white px-4 py-2 rounded-lg hover:bg-red-700 disabled:opacity-50"
           >
-            {submitting ? 'در حال ذخیره...' : 'ذخیره قیمت‌ها'}
+            {submitting ? "در حال ذخیره..." : "ذخیره قیمت‌ها"}
           </button>
         </form>
       </Card>
     </div>
-  )
+  );
 }

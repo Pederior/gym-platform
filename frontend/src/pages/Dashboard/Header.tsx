@@ -46,6 +46,9 @@ const PAGE_TITLES: Record<string, string> = {
   "/dashboard/admin/subscriptions": "وضعیت اشتراک‌ها",
   "/dashboard/admin/invoices": "صورت‌حساب‌ها",
   "/dashboard/admin/payments": "پرداخت‌ها",
+  "/dashboard/admin/tickets": "تیکتینگ",
+  "/dashboard/admin/tickets/:id": "تیکتینگ",
+  "/dashboard/admin/products": "مدیریت کالا",
   "/dashboard/admin/reports": "گزارش‌های مالی",
   "/dashboard/admin/classes": "مدیریت کلاس‌ها",
   "/dashboard/admin/reservations": "رزرو تجهیزات",
@@ -71,7 +74,7 @@ const PAGE_TITLES: Record<string, string> = {
 };
 
 const Header = () => {
-  const [search, setSearch] = useState("");
+  // const [search, setSearch] = useState("");
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [isNotificationOpen, setIsNotificationOpen] = useState(false);
   const [notifications, setNotifications] = useState<Notification[]>([]);

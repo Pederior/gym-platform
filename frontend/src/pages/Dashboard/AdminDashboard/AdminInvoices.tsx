@@ -2,8 +2,10 @@ import { useState, useEffect } from 'react'
 import Card from '../../../components/ui/Card'
 import { financialService, type Invoice } from '../../../services/financialService'
 import { toast } from 'react-hot-toast'
+import useDocumentTitle from '../../../hooks/useDocumentTitle'
 
 export default function AdminInvoices() {
+  useDocumentTitle('صورت‌حساب‌ها')
   const [invoices, setInvoices] = useState<Invoice[]>([])
   const [loading, setLoading] = useState(true)
 

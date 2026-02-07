@@ -1,0 +1,296 @@
+import { useState, useEffect } from 'react';
+import { useParams, useNavigate } from 'react-router-dom';
+import { toast } from 'react-hot-toast';
+import api from '../../../services/api';
+import Card from '../../../components/ui/Card';
+import useDocumentTitle from '../../../hooks/useDocumentTitle';
+
+interface TicketMessage {
+  _id: string;
+  sender: {
+    _id: string;
+    name: string;
+    email: string;
+    role: 'user' | 'admin' | 'coach';
+  };
+  message: string;
+  timestamp: string;
+}
+
+interface Ticket {
+  _id: string;
+  title: string;
+  description: string;
+  status: 'open' | 'in_progress' | 'resolved' | 'closed';
+  priority: 'low' | 'medium' | 'high' | 'urgent';
+  category: 'technical' | 'financial' | 'subscription' | 'other';
+  messages: TicketMessage[];
+  createdAt: string;
+}
+
+export default function UserTicketDetail() {
+  const { id } = useParams<{ id: string }>();
+  const navigate = useNavigate();
+  const [ticket, setTicket] = useState<Ticket | null>(null);
+  const [newMessage, setNewMessage] = useState('');
+  const [loading, setLoading] = useState(true);
+  const [submitting, setSubmitting] = useState(false);
+
+  useEffect(() => {
+    if (id) {
+      fetchTicket(id);
+    }
+  }, [id]);
+  
+  const fetchTicket = async (ticketId: string) => {
+    try {
+      const res = await api.get(`/tickets/${ticketId}`);
+      setTicket(res.data.ticket);
+    } catch (err: any) {
+      toast.error(err.response?.data?.message || 'خطا در بارگذاری تیکت');
+      navigate('/dashboard/user/tickets');
+    } finally {
+      setLoading(false);
+    }
+  };
+  
+  useDocumentTitle(`تیکت: ${ticket?.title}`);
+
+  const handleSendMessage = async (e: React.FormEvent) => {
+    e.preventDefault();
+    
+    if (!newMessage.trim()) {
+      toast.error('پیام نمی‌تواند خالی باشد');
+      return;
+    }
+    
+    setSubmitting(true);
+    try {
+      const res = await api.post(`/tickets/${id}/messages`, { message: newMessage.trim() });
+      setTicket(res.data.ticket);
+      setNewMessage('');
+      toast.success('پیام شما ارسال شد');
+    } catch (err: any) {
+      toast.error(err.response?.data?.message || 'خطا در ارسال پیام');
+    } finally {
+      setSubmitting(false);
+    }
+  };
+
+  const handleCloseTicket = async () => {
+    if (!confirm('آیا مطمئن هستید که می‌خواهید این تیکت را ببندید؟')) return;
+    
+    try {
+      await api.put(`/tickets/${id}/close`);
+      toast.success('تیکت با موفقیت بسته شد');
+      fetchTicket(id!);
+    } catch (err: any) {
+      toast.error(err.response?.data?.message || 'خطا در بستن تیکت');
+    }
+  };
+
+  const getCategoryLabel = (category: string) => {
+    const labels: Record<string, string> = {
+      technical: 'فنی',
+      financial: 'مالی',
+      subscription: 'اشتراک',
+      other: 'سایر'
+    };
+    return labels[category] || category;
+  };
+
+  const getPriorityBadge = (priority: string) => {
+    const config: Record<string, { label: string; color: string }> = {
+      low: { label: 'پایین', color: 'bg-green-100 text-green-800' },
+      medium: { label: 'متوسط', color: 'bg-yellow-100 text-yellow-800' },
+      high: { label: 'بالا', color: 'bg-orange-100 text-orange-800' },
+      urgent: { label: 'فوری', color: 'bg-red-100 text-red-800' }
+    };
+    const { label, color } = config[priority] || config.medium;
+    return <span className={`px-2 py-1 rounded-full text-xs ${color}`}>{label}</span>;
+  };
+
+  const getStatusBadge = (status: string) => {
+    const config: Record<string, { label: string; color: string }> = {
+      open: { label: 'باز', color: 'bg-blue-100 text-blue-800' },
+      in_progress: { label: 'در حال بررسی', color: 'bg-yellow-100 text-yellow-800' },
+      resolved: { label: 'حل شده', color: 'bg-green-100 text-green-800' },
+      closed: { label: 'بسته شده', color: 'bg-gray-100 text-gray-800' }
+    };
+    const { label, color } = config[status] || config.open;
+    return <span className={`px-2 py-1 rounded-full text-xs ${color}`}>{label}</span>;
+  };
+
+  if (loading) {
+    return (
+      <div className="flex justify-center items-center h-64">
+        <div className="animate-spin rounded-full h-10 w-10 border-b-2 border-red-600"></div>
+      </div>
+    );
+  }
+
+  if (!ticket) {
+    return (
+      <Card>
+        <div className="text-center py-8">
+          <div className="text-4xl mb-4">❌</div>
+          <h3 className="font-bold text-gray-800 mb-2">تیکت یافت نشد</h3>
+          <button
+            onClick={() => navigate('/dashboard/user/tickets')}
+            className="text-red-600 hover:text-red-800"
+          >
+            بازگشت به لیست تیکت‌ها
+          </button>
+        </div>
+      </Card>
+    );
+  }
+
+  return (
+    <div>
+      <div className="flex justify-between items-center mb-6">
+        <h1 className="text-2xl font-bold">جزئیات تیکت</h1>
+        <button
+          onClick={() => navigate('/dashboard/user/tickets')}
+          className="text-gray-600 hover:text-gray-800"
+        >
+          بازگشت
+        </button>
+      </div>
+
+      <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+        {/* Main Content */}
+        <div className="lg:col-span-2 space-y-6">
+          {/* Ticket Header */}
+          <Card>
+            <div className="flex justify-between items-start mb-4">
+              <div>
+                <h2 className="text-xl font-bold text-gray-800">{ticket.title}</h2>
+                <div className="flex gap-2 mt-2">
+                  {getStatusBadge(ticket.status)}
+                  {getPriorityBadge(ticket.priority)}
+                </div>
+              </div>
+              <div className="text-sm text-gray-500">
+                {new Date(ticket.createdAt).toLocaleDateString('fa-IR')}
+              </div>
+            </div>
+            
+            <div className="bg-gray-50 p-4 rounded-lg">
+              <h3 className="font-medium text-gray-700 mb-2">توضیحات اولیه:</h3>
+              <p className="text-gray-600 whitespace-pre-wrap">{ticket.description}</p>
+            </div>
+          </Card>
+
+          {/* Messages */}
+          <Card>
+            <h3 className="text-lg font-bold mb-4">گفتگو</h3>
+            <div className="space-y-4 max-h-96 overflow-y-auto">
+              {ticket.messages.map(message => (
+                <div 
+                  key={message._id} 
+                  className={`p-4 rounded-lg ${
+                    message.sender.role === 'user' 
+                      ? 'bg-blue-50 ml-8' 
+                      : 'bg-gray-50 mr-8'
+                  }`}
+                >
+                  <div className="flex justify-between items-center mb-2">
+                    <div className="font-medium text-gray-800">
+                      {message.sender.name}
+                      {message.sender.role === 'admin' && (
+                        <span className="text-xs bg-red-100 text-red-800 px-2 py-1 rounded-full mr-2">
+                          ادمین
+                        </span>
+                      )}
+                    </div>
+                    <div className="text-xs text-gray-500">
+                      {new Date(message.timestamp).toLocaleString('fa-IR')}
+                    </div>
+                  </div>
+                  <p className="text-gray-700 whitespace-pre-wrap">{message.message}</p>
+                </div>
+              ))}
+            </div>
+          </Card>
+
+          {/* Reply Form */}
+          {ticket.status !== 'closed' && (
+            <Card>
+              <h3 className="text-lg font-bold mb-4">پاسخ به تیکت</h3>
+              <form onSubmit={handleSendMessage} className="space-y-4">
+                <textarea
+                  value={newMessage}
+                  onChange={(e) => setNewMessage(e.target.value)}
+                  rows={4}
+                  className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-red-500 focus:border-red-500"
+                  placeholder="پیام خود را بنویسید..."
+                  disabled={submitting}
+                />
+                <div className="flex justify-end gap-3">
+                  <button
+                    type="submit"
+                    disabled={submitting || !newMessage.trim()}
+                    className="bg-red-600 text-white px-4 py-2 rounded-lg hover:bg-red-700 disabled:opacity-50"
+                  >
+                    {submitting ? 'در حال ارسال...' : 'ارسال پیام'}
+                  </button>
+                </div>
+              </form>
+            </Card>
+          )}
+        </div>
+
+        {/* Sidebar */}
+        <div className="space-y-6">
+          {/* Ticket Info */}
+          <Card>
+            <h3 className="text-lg font-bold mb-4">اطلاعات تیکت</h3>
+            <div className="space-y-3">
+              <div>
+                <span className="text-sm text-gray-500">وضعیت:</span>
+                <div className="mt-1">{getStatusBadge(ticket.status)}</div>
+              </div>
+              <div>
+                <span className="text-sm text-gray-500">اولویت:</span>
+                <div className="mt-1">{getPriorityBadge(ticket.priority)}</div>
+              </div>
+              <div>
+                <span className="text-sm text-gray-500">دسته‌بندی:</span>
+                <div className="mt-1 font-medium">{getCategoryLabel(ticket.category)}</div>
+              </div>
+              <div>
+                <span className="text-sm text-gray-500">تاریخ ایجاد:</span>
+                <div className="mt-1">{new Date(ticket.createdAt).toLocaleDateString('fa-IR')}</div>
+              </div>
+            </div>
+          </Card>
+
+          {/* Actions */}
+          {ticket.status !== 'closed' && (
+            <Card>
+              <h3 className="text-lg font-bold mb-4">عملیات</h3>
+              <button
+                onClick={handleCloseTicket}
+                className="w-full bg-gray-200 text-gray-800 px-4 py-2 rounded-lg hover:bg-gray-300"
+              >
+                بستن تیکت
+              </button>
+            </Card>
+          )}
+
+          {/* Status Guide */}
+          <Card>
+            <h3 className="text-lg font-bold mb-4">راهنما</h3>
+            <div className="text-sm text-gray-600 space-y-2">
+              <div>• <strong>باز:</strong> تیکت دریافت شده، منتظر پاسخ</div>
+              <div>• <strong>در حال بررسی:</strong> ادمین در حال پاسخگویی است</div>
+              <div>• <strong>حل شده:</strong> مشکل شما حل شده است</div>
+              <div>• <strong>بسته شده:</strong> تیکت بسته شده و قابل پاسخ نیست</div>
+            </div>
+          </Card>
+        </div>
+      </div>
+    </div>
+  );
+}

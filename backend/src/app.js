@@ -26,6 +26,10 @@ const dashboardRoutes = require('./routes/dashboard.routes');
 const dietPlanRoutes = require('./routes/dietPlan.routes');
 const trainingVideoRoutes = require('./routes/trainingVideo.routes');
 const userTrainingVideoRoutes = require('./routes/userTrainingVideo.routes');
+const subscriptionRoutes = require('./routes/subscription.routes');
+const userSubscriptionRoutes = require('./routes/userSubscription.routes');
+const ticketRoutes = require('./routes/ticket.routes');
+const adminTicketRoutes = require('./routes/adminTicket.routes');
 
 const app = express();
 
@@ -80,7 +84,10 @@ app.use('/api/dashboard', dashboardRoutes);
 app.use("/api/diet-plans", dietPlanRoutes);
 app.use("/api/coach/videos", trainingVideoRoutes);
 app.use("/api/user/videos", userTrainingVideoRoutes);
-
+app.use("/api/admin/subscriptions", subscriptionRoutes);
+app.use("/api/subscriptions", userSubscriptionRoutes); 
+app.use("/api/tickets", ticketRoutes);           // برای کاربران
+app.use("/api/admin/tickets", adminTicketRoutes);
 
 app.use("/api/financial", financialRoutes);
 app.use("/api/admin", adminRoutes);

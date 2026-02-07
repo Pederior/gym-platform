@@ -15,6 +15,7 @@ import ProfileEdit from "../pages/ProfileEdit";
 import AdminUsers from "../pages/Dashboard/AdminDashboard/AdminUsers";
 import AdminUsersCreate from "../pages/Dashboard/AdminDashboard/AdminUsersCreate";
 import AdminSubscriptions from "../pages/Dashboard/AdminDashboard/AdminSubscriptions";
+import AdminTickets from "../pages/Dashboard/AdminDashboard/AdminTickets";
 import AdminInvoices from "../pages/Dashboard/AdminDashboard/AdminInvoices";
 import AdminPayments from "../pages/Dashboard/AdminDashboard/AdminPayments";
 import AdminReports from "../pages/Dashboard/AdminDashboard/AdminReports";
@@ -22,7 +23,8 @@ import AdminClasses from "../pages/Dashboard/AdminDashboard/AdminClasses";
 import AdminReservations from "../pages/Dashboard/AdminDashboard/AdminReservations";
 import AdminClubSettings from "../pages/Dashboard/AdminDashboard/AdminClubSettings";
 import AdminProducts from "../pages/Dashboard/AdminDashboard/AdminProducts";
-import AdminPricingSettings from "../pages/Dashboard/AdminDashboard/AdminPricingSettings";
+import AdminSubscriptionPlans from "../pages/Dashboard/AdminDashboard/AdminSubscriptionPlans";
+// import AdminPricingSettings from "../pages/Dashboard/AdminDashboard/AdminPricingSettings";
 import AdminProductForm from "../pages/Dashboard/AdminDashboard/AdminProductForm";
 import AdminLogs from "../pages/Dashboard/AdminDashboard/AdminLogs";
 
@@ -69,6 +71,10 @@ import ClassList from "../pages/Classes/ClassList";
 
 import ProtectedRoute from "./ProtectedRoute";
 import OrderSuccess from "../pages/Store/OrderSuccess";
+import UserTickets from "../pages/Dashboard/UserDashboard/UserTickets";
+import UserTicketCreate from "../pages/Dashboard/UserDashboard/UserTicketCreate";
+import UserTicketDetail from "../pages/Dashboard/UserDashboard/UserTicketDetail";
+import AdminTicketDetail from "../pages/Dashboard/AdminDashboard/AdminTicketDetails";
 
 export const router = createBrowserRouter([
   // صفحات عمومی
@@ -114,6 +120,22 @@ export const router = createBrowserRouter([
         element: (
           <ProtectedRoute role="admin">
             <AdminSubscriptions />
+          </ProtectedRoute>
+        ),
+      },
+      {
+        path: "admin/tickets",
+        element: (
+          <ProtectedRoute role="admin">
+            <AdminTickets />
+          </ProtectedRoute>
+        ),
+      },
+      {
+        path: "admin/tickets/:id",
+        element: (
+          <ProtectedRoute role="admin">
+            <AdminTicketDetail />
           </ProtectedRoute>
         ),
       },
@@ -197,7 +219,7 @@ export const router = createBrowserRouter([
             path: "pricing",
             element: (
               <ProtectedRoute role="admin">
-                <AdminPricingSettings />
+                <AdminSubscriptionPlans />
               </ProtectedRoute>
             ),
           },
@@ -445,6 +467,30 @@ export const router = createBrowserRouter([
         element: (
           <ProtectedRoute>
             <UserChat />
+          </ProtectedRoute>
+        ),
+      },
+      {
+        path: "user/tickets",
+        element: (
+          <ProtectedRoute>
+            <UserTickets />
+          </ProtectedRoute>
+        ),
+      },
+      {
+        path: "user/tickets/create",
+        element: (
+          <ProtectedRoute>
+            <UserTicketCreate />
+          </ProtectedRoute>
+        ),
+      },
+      {
+        path: "user/tickets/:id",
+        element: (
+          <ProtectedRoute>
+            <UserTicketDetail />
           </ProtectedRoute>
         ),
       },

@@ -2,8 +2,10 @@ import { useState, useEffect } from 'react'
 import Card from '../../../components/ui/Card'
 import { financialService, type Payment } from '../../../services/financialService'
 import { toast } from 'react-hot-toast'
+import useDocumentTitle from '../../../hooks/useDocumentTitle'
 
 export default function AdminPayments() {
+  useDocumentTitle('پرداخت‌ها')
   const [payments, setPayments] = useState<Payment[]>([])
   const [loading, setLoading] = useState(true)
 
@@ -41,22 +43,22 @@ export default function AdminPayments() {
           <div className="overflow-x-auto">
             <table className="w-full">
               <thead>
-                <tr className="text-right text-sm text-gray-500 border-b">
-                  <th>کاربر</th>
-                  <th>مبلغ</th>
-                  <th>روش</th>
-                  <th>وضعیت</th>
-                  <th>تاریخ</th>
+                <tr className="text-right text-sm text-gray-500">
+                  <th className=' px-2'>کاربر</th>
+                  <th className=' px-2'>مبلغ</th>
+                  <th className=' px-2'>روش</th>
+                  <th className=' px-3'>وضعیت</th>
+                  <th className=' px-2'>تاریخ</th>
                 </tr>
               </thead>
               <tbody>
                 {payments.map(p => (
-                  <tr key={p._id} className="border-b">
-                    <td>{p.user.name}</td>
-                    <td>{p.amount.toLocaleString()} تومان</td>
-                    <td>{p.method}</td>
-                    <td>{getStatusBadge(p.status)}</td>
-                    <td>{new Date(p.createdAt).toLocaleDateString('fa-IR')}</td>
+                  <tr key={p._id} className="border-b py-2">
+                    <td className='py-3 px-2'>{p.user.name}</td>
+                    <td className='py-3 px-2'>{p.amount.toLocaleString()} تومان</td>
+                    <td className='py-3 px-2'>{p.method}</td>
+                    <td className='py-3 px-2'>{getStatusBadge(p.status)}</td>
+                    <td className='py-3 px-2'>{new Date(p.createdAt).toLocaleDateString('fa-IR')}</td>
                   </tr>
                 ))}
               </tbody>

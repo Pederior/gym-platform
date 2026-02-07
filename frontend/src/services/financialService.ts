@@ -38,22 +38,22 @@ export interface FinancialReport {
 // Service
 export const financialService = {
   async getSubscriptions() {
-    const res = await api.get<{ success: true; subscriptions: Subscription[] }>('/subscriptions')
+    const res = await api.get<{ success: true; subscriptions: Subscription[] }>('/financial/subscriptions')
     return res.data.subscriptions
   },
 
   async getInvoices() {
-    const res = await api.get<{ success: true; invoices: Invoice[] }>('/invoices')
+    const res = await api.get<{ success: true; invoices: Invoice[] }>('/financial/invoices')
     return res.data.invoices
   },
 
   async getPayments() {
-    const res = await api.get<{ success: true; payments: Payment[] }>('/payments')
+    const res = await api.get<{ success: true; payments: Payment[] }>('/financial/payments')
     return res.data.payments
   },
 
   async getFinancialReport() {
-    const res = await api.get<{ success: true; report: FinancialReport }>('/reports/financial')
+    const res = await api.get<{ success: true; report: FinancialReport }>('/financial/reports/financial')
     return res.data.report
   }
 }

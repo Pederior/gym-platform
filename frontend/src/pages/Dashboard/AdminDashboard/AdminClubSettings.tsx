@@ -1,57 +1,62 @@
-import { useState, useEffect } from 'react'
-import Card from '../../../components/ui/Card'
-import { toast } from 'react-hot-toast'
-import api from '../../../services/api'
+import { useState, useEffect } from "react";
+import Card from "../../../components/ui/Card";
+import { toast } from "react-hot-toast";
+import { adminService, type Settings } from "../../../services/adminService";
+import useDocumentTitle from '../../../hooks/useDocumentTitle';
 
-interface Settings {
-  clubName: string
-  address: string
-  phone: string
-  email: string
-}
 export default function AdminSettings() {
+  useDocumentTitle('تنظیمات کلاب');
   const [settings, setSettings] = useState<Settings>({
-    clubName: '',
-    address: '',
-    phone: '',
-    email: ''
-  })
-  const [loading, setLoading] = useState(true)
-  const [submitting, setSubmitting] = useState(false)
+    clubName: "",
+    address: "",
+    phone: "",
+    email: "",
+  });
+  const [loading, setLoading] = useState(true);
+  const [submitting, setSubmitting] = useState(false);
 
   useEffect(() => {
-    const fetchSettings = async () => {
-      try {
-        const res = await api.get('/settings')
-        setSettings(res.data.settings)
-      } catch (err: any) {
-        toast.error(err.response?.data?.message || 'خطا در بارگذاری تنظیمات')
-      } finally {
-        setLoading(false)
-      }
+  const fetchSettings = async () => {
+    try {
+      const data = await adminService.getSettings();
+      // ✅ data یک object هست، نه آرایه
+      setSettings(data);
+    } catch (err: any) {
+      console.error('Fetch settings error:', err);
+      toast.error(err.response?.data?.message || 'خطا در بارگذاری تنظیمات');
+      
+      setSettings({
+        clubName: '',
+        address: '',
+        phone: '',
+        email: ''
+      });
+    } finally {
+      setLoading(false);
     }
-    fetchSettings()
-  }, [])
+  };
+  fetchSettings();
+}, []);
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setSettings({ ...settings, [e.target.name]: e.target.value })
-  }
+    setSettings({ ...settings, [e.target.name]: e.target.value });
+  };
 
   const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault()
-    setSubmitting(true)
+    e.preventDefault();
+    setSubmitting(true);
     try {
-      await api.put('/settings', settings)
-      toast.success('تنظیمات با موفقیت ذخیره شد')
+      await adminService.updateSettings(settings);
+      toast.success("تنظیمات با موفقیت ذخیره شد");
     } catch (err: any) {
-      toast.error(err.response?.data?.message || 'خطا در ذخیره تنظیمات')
+      toast.error(err.response?.data?.message || "خطا در ذخیره تنظیمات");
     } finally {
-      setSubmitting(false)
+      setSubmitting(false);
     }
-  }
+  };
 
   if (loading) {
-    return <div className="p-8">در حال بارگذاری...</div>
+    return <div className="p-8">در حال بارگذاری...</div>;
   }
 
   return (
@@ -61,7 +66,9 @@ export default function AdminSettings() {
       <Card>
         <form onSubmit={handleSubmit} className="space-y-6">
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">نام باشگاه</label>
+            <label className="block text-sm font-medium text-gray-700 mb-1">
+              نام باشگاه
+            </label>
             <input
               type="text"
               name="clubName"
@@ -73,7 +80,9 @@ export default function AdminSettings() {
           </div>
 
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">آدرس</label>
+            <label className="block text-sm font-medium text-gray-700 mb-1">
+              آدرس
+            </label>
             <input
               type="text"
               name="address"
@@ -84,7 +93,9 @@ export default function AdminSettings() {
           </div>
 
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">تلفن</label>
+            <label className="block text-sm font-medium text-gray-700 mb-1">
+              تلفن
+            </label>
             <input
               type="text"
               name="phone"
@@ -95,7 +106,9 @@ export default function AdminSettings() {
           </div>
 
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">ایمیل</label>
+            <label className="block text-sm font-medium text-gray-700 mb-1">
+              ایمیل
+            </label>
             <input
               type="email"
               name="email"
@@ -110,10 +123,10 @@ export default function AdminSettings() {
             disabled={submitting}
             className="bg-red-600 text-white px-4 py-2 rounded-lg hover:bg-red-700 disabled:opacity-50"
           >
-            {submitting ? 'در حال ذخیره...' : 'ذخیره تنظیمات'}
+            {submitting ? "در حال ذخیره..." : "ذخیره تنظیمات"}
           </button>
         </form>
       </Card>
     </div>
-  )
+  );
 }

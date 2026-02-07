@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react'
 import Card from '../../../components/ui/Card'
 import { toast } from 'react-hot-toast'
 import api from '../../../services/api'
+import useDocumentTitle from '../../../hooks/useDocumentTitle';
 
 interface Class {
   _id: string
@@ -19,6 +20,7 @@ interface Coach {
 }
 
 export default function AdminClasses() {
+  useDocumentTitle('کلاس‌ها');
   const [classes, setClasses] = useState<Class[]>([])
   const [coaches, setCoaches] = useState<Coach[]>([])
   const [loading, setLoading] = useState(true)

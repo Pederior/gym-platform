@@ -2,8 +2,10 @@ import { useState, useEffect } from 'react'
 import Card from '../../../components/ui/Card'
 import { financialService, type FinancialReport } from '../../../services/financialService'
 import { toast } from 'react-hot-toast'
+import useDocumentTitle from '../../../hooks/useDocumentTitle'
 
 export default function AdminReports() {
+  useDocumentTitle('گزارش‌های مالی')
   const [report, setReport] = useState<FinancialReport | null>(null)
   const [loading, setLoading] = useState(true)
 

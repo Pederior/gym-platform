@@ -6,6 +6,7 @@ const {
   getAllUsers,
   createUser,
   updateUser,
+  updateUserPassword,
   deleteUser,
   getUserWorkouts,
   getUserClasses,
@@ -35,6 +36,7 @@ router.put('/profile', protect, updateProfile)
 router.get('/', protect, authorize('admin'), getAllUsers)
 router.post('/', protect, authorize('admin'), createUser)
 router.put('/:id', protect, authorize('admin'), updateUser)
+router.put('/:id/password', protect, authorize('admin'), updateUserPassword)
 router.delete('/:id', protect, authorize('admin'), deleteUser)
 
 // User dashboard routes
@@ -117,6 +119,5 @@ router.get('/workouts/:workoutId', protect, getWorkoutDetail)
 
 // GET /api/user/diet-plans/current
 router.get('/diet-plans/current', protect, getDietPlans);
-
 
 module.exports = router

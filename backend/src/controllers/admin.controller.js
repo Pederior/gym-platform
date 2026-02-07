@@ -33,7 +33,7 @@ const getSettings = async (req, res) => {
       // ایجاد تنظیمات پیش‌فرض اگر وجود نداشت
       settings = await ClubSettings.create({});
     }
-    res.status(200).json({ success: true, settings });
+    res.status(200).json({ success: true, data: settings });
   } catch (err) {
     res.status(500).json({ success: false, message: err.message });
   }
@@ -45,7 +45,7 @@ const updateSettings = async (req, res) => {
       new: true,
       upsert: true,
     });
-    res.status(200).json({ success: true, settings });
+    res.status(200).json({ success: true, data: settings });
   } catch (err) {
     res.status(500).json({ success: false, message: err.message });
   }

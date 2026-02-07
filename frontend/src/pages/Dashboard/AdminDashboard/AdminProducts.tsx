@@ -5,8 +5,10 @@ import { productService } from "../../../services/productService";
 import { FaPlus, FaEdit, FaTrash, FaSearch } from "react-icons/fa";
 import { HiStatusOnline, HiStatusOffline } from "react-icons/hi";
 import { toast } from "react-hot-toast";
+import useDocumentTitle from '../../../hooks/useDocumentTitle'
 
 export default function AdminProducts() {
+  useDocumentTitle('مدیریت کالا')
   const [products, setProducts] = useState<Product[]>([]);
   const [loading, setLoading] = useState(true);
   const [searchTerm, setSearchTerm] = useState("");

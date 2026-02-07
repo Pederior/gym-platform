@@ -5,8 +5,9 @@ const UserProgress = require("../models/UserProgress");
 const UserWorkout = require("../models/UserWorkout");
 const Subscription = require("../models/Subscription");
 const Payment = require("../models/Payment");
-const UserDietPlan = require('../models/UserDietPlan');
-const DietPlan = require('../models/DietPlan');
+const UserDietPlan = require("../models/UserDietPlan");
+const DietPlan = require("../models/DietPlan");
+const bcrypt = require('bcrypt');
 
 // --- Profile ---
 const getProfile = async (req, res) => {
@@ -75,6 +76,31 @@ const updateUser = async (req, res) => {
     res.status(200).json({ success: true, user });
   } catch (err) {
     res.status(500).json({ success: false, message: err.message });
+  }
+};
+
+const updateUserPassword = async (req, res) => {
+  try {
+    const { id } = req.params;
+    const { password } = req.body;
+
+    const user = await User.findById(id);
+    if (!user) {
+      return res.status(404).json({ success: false, message: "کاربر یافت نشد" });
+    }
+
+    if (user.role === "admin") {
+      return res.status(403).json({ success: false, message: "تغییر رمز عبور مدیران مجاز نیست" });
+    }
+
+    // ✅ روش صحیح: مستقیم update بدون فراخوانی middleware
+    const hashedPassword = await bcrypt.hash(password, 12);
+    await User.findByIdAndUpdate(id, { password: hashedPassword });
+
+    res.json({ success: true, message: "رمز عبور با موفقیت تغییر کرد" });
+  } catch (err) {
+    console.error("Update password error:", err);
+    res.status(500).json({ success: false, message: "خطا در تغییر رمز عبور" });
   }
 };
 
@@ -411,32 +437,35 @@ const getDietPlans = async (req, res) => {
   try {
     const userDietPlans = await UserDietPlan.find({
       user: req.user._id,
-      status: 'active'
+      status: "active",
     })
-    .populate('dietPlan', 'title description duration diets')
-    .sort({ createdAt: -1 });
+      .populate("dietPlan", "title description duration diets")
+      .sort({ createdAt: -1 });
 
-    const currentDietPlans = userDietPlans.map(ump => ({
+    const currentDietPlans = userDietPlans.map((ump) => ({
       _id: ump.dietPlan._id.toString(),
       title: ump.dietPlan.title,
       description: ump.dietPlan.description,
       duration: ump.dietPlan.duration,
       diets: ump.dietPlan.diets,
       completedDays: ump.progress.completedDays,
-      totalDays: ump.progress.totalDays
+      totalDays: ump.progress.totalDays,
     }));
 
     res.json({ success: true, data: currentDietPlans });
   } catch (err) {
-    res.status(500).json({ success: false, message: 'خطا در بارگذاری برنامه‌های غذایی' });
+    res
+      .status(500)
+      .json({ success: false, message: "خطا در بارگذاری برنامه‌های غذایی" });
   }
-}
+};
 
 module.exports = {
   getProfile,
   updateProfile,
   getAllUsers,
   createUser,
+  updateUserPassword,
   updateUser,
   deleteUser,
   getUserWorkouts,

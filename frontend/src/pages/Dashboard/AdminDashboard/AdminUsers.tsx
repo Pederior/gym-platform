@@ -3,18 +3,30 @@ import { useEffect, useState } from "react";
 import { toast } from "react-hot-toast";
 import type { User, UserRole } from "../../../types";
 import Card from "../../../components/ui/Card";
+import useDocumentTitle from '../../../hooks/useDocumentTitle'
 
 export default function AdminUsers() {
+  useDocumentTitle('مدیریت کاربران')
   const [users, setUsers] = useState<User[]>([]);
   const [loading, setLoading] = useState(true);
   const [editUser, setEditUser] = useState<User | null>(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [isPasswordModalOpen, setIsPasswordModalOpen] = useState(false);
   const [formData, setFormData] = useState({
     name: '',
     email: '',
     role: 'user' as UserRole
   });
+  const [passwordData, setPasswordData] = useState({
+    password: '',
+    confirmPassword: ''
+  });
   const [submitting, setSubmitting] = useState(false);
+  const [passwordSubmitting, setPasswordSubmitting] = useState(false);
+  
+  // ✅ state برای نمایش/پنهان کردن رمز عبور
+  const [showPassword, setShowPassword] = useState(false);
+  const [showConfirmPassword, setShowConfirmPassword] = useState(false);
 
   const getRoleBadge = (role: UserRole) => {
     const roleConfig: Record<UserRole, { label: string; color: string }> = {
@@ -65,8 +77,27 @@ export default function AdminUsers() {
     setIsModalOpen(true);
   };
 
+  const openPasswordModal = (user: User) => {
+    if (user.role === 'admin') {
+      toast.error('تغییر رمز عبور مدیران مجاز نیست');
+      return;
+    }
+    setEditUser(user);
+    setPasswordData({ password: '', confirmPassword: '' });
+    setIsPasswordModalOpen(true);
+    
+    // ✅ ریست کردن وضعیت نمایش رمز عبور
+    setShowPassword(false);
+    setShowConfirmPassword(false);
+  };
+
   const closeModal = () => {
     setIsModalOpen(false);
+    setEditUser(null);
+  };
+
+  const closePasswordModal = () => {
+    setIsPasswordModalOpen(false);
     setEditUser(null);
   };
 
@@ -78,6 +109,11 @@ export default function AdminUsers() {
     }));
   };
 
+  const handlePasswordChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const { name, value } = e.target;
+    setPasswordData(prev => ({ ...prev, [name]: value }));
+  };
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!editUser) return;
@@ -85,7 +121,6 @@ export default function AdminUsers() {
     setSubmitting(true);
     try {
       const updatedUser = await userService.updateUser(editUser._id, formData);
-      // آپدیت لیست کاربران
       setUsers(users.map(u => u._id === editUser._id ? updatedUser : u));
       toast.success("اطلاعات کاربر با موفقیت به‌روز شد");
       closeModal();
@@ -96,11 +131,36 @@ export default function AdminUsers() {
     }
   };
 
+  const handlePasswordSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!editUser) return;
+
+    if (passwordData.password.length < 6) {
+      toast.error('رمز عبور باید حداقل 6 کاراکتر باشد');
+      return;
+    }
+
+    if (passwordData.password !== passwordData.confirmPassword) {
+      toast.error('رمز عبور و تکرار آن یکسان نیستند');
+      return;
+    }
+
+    setPasswordSubmitting(true);
+    try {
+      await userService.updateUserPassword(editUser._id, { password: passwordData.password });
+      toast.success("رمز عبور کاربر با موفقیت تغییر کرد");
+      closePasswordModal();
+    } catch (err: any) {
+      toast.error(err.response?.data?.message || "خطا در تغییر رمز عبور");
+    } finally {
+      setPasswordSubmitting(false);
+    }
+  };
+
   return (
     <div>
       <div className="flex justify-between items-center mb-6">
         <h1 className="text-2xl font-bold text-gray-800">مدیریت کاربران</h1>
-        {/* دکمه ایجاد کاربر — می‌تونی بعداً اضافه کنی */}
       </div>
 
       <Card>
@@ -130,13 +190,19 @@ export default function AdminUsers() {
                     <td className="py-3">
                       <button
                         onClick={() => openEditModal(user)}
-                        className="text-blue-600 hover:text-blue-800 ml-3"
+                        className="text-blue-600 hover:text-blue-800 ml-3 cursor-pointer"
                       >
                         ویرایش
                       </button>
                       <button
+                        onClick={() => openPasswordModal(user)}
+                        className="text-purple-600 hover:text-purple-800 ml-3 cursor-pointer"
+                      >
+                        رمز عبور
+                      </button>
+                      <button
                         onClick={() => handleDelete(user._id)}
-                        className="text-red-600 hover:text-red-800"
+                        className="text-red-600 hover:text-red-800 cursor-pointer"
                       >
                         حذف
                       </button>
@@ -149,7 +215,7 @@ export default function AdminUsers() {
         )}
       </Card>
 
-      {/* Modal ویرایش */}
+      {/* Modal ویرایش اطلاعات */}
       {isModalOpen && (
         <div className="fixed inset-0 bg-black/50 bg-opacity-50 flex items-center justify-center z-50 p-4">
           <div className="bg-white rounded-lg w-full max-w-md">
@@ -203,6 +269,80 @@ export default function AdminUsers() {
                 <button
                   type="button"
                   onClick={closeModal}
+                  className="bg-gray-200 text-gray-800 px-4 py-2 rounded-lg hover:bg-gray-300"
+                >
+                  انصراف
+                </button>
+              </div>
+            </form>
+          </div>
+        </div>
+      )}
+
+      {/* Modal تغییر رمز عبور */}
+      {isPasswordModalOpen && editUser && (
+        <div className="fixed inset-0 bg-black/50 bg-opacity-50 flex items-center justify-center z-50 p-4">
+          <div className="bg-white rounded-lg w-full max-w-md">
+            <div className="p-4 border-b">
+              <h2 className="text-lg font-bold">تغییر رمز عبور</h2>
+              <p className="text-sm text-gray-600 mt-1">
+                کاربر: <strong>{editUser.name}</strong>
+              </p>
+            </div>
+            <form onSubmit={handlePasswordSubmit} className="p-4 space-y-4">
+              <div className="relative">
+                <label className="block text-sm font-medium text-gray-700 mb-1">رمز عبور جدید</label>
+                <input
+                  type={showPassword ? "text" : "password"} // ✅ تغییر نوع input
+                  name="password"
+                  value={passwordData.password}
+                  onChange={handlePasswordChange}
+                  className="w-full px-3 py-2 border rounded-lg focus:ring-2 focus:ring-purple-500 focus:outline-none pl-10"
+                  placeholder="حداقل 6 کاراکتر"
+                  required
+                />
+                {/* ✅ دکمه چشم */}
+                <button
+                  type="button"
+                  onClick={() => setShowPassword(!showPassword)}
+                  className="absolute left-3 top-8 text-gray-500 hover:text-gray-700"
+                >
+                  {showPassword ? '👁️' : '🙈'}
+                </button>
+              </div>
+              
+              <div className="relative">
+                <label className="block text-sm font-medium text-gray-700 mb-1">تکرار رمز عبور</label>
+                <input
+                  type={showConfirmPassword ? "text" : "password"} // ✅ تغییر نوع input
+                  name="confirmPassword"
+                  value={passwordData.confirmPassword}
+                  onChange={handlePasswordChange}
+                  className="w-full px-3 py-2 border rounded-lg focus:ring-2 focus:ring-purple-500 focus:outline-none pl-10"
+                  placeholder="تکرار رمز عبور"
+                  required
+                />
+                {/* ✅ دکمه چشم */}
+                <button
+                  type="button"
+                  onClick={() => setShowConfirmPassword(!showConfirmPassword)}
+                  className="absolute left-3 top-8 text-gray-500 hover:text-gray-700"
+                >
+                  {showConfirmPassword ? '👁️' : '🙈'}
+                </button>
+              </div>
+              
+              <div className="flex gap-3 pt-2">
+                <button
+                  type="submit"
+                  disabled={passwordSubmitting}
+                  className="bg-purple-600 text-white px-4 py-2 rounded-lg hover:bg-purple-700 disabled:opacity-50"
+                >
+                  {passwordSubmitting ? 'در حال تغییر...' : 'تغییر رمز عبور'}
+                </button>
+                <button
+                  type="button"
+                  onClick={closePasswordModal}
                   className="bg-gray-200 text-gray-800 px-4 py-2 rounded-lg hover:bg-gray-300"
                 >
                   انصراف

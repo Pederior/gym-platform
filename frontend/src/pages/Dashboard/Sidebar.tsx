@@ -11,6 +11,7 @@ import {
   MdManageAccounts,
   MdSettingsInputComponent,
   MdStore,
+  MdOutlineOndemandVideo 
 } from "react-icons/md";
 import {
   FaChartLine,
@@ -19,7 +20,7 @@ import {
   FaMoneyBillTransfer,
 } from "react-icons/fa6";
 import { AiFillDollarCircle, AiOutlineDollar } from "react-icons/ai";
-import { IoChatboxEllipses, IoPeopleSharp, IoFastFood  } from "react-icons/io5";
+import { IoChatboxEllipses, IoPeopleSharp, IoFastFood, IoTicketSharp   } from "react-icons/io5";
 import { FaClipboardList, FaChartBar } from "react-icons/fa";
 import { TbReportSearch } from "react-icons/tb";
 import { FaCalendarPlus } from "react-icons/fa";
@@ -88,6 +89,11 @@ const Sidebar = ({ isCollapsed, onToggle }: SidebarProps) => {
               label: "وضعیت اشتراک‌ها",
               icon: <FaChartBar />,
               to: "/dashboard/admin/subscriptions",
+            },
+            {
+              label: "تیکتینگ",
+              icon: <IoTicketSharp />,
+              to: "/dashboard/admin/tickets",
             },
           ],
         },
@@ -189,7 +195,7 @@ const Sidebar = ({ isCollapsed, onToggle }: SidebarProps) => {
         },
         {
           title: "ویدیوهای آموزشی ",
-          icon: <IoFastFood />,
+          icon: <MdOutlineOndemandVideo  />,
           to: "/dashboard/coach/videos",
         },
         {
@@ -228,7 +234,7 @@ const Sidebar = ({ isCollapsed, onToggle }: SidebarProps) => {
         },
         {
           title: "ویدیو های آموزشی",
-          icon: <IoFastFood  />,
+          icon: <MdOutlineOndemandVideo   />,
           to: "/dashboard/user/videos",
         },
         {
@@ -245,6 +251,11 @@ const Sidebar = ({ isCollapsed, onToggle }: SidebarProps) => {
           title: "چت با مربی",
           icon: <IoChatboxEllipses />,
           to: "/dashboard/user/chat",
+        },
+        {
+          title: "تیکتینگ",
+          icon: <IoTicketSharp />,
+          to: "/dashboard/user/tickets",
         },
         {
           title: "اشتراک و پرداخت",

@@ -6,8 +6,10 @@ import Input from "../../../components/ui/Input";
 import Button from "../../../components/ui/Button";
 import { userService } from "../../../services/userService";
 import { toast } from "react-hot-toast";
+import useDocumentTitle from '../../../hooks/useDocumentTitle'
 
 export default function AdminUsersCreate() {
+  useDocumentTitle('ایجاد کاربر جدید')
   const [formData, setFormData] = useState({
     name: "",
     email: "",

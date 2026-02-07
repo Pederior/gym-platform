@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react'
 import Card from '../../../components/ui/Card'
 import { toast } from 'react-hot-toast'
 import api from '../../../services/api'
+import useDocumentTitle from '../../../hooks/useDocumentTitle'
 
 interface Log {
   _id: string
@@ -22,6 +23,7 @@ const actionLabels: Record<string, string> = {
 }
 
 export default function AdminLogs() {
+  useDocumentTitle('لاگ‌ها و امنیت')
   const [logs, setLogs] = useState<Log[]>([])
   const [loading, setLoading] = useState(true)
 

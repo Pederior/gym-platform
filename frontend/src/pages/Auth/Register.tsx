@@ -1,4 +1,3 @@
-// src/pages/Auth/Register.tsx
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useAppDispatch, useAppSelector } from "../../store/hook";
@@ -15,6 +14,9 @@ export default function Register() {
   const { loading, error } = useAppSelector((state) => state.auth);
   const dispatch = useAppDispatch();
   const navigate = useNavigate();
+  
+  // ✅ state برای نمایش/پنهان کردن رمز عبور
+  const [showPassword, setShowPassword] = useState(false);
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
@@ -88,19 +90,27 @@ export default function Register() {
             />
           </div>
 
-          <div>
+          {/* ✅ فیلد رمز عبور با دکمه چشم */}
+          <div className="relative">
             <label className="block text-sm font-medium text-white mb-1 text-right">
               رمز عبور
             </label>
             <input
-              type="password"
+              type={showPassword ? "text" : "password"}
               name="password"
               value={formData.password}
               onChange={handleChange}
-              className="w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-red-500 bg-white"
+              className="w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-red-500 bg-white pr-10"
               minLength={6}
               required
             />
+            <button
+              type="button"
+              onClick={() => setShowPassword(!showPassword)}
+              className="absolute right-3 top-8 text-gray-500 hover:text-gray-700"
+            >
+              {showPassword ? '🙈' : '👁️'}
+            </button>
           </div>
 
           <Button type="submit" className="w-full mt-2" disabled={loading}>
