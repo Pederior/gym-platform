@@ -4,6 +4,7 @@ import Card from '../../../components/ui/Card'
 import { userService } from '../../../services/userService'
 import { toast } from 'react-hot-toast'
 import { FaDumbbell, FaCheckCircle, FaPlay, FaHistory, FaCalendarCheck, FaShoppingCart } from 'react-icons/fa'
+import useDocumentTitle from '../../../hooks/useDocumentTitle';
 
 interface Workout {
   _id: string
@@ -23,6 +24,8 @@ interface Progress {
 }
 
 export default function UserWorkouts() {
+    useDocumentTitle('برنامه تمرینات');
+  
   const [workouts, setWorkouts] = useState<Workout[]>([])
   const [progresses, setProgresses] = useState<Progress[]>([])
   const [loading, setLoading] = useState(true)
@@ -79,7 +82,7 @@ export default function UserWorkouts() {
   }
 
   return (
-    <div className="min-h-screen bg-gray-50 py-8 px-4 sm:px-6 lg:px-8">
+    <div className="min-h-screen bg-gray-50 py-8 px-4 sm:px-6 lg:px-8 space-y-8">
       <div className="max-w-7xl mx-auto">
         <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center mb-8">
           <div>
@@ -272,6 +275,37 @@ export default function UserWorkouts() {
             })}
           </div>
         )}
+        
+      </div>
+      <div className="bg-white p-6 rounded-xl shadow">
+        <h3 className="font-bold text-gray-800 mb-3">اقدامات سریع</h3>
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+          <button
+            onClick={() => navigate('/dashboard/user/progress')}
+            className="flex items-center gap-3 p-4 border border-gray-200 rounded-lg hover:border-red-300 transition-colors"
+          >
+            <div className="w-10 h-10 bg-red-100 rounded-full flex items-center justify-center">
+              📊
+            </div>
+            <div className="text-right">
+              <div className="font-medium text-gray-800">پیگیری پیشرفت</div>
+              <div className="text-sm text-gray-600">مشاهده وضعیت تمارین</div>
+            </div>
+          </button>
+          
+          <button
+            onClick={() => navigate('/dashboard/user/chat')}
+            className="flex items-center gap-3 p-4 border border-gray-200 rounded-lg hover:border-red-300 transition-colors"
+          >
+            <div className="w-10 h-10 bg-red-100 rounded-full flex items-center justify-center">
+              💬
+            </div>
+            <div className="text-right">
+              <div className="font-medium text-gray-800">تماس با مربی</div>
+              <div className="text-sm text-gray-600">درخواست تغییر برنامه غذایی</div>
+            </div>
+          </button>
+        </div>
       </div>
     </div>
   )

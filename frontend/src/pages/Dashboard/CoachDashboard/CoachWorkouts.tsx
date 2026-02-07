@@ -8,8 +8,11 @@ import {
   type WorkoutUser,
   getAllUsers
 } from "../../../services/coachService";
+import useDocumentTitle from '../../../hooks/useDocumentTitle';
+import api from "../../../services/api";
 
 export default function CoachWorkouts() {
+  useDocumentTitle('برنامه‌ تمرینی');
   const [workouts, setWorkouts] = useState<WorkoutPlan[]>([]);
   const [loading, setLoading] = useState(true);
   const [expandedWorkout, setExpandedWorkout] = useState<string | null>(null);
@@ -75,8 +78,11 @@ export default function CoachWorkouts() {
     setModalLoading(true);
     
     try {
-      const users = await getAllUsers();
-      setAllUsers(users);
+      const studentsRes = await api.get('/coach/students');
+      const studentsData = Array.isArray(studentsRes.data.data) 
+        ? studentsRes.data.data 
+        : [];
+      setAllUsers(studentsData);
       setIsModalOpen(true);
     } catch (err: any) {
       console.error('Error loading users:', err)

@@ -5,6 +5,8 @@ const UserProgress = require("../models/UserProgress");
 const UserWorkout = require("../models/UserWorkout");
 const Subscription = require("../models/Subscription");
 const Payment = require("../models/Payment");
+const UserDietPlan = require('../models/UserDietPlan');
+const DietPlan = require('../models/DietPlan');
 
 // --- Profile ---
 const getProfile = async (req, res) => {
@@ -405,6 +407,31 @@ const createSubscription = async (req, res) => {
   }
 };
 
+const getDietPlans = async (req, res) => {
+  try {
+    const userDietPlans = await UserDietPlan.find({
+      user: req.user._id,
+      status: 'active'
+    })
+    .populate('dietPlan', 'title description duration diets')
+    .sort({ createdAt: -1 });
+
+    const currentDietPlans = userDietPlans.map(ump => ({
+      _id: ump.dietPlan._id.toString(),
+      title: ump.dietPlan.title,
+      description: ump.dietPlan.description,
+      duration: ump.dietPlan.duration,
+      diets: ump.dietPlan.diets,
+      completedDays: ump.progress.completedDays,
+      totalDays: ump.progress.totalDays
+    }));
+
+    res.json({ success: true, data: currentDietPlans });
+  } catch (err) {
+    res.status(500).json({ success: false, message: 'خطا در بارگذاری برنامه‌های غذایی' });
+  }
+}
+
 module.exports = {
   getProfile,
   updateProfile,
@@ -420,4 +447,5 @@ module.exports = {
   submitWorkoutProgress,
   getWorkoutDetail,
   createSubscription,
+  getDietPlans,
 };

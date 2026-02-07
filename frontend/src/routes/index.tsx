@@ -36,6 +36,13 @@ import CoachClasses from "../pages/Dashboard/CoachDashboard/CoachClasses";
 import CoachClassesCreate from "../pages/Dashboard/CoachDashboard/CoachClassesCreate";
 import CoachClassesEdit from "../pages/Dashboard/CoachDashboard/CoachClassesEdit";
 import CoachChat from "../pages/Dashboard/CoachDashboard/CoachChat";
+import CoachStudents from "../pages/Dashboard/CoachDashboard/CoachStudents";
+import CoachDietPlans from "../pages/Dashboard/CoachDashboard/CoachDietPlans";
+import CoachDietPlansCreate from "../pages/Dashboard/CoachDashboard/CoachDietplansCreate";
+import CoachDietPlansEdit from "../pages/Dashboard/CoachDashboard/CoachDietPlansEdit";
+import CoachTrainingVideos from "../pages/Dashboard/CoachDashboard/CoachTrainingVideos";
+import CoachTrainingVideoCreate from "../pages/Dashboard/CoachDashboard/CoachTrainingVideoCreate";
+import CoachTrainingVideoEdit from "../pages/Dashboard/CoachDashboard/CoachTrainingVideoEdit";
 
 // صفحات کاربر
 import UserChat from "../pages/Dashboard/UserDashboard/UserChat";
@@ -46,6 +53,9 @@ import UserPayments from "../pages/Dashboard/UserDashboard/UserPayments";
 import UserWorkouts from "../pages/Dashboard/UserDashboard/UserWorkouts";
 import UserSubscriptions from "../pages/Dashboard/UserDashboard/UserSubscriptions";
 import UserWorkoutSession from "../pages/Dashboard/UserDashboard/UserWorkoutSession";
+import UserDietPlans from "../pages/Dashboard/UserDashboard/UserDietPlans";
+import UserTrainingVideos from "../pages/Dashboard/UserDashboard/UserTrainingVideos";
+import UserTrainingVideoPlayer from "../pages/Dashboard/UserDashboard/UserTrainingVideoPlayer";
 
 // صفحات عمومی
 import AboutUs from "../pages/AboutUs";
@@ -220,6 +230,14 @@ export const router = createBrowserRouter([
         ),
       },
       {
+        path: "coach/students",
+        element: (
+          <ProtectedRoute role="coach">
+            <CoachStudents />
+          </ProtectedRoute>
+        ),
+      },
+      {
         path: "coach/workouts/edit/:id",
         element: (
           <ProtectedRoute role="coach">
@@ -244,10 +262,58 @@ export const router = createBrowserRouter([
         ),
       },
       {
+        path: "coach/diet-plans",
+        element: (
+          <ProtectedRoute role="coach">
+            <CoachDietPlans />
+          </ProtectedRoute>
+        ),
+      },
+      {
+        path: "coach/diet-plans/create",
+        element: (
+          <ProtectedRoute role="coach">
+            <CoachDietPlansCreate />
+          </ProtectedRoute>
+        ),
+      },
+      {
+        path: "coach/diet-plans/edit/:id",
+        element: (
+          <ProtectedRoute role="coach">
+            <CoachDietPlansEdit />
+          </ProtectedRoute>
+        ),
+      },
+      {
         path: "coach/progress",
         element: (
           <ProtectedRoute role="coach">
             <CoachProgress />
+          </ProtectedRoute>
+        ),
+      },
+      {
+        path: "coach/videos",
+        element: (
+          <ProtectedRoute role="coach">
+            <CoachTrainingVideos />
+          </ProtectedRoute>
+        ),
+      },
+      {
+        path: "coach/videos/create",
+        element: (
+          <ProtectedRoute role="coach">
+            <CoachTrainingVideoCreate  />
+          </ProtectedRoute>
+        ),
+      },
+      {
+        path: "coach/videos/edit/:id",
+        element: (
+          <ProtectedRoute role="coach">
+            <CoachTrainingVideoEdit />
           </ProtectedRoute>
         ),
       },
@@ -310,10 +376,42 @@ export const router = createBrowserRouter([
         ),
       },
       {
+        path: "user/workouts/:workoutId/start",
+        element: (
+          <ProtectedRoute>
+            <UserWorkoutSession />
+          </ProtectedRoute>
+        ),
+      },
+      {
         path: "user/subscriptions",
         element: (
           <ProtectedRoute>
             <UserSubscriptions />
+          </ProtectedRoute>
+        ),
+      },
+      {
+        path: "user/diet-plans",
+        element: (
+          <ProtectedRoute>
+            <UserDietPlans />
+          </ProtectedRoute>
+        ),
+      },
+      {
+        path: "user/videos",
+        element: (
+          <ProtectedRoute>
+            <UserTrainingVideos />
+          </ProtectedRoute>
+        ),
+      },
+      {
+        path: "user/videos/:id",
+        element: (
+          <ProtectedRoute>
+            <UserTrainingVideoPlayer  />
           </ProtectedRoute>
         ),
       },
@@ -325,14 +423,7 @@ export const router = createBrowserRouter([
           </ProtectedRoute>
         ),
       },
-      {
-        path: "user/workouts/:workoutId/start",
-        element: (
-          <ProtectedRoute>
-            <UserWorkoutSession />
-          </ProtectedRoute>
-        ),
-      },
+      
       // {
       //   path: "user/progress",
       //   element: (

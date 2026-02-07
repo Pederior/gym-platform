@@ -6,6 +6,7 @@ import { useAppSelector } from "../../../store/hook";
 import { RiShoppingBag4Fill, RiShoppingCart2Line, RiCloseLine, RiDeleteBin6Line } from "react-icons/ri";
 import { FaArrowLeft, FaCheckCircle } from "react-icons/fa";
 import { toast } from "react-hot-toast";
+import useDocumentTitle from '../../../hooks/useDocumentTitle';
 
 interface Product {
   _id: string;
@@ -20,6 +21,8 @@ interface Product {
 }
 
 export default function UserStore() {
+    useDocumentTitle('فروشگاه شخصی');
+  
   const [products, setProducts] = useState<Product[]>([]);
   const [loading, setLoading] = useState(true);
   const [activeTab, setActiveTab] = useState<'recommended' | 'all' | 'bundles'>('recommended');

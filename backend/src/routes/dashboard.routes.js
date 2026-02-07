@@ -4,6 +4,7 @@ const User = require('../models/User');
 const Payment = require('../models/Payment');
 const Class = require('../models/Class');
 const Order = require('../models/Order');
+const WorkoutPlan = require('../models/WorkoutPlan');
 
 const router = express.Router();
 
@@ -83,13 +84,12 @@ router.get('/coach/summary', protect, async (req, res) => {
       activeClasses
     ] = await Promise.all([
       User.countDocuments({ coach: req.user.id }),
-      WorkoutPlan.countDocuments({ coach: req.user.id }),
+      WorkoutPlan.countDocuments({ createdBy: req.user.id }),
       Class.countDocuments({ 
         coach: req.user.id, 
         dateTime: { $gt: new Date() } 
       })
     ]);
-    
 
     res.json({
       success: true,
@@ -104,5 +104,36 @@ router.get('/coach/summary', protect, async (req, res) => {
     res.status(500).json({ success: false, message: 'خطای سرور' });
   }
 });
+
+// router.get('/user/summary', protect, async (req, res) => {
+//   try {
+//     if (req.user.role !== 'user') {
+//       return res.status(403).json({ success: false, message: 'دسترسی غیرمجاز' });
+//     }
+
+//     const [
+//       completedWorkouts,
+//       activeClasses
+//     ] = await Promise.all([
+//       UserWorkout.countDocuments({ user: req.user.id, status: 'completed' }),
+//       Class.countDocuments({ 
+//         dateTime: { $gt: new Date() }, 
+//         students: req.user.id 
+//       })
+//     ]);  
+
+//     res.json({
+//       success: true,
+//       data: {
+//         completedWorkouts,
+//         activeClasses
+//       }
+//     });
+//   } catch (err) {
+//     console.error('User dashboard error:', err);
+//     res.status(500).json({ success: false, message: 'خطای سرور' });
+//   }
+// });
+
 
 module.exports = router;

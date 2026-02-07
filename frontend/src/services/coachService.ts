@@ -83,5 +83,5 @@ export const getUserProgress = async () => {
 
 export const getAllUsers = async () => {
   const res = await api.get<{ success: true; users: WorkoutUser[] }>('/users?role=user')
-  return res.data.users
+  return res.data.users 
 }

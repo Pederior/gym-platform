@@ -1,11 +1,15 @@
 const UserWorkout = require('../models/UserWorkout')
+const WorkoutPlan = require('../models/WorkoutPlan') // ← اضافه کردن
 
 const createUserWorkout = async (req, res) => {
   try {
     const { userId, workoutId } = req.body
 
-    // ❌ حذف این بررسی (چون middleware انجامش داده)
-    // if (req.user.role !== 'coach') { ... }
+    // بررسی وجود برنامه تمرینی
+    const workout = await WorkoutPlan.findById(workoutId)
+    if (!workout) {
+      return res.status(404).json({ success: false, message: 'برنامه تمرینی یافت نشد' })
+    }
 
     const existing = await UserWorkout.findOne({ user: userId, workout: workoutId })
     if (existing) {
@@ -15,7 +19,10 @@ const createUserWorkout = async (req, res) => {
     const userWorkout = await UserWorkout.create({
       user: userId,
       workout: workoutId,
-      assignedBy: req.user._id
+      assignedBy: req.user._id,
+      progress: {
+        totalDays: workout.duration // ← اضافه کردن totalDays
+      }
     })
 
     res.status(201).json({ success: true, userWorkout })

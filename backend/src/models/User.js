@@ -39,8 +39,9 @@ const UserSchema = new mongoose.Schema(
     currentSubscription: {
       type: mongoose.Schema.ObjectId,
       ref: "Subscription",
+      default: null,
     },
-    workoutPlans: { type: mongoose.Schema.ObjectId, ref: "WorkoutPlan" },
+    // workoutPlans: [{ type: mongoose.Schema.ObjectId, ref: "WorkoutPlan" }],
     reservedClasses: { type: mongoose.Schema.ObjectId, ref: "Class" },
   },
   { timestamps: true },

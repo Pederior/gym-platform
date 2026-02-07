@@ -28,6 +28,7 @@ interface WorkoutDetail {
 }
 
 export default function UserWorkoutSession() {
+  
   const { workoutId } = useParams<{ workoutId: string }>();
   const [workout, setWorkout] = useState<WorkoutDetail | null>(null);
   const [currentExerciseIndex, setCurrentExerciseIndex] = useState(0);
@@ -35,6 +36,12 @@ export default function UserWorkoutSession() {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [loading, setLoading] = useState(true);
   const navigate = useNavigate();
+  
+  useEffect(() => {
+  if (workout?.title) {
+    document.title = `فینیکس کلاب | ${workout.title}`;
+  }
+}, [workout?.title]);
 
   useEffect(() => {
     const fetchWorkout = async () => {

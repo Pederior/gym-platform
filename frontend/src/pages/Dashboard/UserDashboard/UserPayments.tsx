@@ -3,8 +3,11 @@ import Card from '../../../components/ui/Card'
 import { toast } from 'react-hot-toast'
 import { FaShoppingCart, FaCreditCard, FaTag } from 'react-icons/fa'
 import { userService, type Payment } from "../../../services/userService"; // ✅ وارد کردن تایپ از سرویس
+import useDocumentTitle from '../../../hooks/useDocumentTitle';
 
 export default function UserPayments() {
+    useDocumentTitle('تاریخچه پرداخت‌ها');
+  
   const [payments, setPayments] = useState<Payment[]>([])
   const [loading, setLoading] = useState(true)
 

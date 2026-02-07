@@ -54,10 +54,13 @@ const PAGE_TITLES: Record<string, string> = {
   "/dashboard/admin/logs": "لاگ‌ها و امنیت",
   "/dashboard/coach/workouts": "برنامه‌های تمرینی",
   "/dashboard/coach/progress": "پیگیری پیشرفت",
+  "/dashboard/user/userstore": "فروشگاه شخصی",
   "/dashboard/coach/classes": "کلاس‌ها",
   "/dashboard/coach/chat": "چت با کاربران",
   "/dashboard/user/workouts": "برنامه تمرینی",
   "/dashboard/user/subscriptions": "خرید اشتراک",
+  "/dashboard/user/diet-plans": "برنامه غذایی",
+  "/dashboard/user/videos": "ویدیوهای آموزشی",
   "/dashboard/user/classes": "کلاس‌ها",
   "/dashboard/user/progress": "پیگیری پیشرفت",
   "/dashboard/user/payments": "اعضایت و پرداخت",
@@ -247,7 +250,7 @@ const Header = () => {
 
       <div className="flex items-center space-x-4">
         {/* جستجو */}
-        <div className="relative">
+        {/* <div className="relative">
           <input
             type="text"
             placeholder="جستجو ..."
@@ -255,7 +258,7 @@ const Header = () => {
             onChange={(e) => setSearch(e.target.value)}
             className="border border-gray-300 rounded-full px-4 py-2 w-64 focus:outline-none focus:ring-2 focus:ring-red-500 focus:border-transparent"
           />
-        </div>
+        </div> */}
 
         {/* نوتیفیکیشن */}
         <div className="relative" ref={notificationRef}>

@@ -17,7 +17,11 @@ const WorkoutPlanSchema = new mongoose.Schema({
   },
   exercises: [ExerciseSchema],
   duration: { type: Number, required: true },
-  isActive: { type: Boolean, default: true }
+  isActive: { type: Boolean, default: true },
+  assignedTo: {
+    type: mongoose.Schema.ObjectId,
+    ref: 'User',
+  },
 }, { timestamps: true })
 
 module.exports = mongoose.model('WorkoutPlan', WorkoutPlanSchema)

@@ -4,6 +4,7 @@ import { toast } from "react-hot-toast";
 import api from "../../../services/api";
 import { useSocket } from "../../../components/Chat/SocketContext";
 import { useAppSelector } from "../../../store/hook";
+import useDocumentTitle from '../../../hooks/useDocumentTitle';
 
 interface Coach {
   _id: string;
@@ -19,6 +20,8 @@ interface Message {
 }
 
 export default function UserChat() {
+    useDocumentTitle('چت با مربی');
+  
   const { socket, isConnected } = useSocket();
   const { user: currentUser } = useAppSelector((state) => state.auth);
 

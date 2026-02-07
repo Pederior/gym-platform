@@ -23,6 +23,9 @@ const productRoutes = require("./routes/product.routes");
 const adminProductRoutes = require("./routes/productAdmin.routes");
 const orderRoutes = require('./routes/order.routes');
 const dashboardRoutes = require('./routes/dashboard.routes');
+const dietPlanRoutes = require('./routes/dietPlan.routes');
+const trainingVideoRoutes = require('./routes/trainingVideo.routes');
+const userTrainingVideoRoutes = require('./routes/userTrainingVideo.routes');
 
 const app = express();
 
@@ -74,10 +77,14 @@ app.use("/api/products", productRoutes);
 app.use("/api/admin/products", adminProductRoutes);
 app.use('/api/orders', orderRoutes);
 app.use('/api/dashboard', dashboardRoutes);
+app.use("/api/diet-plans", dietPlanRoutes);
+app.use("/api/coach/videos", trainingVideoRoutes);
+app.use("/api/user/videos", userTrainingVideoRoutes);
 
-app.use("/api", financialRoutes);
-app.use("/api", adminRoutes);
-app.use("/api", logRoutes);
+
+app.use("/api/financial", financialRoutes);
+app.use("/api/admin", adminRoutes);
+app.use("/api/logs", logRoutes);
 
 // Health check
 app.get("/api/health", (req, res) => {

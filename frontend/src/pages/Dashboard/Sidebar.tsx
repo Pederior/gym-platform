@@ -1,6 +1,6 @@
 import { useState, useMemo, type ReactNode } from "react";
 import { TbSmartHome, TbUser } from "react-icons/tb";
-import { GiFoodChain, GiMuscleUp } from "react-icons/gi";
+import { GiMuscleUp } from "react-icons/gi";
 import { useAppSelector } from "../../store/hook";
 import { Link } from "react-router-dom";
 import {
@@ -19,7 +19,7 @@ import {
   FaMoneyBillTransfer,
 } from "react-icons/fa6";
 import { AiFillDollarCircle, AiOutlineDollar } from "react-icons/ai";
-import { IoChatboxEllipses, IoPeopleSharp } from "react-icons/io5";
+import { IoChatboxEllipses, IoPeopleSharp, IoFastFood  } from "react-icons/io5";
 import { FaClipboardList, FaChartBar } from "react-icons/fa";
 import { TbReportSearch } from "react-icons/tb";
 import { FaCalendarPlus } from "react-icons/fa";
@@ -165,6 +165,7 @@ const Sidebar = ({ isCollapsed, onToggle }: SidebarProps) => {
     } else if (role === "coach") {
       return [
         { title: "داشبورد", icon: <TbSmartHome />, to: "/dashboard/coach" },
+        { title: "شاگردان", icon: <TbSmartHome />, to: "/dashboard/coach/students" },
         {
           title: "برنامه‌های تمرینی",
           icon: <GiMuscleUp />,
@@ -182,6 +183,11 @@ const Sidebar = ({ isCollapsed, onToggle }: SidebarProps) => {
           ],
         },
         {
+          title: "برنامه های غذایی ",
+          icon: <IoFastFood />,
+          to: "/dashboard/coach/diet-plans",
+        },
+        {
           title: "کلاس‌ها",
           icon: <MdClass />,
           to: "/dashboard/coach/classes",
@@ -196,6 +202,11 @@ const Sidebar = ({ isCollapsed, onToggle }: SidebarProps) => {
       return [
         { title: "داشبورد", icon: <TbSmartHome />, to: "/dashboard/user" },
         {
+          title: "خرید اشتراک",
+          icon: <MdOutlineJoinFull />,
+          to: "/dashboard/user/subscriptions",
+        },
+        {
           title: "فروشگاه شخصی",
           icon: <TiShoppingCart />,
           to: "/dashboard/user/userstore",
@@ -207,13 +218,13 @@ const Sidebar = ({ isCollapsed, onToggle }: SidebarProps) => {
         },
         {
           title: "برنامه غذایی",
-          icon: <GiFoodChain />,
-          to: "/dashboard/user/diet",
+          icon: <IoFastFood  />,
+          to: "/dashboard/user/diet-plans",
         },
         {
-          title: "خرید اشتراک",
-          icon: <MdOutlineJoinFull />,
-          to: "/dashboard/user/subscriptions",
+          title: "ویدیو های آموزشی",
+          icon: <IoFastFood  />,
+          to: "/dashboard/user/videos",
         },
         {
           title: "کلاس‌ها",
@@ -226,14 +237,14 @@ const Sidebar = ({ isCollapsed, onToggle }: SidebarProps) => {
         //   to: "/dashboard/user/progress",
         // },
         {
-          title: "اعضایت و پرداخت",
-          icon: <AiFillDollarCircle />,
-          to: "/dashboard/user/payments",
-        },
-        {
           title: "چت با مربی",
           icon: <IoChatboxEllipses />,
           to: "/dashboard/user/chat",
+        },
+        {
+          title: "اشتراک و پرداخت",
+          icon: <AiFillDollarCircle />,
+          to: "/dashboard/user/payments",
         },
       ];
     }

@@ -2,6 +2,7 @@ import { useState, useEffect } from "react";
 import { toast } from "react-hot-toast";
 import Card from "../../../components/ui/Card";
 import { userService, type Subscription } from "../../../services/userService";
+import useDocumentTitle from '../../../hooks/useDocumentTitle';
 
 interface SubscriptionPlan {
   id: 'bronze' | 'silver' | 'gold';
@@ -38,6 +39,8 @@ const DURATION_LABELS: { [key in 'monthly' | 'quarterly' | 'yearly']: string } =
 };
 
 export default function UserSubscriptions() {
+    useDocumentTitle('پلن‌های اشتراک');
+  
   const [selectedDuration, setSelectedDuration] = useState<
     "monthly" | "quarterly" | "yearly"
   >("monthly");
@@ -49,7 +52,7 @@ export default function UserSubscriptions() {
   const mockPlans: SubscriptionPlan[] = [
     {
       id: "bronze",
-      name: "پلن برنزی",
+      name: "پلن برنز",
       description: "اقتصادی – جذب کاربر",
       price: {
         monthly: 199000,
