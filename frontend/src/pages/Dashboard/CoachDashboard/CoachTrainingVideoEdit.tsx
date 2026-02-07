@@ -1,8 +1,8 @@
 import { useState, useEffect } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import api from '../../../services/api';
-import useDocumentTitle from '../../../hooks/useDocumentTitle';
 import { toast } from 'react-hot-toast';
+import useDocumentTitle from '../../../hooks/useDocumentTitle';
 
 interface TrainingVideo {
   _id: string;
@@ -17,6 +17,7 @@ interface TrainingVideo {
 }
 
 export default function CoachTrainingVideoEdit() {
+
   const { id } = useParams<{ id: string }>();
   const navigate = useNavigate();
   
@@ -30,7 +31,8 @@ export default function CoachTrainingVideoEdit() {
     accessLevel: 'gold' as 'bronze' | 'silver' | 'gold',
     isActive: true
   });
-  
+
+  useDocumentTitle(formData.title ? `ویرایش: ${formData.title}` : 'ویرایش ویدیوی آموزشی');
   const [loading, setLoading] = useState(true);
   const [submitting, setSubmitting] = useState(false);
 
@@ -56,7 +58,6 @@ export default function CoachTrainingVideoEdit() {
         isActive: video.isActive
       });
       
-      useDocumentTitle(`ویرایش: ${video.title}`);
     } catch (err) {
       console.error('Error fetching video:', err);
       toast.error('خطا در بارگذاری ویدیو');
@@ -67,14 +68,21 @@ export default function CoachTrainingVideoEdit() {
   };
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
-    const { name, value, type } = e.target;
-    
-    if (type === 'checkbox') {
-      setFormData(prev => ({ ...prev, [name]: (e.target as HTMLInputElement).checked }));
-    } else {
-      setFormData(prev => ({ ...prev, [name]: value }));
-    }
-  };
+  const target = e.target;
+  
+  if (target.type === 'checkbox') {
+    const checkbox = target as HTMLInputElement;
+    setFormData(prev => ({ 
+      ...prev, 
+      [target.name]: checkbox.checked 
+    }));
+  } else {
+    setFormData(prev => ({ 
+      ...prev, 
+      [target.name]: target.value 
+    }));
+  }
+};
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();

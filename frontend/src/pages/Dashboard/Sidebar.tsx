@@ -188,6 +188,11 @@ const Sidebar = ({ isCollapsed, onToggle }: SidebarProps) => {
           to: "/dashboard/coach/diet-plans",
         },
         {
+          title: "ویدیوهای آموزشی ",
+          icon: <IoFastFood />,
+          to: "/dashboard/coach/videos",
+        },
+        {
           title: "کلاس‌ها",
           icon: <MdClass />,
           to: "/dashboard/coach/classes",

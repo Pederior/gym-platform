@@ -14,7 +14,7 @@ const TrainingVideoSchema = new mongoose.Schema({
   accessLevel: {
     type: String,
     enum: ['bronze', 'silver', 'gold'],
-    default: 'gold' // فقط طلایی‌ها دسترسی دارن
+    default: 'gold'
   },
   isActive: { type: Boolean, default: true },
   createdBy: {
