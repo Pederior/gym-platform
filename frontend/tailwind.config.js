@@ -23,10 +23,15 @@ export default {
             transform: "translateY(0)",
           },
         },
+        progress: {
+          '0%': { width: '0', opacity: '1' },
+          '100%': { opacity: '1' },
+        }
       },
       animation: {
         hoverFloat: "hoverFloat 1.5s ease-in-out infinite",
         "fade-in": "fadeIn 0.6s ease-out",
+        'progress': 'progress 0.4s ease-in-out forwards',
       },
       borderWidth: {
         3: "3px",
@@ -38,6 +43,8 @@ export default {
         sm: "calc(var(--radius) - 4px)",
       },
       colors: {
+        crimson: 'hsl(var(--crimson))',
+        myred: 'hsl(var(--myred))',
         background: "hsl(var(--background))",
         foreground: "hsl(var(--foreground))",
         card: {

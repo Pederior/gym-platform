@@ -6,7 +6,6 @@ import Card from "../components/ui/Card";
 import { Link } from "react-router-dom";
 import { FaRegUser } from "react-icons/fa6";
 import Footer from "../components/layout/Footer";
-import { useEffect, useState } from "react";
 
 export default function AboutUs() {
   const stats = [
@@ -22,46 +21,6 @@ export default function AboutUs() {
     { name: "مربی", title: "مربی", img: "coach3.jpg" },
     { name: "مربی", title: "مربی", img: "coach4.jpg" },
     { name: "مربی", title: "مربی", img: "coach1.jpg" },
-  ];
-
-  const [progress, setProgress] = useState({
-    fitness: 0,
-    expertise: 0,
-    workout: 0,
-    strength: 0,
-    endurance: 0,
-  });
-
-  const targets = {
-    fitness: 88,
-    expertise: 92,
-    workout: 94,
-    strength: 78,
-    endurance: 86,
-  };
-
-  useEffect(() => {
-    const timers = Object.entries(targets).map(([key, target]) => {
-      return setTimeout(
-        () => {
-          setProgress((prev) => ({
-            ...prev,
-            [key]: target,
-          }));
-        },
-        300 + parseInt(key, 36) * 100,
-      );
-    });
-
-    return () => timers.forEach(clearTimeout);
-  }, []);
-
-  const progressData = [
-    { key: "fitness", label: "فیتنس", value: progress.fitness },
-    { key: "expertise", label: "بدنسازی", value: progress.expertise },
-    { key: "workout", label: "آموزش شخصی", value: progress.workout },
-    { key: "strength", label: "دروس شناگری", value: progress.strength },
-    { key: "endurance", label: "ماساژ ورزشی", value: progress.endurance },
   ];
 
   return (
@@ -100,7 +59,7 @@ export default function AboutUs() {
               <span className="text-black font-medium">چرا</span> انتخاب ما؟
             </h1>
 
-            <div className="w-16 h-1 bg-red-500 mb-8"></div>
+            <div className="w-16 h-1 bg-myred mb-8"></div>
 
             <p className="text-gray-700 leading-relaxed space-y-4">
               لورم ایپسوم متن ساختگی با تولید سادگی نامفهوم از صنعت چاپ و با
@@ -130,7 +89,7 @@ export default function AboutUs() {
               key={idx}
               className="px-6 py-12 text-center border border-gray-200 hover:border-red-300 transition-colors"
             >
-              <div className="text-4xl md:text-7xl font-bold text-red-500 mb-2">
+              <div className="text-4xl md:text-7xl font-bold text-myred mb-2">
                 {stat.value}
               </div>
               <div className="text-gray-700 font-light text-xl mt-5">
@@ -144,7 +103,7 @@ export default function AboutUs() {
           <h2 className="text-3xl md:text-4xl font-bold text-gray-800">
             مربیان حرفه‌ای ما
           </h2>
-          <div className="w-20 h-1 bg-red-500 mx-auto mt-2"></div>
+          <div className="w-20 h-1 bg-myred mx-auto mt-2"></div>
         </div>
 
         <div className="max-w-7xl mx-auto grid grid-cols-3 sm:grid-cols-3 lg:grid-cols-5 gap-6 ">
@@ -180,8 +139,8 @@ export default function AboutUs() {
               کلاس‌های بدنسازی تابستان امسال
             </p>
 
-            <h1 className="text-4xl md:text-6xl font-bold text-red-500 mb-4">
-              <span className="border-b border-dashed border-red-500">
+            <h1 className="text-4xl md:text-6xl font-bold text-myred mb-4">
+              <span className="border-b border-dashed border-myred">
                 ۴۰٪ تخفیف
               </span>{" "}
               برای همه پلن‌ها
@@ -189,7 +148,7 @@ export default function AboutUs() {
 
             <Link
               to="/classes"
-              className="lg:w-1/4 w-3/5 mt-28 flex items-center justify-center gap-2 bg-red-500 text-white px-6 py-3 font-sm hover:bg-white hover:text-red-500 transition-colors"
+              className="lg:w-1/4 w-3/5 mt-28 flex items-center justify-center gap-2 bg-myred text-white px-6 py-3 font-sm hover:bg-white hover:text-myred transition-colors"
             >
               <FaRegUser />
               ثبت نام کنید
@@ -197,68 +156,88 @@ export default function AboutUs() {
           </div>
         </div>
 
-        <div className="flex flex-col lg:flex-row items-center gap-12">
-          <div className="lg:w-1/2 flex justify-center">
-            <div className="relative w-full max-w-md">
+        <div className="max-w-7xl mx-auto mt-20 flex flex-col lg:flex-row items-center gap-12">
+          <div className="lg:w-1/2 flex ">
+            <div className="relative max-w-142.5 h-full">
               <img
                 src="/images/skills-1.jpg"
                 alt="مربی در حال تمرین"
-                className="w-full h-auto shadow-xl"
+                className="w-full h-full shadow-xl"
               />
             </div>
           </div>
-          {/* //! FIX MEEEEEEEEEEEEEEEEE */}
-          <div className="lg:w-1/2">
-            <span>نابرده رنج گنج میسر نمی شود</span>
-            <h2 className="text-3xl md:text-4xl font-bold text-gray-800 mb-12 text-right">
-              مهارت‌های ما
+          <div className="relative lg:w-1/2 bg-white mx-4 p-2.5 px-5">
+            <span className="text-right font-light text-gray-700/50">نابرده رنج گنج میسر نمی شود</span>
+            <h2 className="text-4xl md:text-5xl font-bold text-gray-800 mb-12 text-right mt-5">
+             <span className="text-myred">مهارت های </span>ما
+             <div className="bg-myred md:w-13 w-10 h-1 mt-4"></div>
             </h2>
 
-            <div className="space-y-8">
-              {progressData.map((item) => (
-                <div key={item.key} className="relative">
-                  {/* Floating Label - سمت چپ progress bar (در RTL) */}
-                  <div
-                    className="absolute -top-6 left-0 transition-all duration-300 ease-out"
-                    style={{
-                      opacity: item.value > 0 ? 1 : 0,
-                      transform:
-                        item.value > 0 ? "translateY(0)" : "translateY(-10px)",
-                    }}
-                  >
-                    <span className="text-xl font-bold text-red-600 bg-white px-2 py-1 rounded shadow-sm">
-                      {item.value}%
-                    </span>
-                  </div>
-
-                  {/* Progress Bar Container */}
-                  <div className="flex items-center gap-4">
-                    {/* Label - سمت راست */}
-                    <div className="text-right min-w-32">
-                      <div className="text-gray-700 font-medium">
-                        {item.label}
-                      </div>
-                    </div>
-
-                    {/* Animated Progress Bar - سمت چپ */}
-                    <div className="flex-1 relative">
-                      <div className="w-full bg-gray-200 rounded-full h-3 overflow-hidden">
-                        <div
-                          className="bg-gradient-to-r from-red-500 to-red-600 h-3 rounded-full transition-all duration-1500 ease-out relative"
-                          style={{
-                            width: `${item.value}%`,
-                            transitionDelay: `${parseInt(item.key, 36) * 100}ms`,
-                          }}
-                        >
-                          {/* Shine Effect */}
-                          <div className="absolute inset-0 bg-white opacity-20 animate-pulse"></div>
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-              ))}
+            <div className="w-full my-6">
+              <span className="block text-base font-semibold text-gray-700">
+                فیتنس
+              </span>
+              <div className="h-2 w-full  mt-1.5 bg-black/10">
+                <span className="relative block h-full w-[88%] bg-linear-to-l from-crimson via-red-800 to-black animate-progress opacity-0">
+                  <span className="absolute -left-1 -top-8 text-2xl font-extralight text-crimson p-0.5 px-1.5 z-10">
+                    ۸۸%
+                  </span>
+                </span>
+              </div>
             </div>
+
+            <div className="w-full my-6">
+              <span className="block text-base font-semibold text-gray-700">
+                بدنسازی
+              </span>
+              <div className="h-2 w-full mt-1.5 bg-black/10">
+                <span className="relative block h-full w-[92%] bg-linear-to-l from-crimson via-red-800 to-black animate-progress opacity-0 delay-100">
+                  <span className="absolute -left-1 -top-8 text-2xl font-extralight text-crimson p-0.5 px-1.5 z-10">
+                    ۹۲%
+                  </span>
+                </span>
+              </div>
+            </div>
+
+            <div className="w-full my-6">
+              <span className="block text-base font-semibold text-gray-700">
+                آموزش شخصی
+              </span>
+              <div className="h-2 w-full mt-1.5 bg-black/10">
+                <span className="relative block h-full w-[94%] bg-linear-to-l from-crimson via-red-800 to-black animate-progress opacity-0 delay-200">
+                  <span className="absolute -left-1 -top-8 text-2xl font-extralight text-crimson p-0.5 px-1.5 z-10">
+                    ۹۴%
+                  </span>
+                </span>
+              </div>
+            </div>
+
+            <div className="w-full my-6">
+              <span className="block text-base font-semibold text-gray-700">
+                رژیم غذایی
+              </span>
+              <div className="h-2 w-full mt-1.5 bg-black/10">
+                <span className="relative block h-full w-[78%] bg-linear-to-l from-crimson via-red-800 to-black animate-progress opacity-0 delay-300">
+                  <span className="absolute -left-1 -top-8 text-2xl font-extralight text-crimson p-0.5 px-1.5 z-10">
+                    ۷۸%
+                  </span>
+                </span>
+              </div>
+            </div>
+
+            <div className="w-full my-6">
+              <span className="block text-base font-semibold text-gray-700">
+                ماساژ ورزشی
+              </span>
+              <div className="h-2 w-full mt-1.5 bg-black/10">
+                <span className="relative block h-full w-[86%] bg-linear-to-l from-crimson via-red-800 to-black animate-progress opacity-0 delay-300">
+                  <span className="absolute -left-1 -top-8 text-2xl font-extralight text-crimson p-0.5 px-1.5 z-10">
+                    ۸۶%
+                  </span>
+                </span>
+              </div>
+            </div>
+            
           </div>
         </div>
       </div>

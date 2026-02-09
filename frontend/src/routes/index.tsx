@@ -525,4 +525,5 @@ export const router = createBrowserRouter([
   { path: "/articles", element: <Articles /> },
   { path: "/order-success", element: <OrderSuccess /> },
   // { path: "/classes/book/:id", element: <ClassBooking /> },
+  // { path: "/test", element: <Test /> },
 ]);

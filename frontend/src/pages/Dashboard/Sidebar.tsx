@@ -11,7 +11,8 @@ import {
   MdManageAccounts,
   MdSettingsInputComponent,
   MdStore,
-  MdOutlineOndemandVideo 
+  MdOutlineOndemandVideo,
+  MdArticle 
 } from "react-icons/md";
 import {
   FaChartLine,
@@ -27,14 +28,16 @@ import { FaCalendarPlus } from "react-icons/fa";
 import { IoMdSettings } from "react-icons/io";
 import { BsFillCartPlusFill } from "react-icons/bs";
 import { TiShoppingCart } from "react-icons/ti";
+import { GrArticle } from "react-icons/gr";
+import { LiaComment } from "react-icons/lia";
 
 interface MenuItem {
   title: string;
-  icon: ReactNode; // ✅ ReactNode برای آیکون اصلی
+  icon: ReactNode;
   to?: string;
   children?: {
     label: string;
-    icon: ReactNode; // ✅ ReactNode برای آیکون زیرمنو
+    icon: ReactNode; 
     to: string;
   }[];
 }
@@ -130,6 +133,22 @@ const Sidebar = ({ isCollapsed, onToggle }: SidebarProps) => {
             {
               label: "رزرو تجهیزات / سالن‌ها",
               icon: <FaCalendarPlus />,
+              to: "/dashboard/admin/reservations",
+            },
+          ],
+        },
+        {
+          title: "مقالات",
+          icon: <MdArticle  />,
+          children: [
+            {
+              label: "مدیریت مقالات",
+              icon: <GrArticle />,
+              to: "/dashboard/admin/classes",
+            },
+            {
+              label: "کامنت ها",
+              icon: <LiaComment />,
               to: "/dashboard/admin/reservations",
             },
           ],
@@ -295,7 +314,7 @@ const Sidebar = ({ isCollapsed, onToggle }: SidebarProps) => {
           <div key={idx}>
             {item.children && item.children.length > 0 ? (
               <button
-                onClick={() => toggleMenu(item.title)} // ✅ تغییر اینجا
+                onClick={() => toggleMenu(item.title)}
                 className={`flex items-center w-full p-3 rounded-lg hover:bg-red-700/90 transition text-white ${
                   isCollapsed ? 'justify-center px-0' : 'text-right'
                 }`}
@@ -340,7 +359,7 @@ const Sidebar = ({ isCollapsed, onToggle }: SidebarProps) => {
               openMenu === item.title &&
               !isCollapsed && (
                 <div
-                  className="pr-4 mt-1 space-y-1 mr-2 overflow-hidden"
+                  className="pr-4 mt-1 space-y-1 mr-2 overflow-hidden bg-red-800/60 rounded-2xl"
                   style={{
                     maxHeight: openMenu === item.title ? "500px" : "0",
                     opacity: openMenu === item.title ? 1 : 0,
@@ -351,7 +370,7 @@ const Sidebar = ({ isCollapsed, onToggle }: SidebarProps) => {
                     <Link
                       key={childIdx}
                       to={child.to}
-                      className="w-full flex items-center p-2 text-sm rounded hover:bg-red-700 text-white transition text-right"
+                      className="w-full flex items-center p-2 text-sm rounded hover:bg-red-700 text-white transition text-right "
                     >
                       <span className="text-lg ml-2">{child.icon}</span>
                       <span>{child.label}</span>
