@@ -14,6 +14,7 @@ import ProductsPerPage from "./ProductsPerPage";
 import type { Product } from "../../types";
 import { RiShoppingCartLine } from "react-icons/ri";
 import { toast } from "react-hot-toast";
+import useDocumentTitle from "../../hooks/useDocumentTitle";
 
 const categories = [
   { id: 1, title: "همه محصولات", count: 8 },
@@ -27,6 +28,7 @@ const categories = [
 ];
 
 export default function Store() {
+  useDocumentTitle("فروشگاه");
   const [activeId, setActiveId] = useState(1);
   const [products, setProducts] = useState<Product[]>([]);
   const [loading, setLoading] = useState(true);

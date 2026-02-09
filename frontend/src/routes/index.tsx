@@ -24,6 +24,11 @@ import AdminReservations from "../pages/Dashboard/AdminDashboard/AdminReservatio
 import AdminClubSettings from "../pages/Dashboard/AdminDashboard/AdminClubSettings";
 import AdminProducts from "../pages/Dashboard/AdminDashboard/AdminProducts";
 import AdminSubscriptionPlans from "../pages/Dashboard/AdminDashboard/AdminSubscriptionPlans";
+import AdminTicketDetail from "../pages/Dashboard/AdminDashboard/AdminTicketDetails";
+import AdminComments from "../pages/Dashboard/AdminDashboard/AdminComments";
+import AdminArticles from "../pages/Dashboard/AdminDashboard/AdminArticles";
+import AdminArticleForm from "../pages/Dashboard/AdminDashboard/AdminArticleForm";
+import AdminArticleEdit from "../pages/Dashboard/AdminDashboard/AdminArticleEdit";
 // import AdminPricingSettings from "../pages/Dashboard/AdminDashboard/AdminPricingSettings";
 import AdminProductForm from "../pages/Dashboard/AdminDashboard/AdminProductForm";
 import AdminLogs from "../pages/Dashboard/AdminDashboard/AdminLogs";
@@ -45,6 +50,10 @@ import CoachDietPlansEdit from "../pages/Dashboard/CoachDashboard/CoachDietPlans
 import CoachTrainingVideos from "../pages/Dashboard/CoachDashboard/CoachTrainingVideos";
 import CoachTrainingVideoCreate from "../pages/Dashboard/CoachDashboard/CoachTrainingVideoCreate";
 import CoachTrainingVideoEdit from "../pages/Dashboard/CoachDashboard/CoachTrainingVideoEdit";
+import CoachArticles from "../pages/Dashboard/CoachDashboard/CoachArticles";
+import CoachArticleForm from "../pages/Dashboard/CoachDashboard/CoachArticleForm";
+import CoachArticleEdit from "../pages/Dashboard/CoachDashboard/CoachArticleEdit";
+import CoachComments from "../pages/Dashboard/CoachDashboard/CoachComments";
 
 // صفحات کاربر
 import UserChat from "../pages/Dashboard/UserDashboard/UserChat";
@@ -58,6 +67,9 @@ import UserWorkoutSession from "../pages/Dashboard/UserDashboard/UserWorkoutSess
 import UserDietPlans from "../pages/Dashboard/UserDashboard/UserDietPlans";
 import UserTrainingVideos from "../pages/Dashboard/UserDashboard/UserTrainingVideos";
 import UserTrainingVideoPlayer from "../pages/Dashboard/UserDashboard/UserTrainingVideoPlayer";
+import UserTickets from "../pages/Dashboard/UserDashboard/UserTickets";
+import UserTicketCreate from "../pages/Dashboard/UserDashboard/UserTicketCreate";
+import UserTicketDetail from "../pages/Dashboard/UserDashboard/UserTicketDetail";
 
 // صفحات عمومی
 import AboutUs from "../pages/AboutUs";
@@ -71,10 +83,7 @@ import ClassList from "../pages/Classes/ClassList";
 
 import ProtectedRoute from "./ProtectedRoute";
 import OrderSuccess from "../pages/Store/OrderSuccess";
-import UserTickets from "../pages/Dashboard/UserDashboard/UserTickets";
-import UserTicketCreate from "../pages/Dashboard/UserDashboard/UserTicketCreate";
-import UserTicketDetail from "../pages/Dashboard/UserDashboard/UserTicketDetail";
-import AdminTicketDetail from "../pages/Dashboard/AdminDashboard/AdminTicketDetails";
+import ArticleDetail from "../pages/Articles/ArticleDetail";
 
 export const router = createBrowserRouter([
   // صفحات عمومی
@@ -136,6 +145,38 @@ export const router = createBrowserRouter([
         element: (
           <ProtectedRoute role="admin">
             <AdminTicketDetail />
+          </ProtectedRoute>
+        ),
+      },
+      {
+        path: "admin/articles",
+        element: (
+          <ProtectedRoute role="admin">
+            <AdminArticles />
+          </ProtectedRoute>
+        ),
+      },
+      {
+        path: "admin/articles/create",
+        element: (
+          <ProtectedRoute role="admin">
+            <AdminArticleForm />
+          </ProtectedRoute>
+        ),
+      },
+      {
+        path: "admin/articles/:id/edit",
+        element: (
+          <ProtectedRoute role="admin">
+            <AdminArticleEdit />
+          </ProtectedRoute>
+        ),
+      },
+      {
+        path: "admin/comments",
+        element: (
+          <ProtectedRoute role="admin">
+            <AdminComments />
           </ProtectedRoute>
         ),
       },
@@ -312,6 +353,38 @@ export const router = createBrowserRouter([
         element: (
           <ProtectedRoute role="coach">
             <CoachProgress />
+          </ProtectedRoute>
+        ),
+      },
+      {
+        path: "coach/articles",
+        element: (
+          <ProtectedRoute role="coach">
+            <CoachArticles />
+          </ProtectedRoute>
+        ),
+      },
+      {
+        path: "coach/articles/create",
+        element: (
+          <ProtectedRoute role="coach">
+            <CoachArticleForm />
+          </ProtectedRoute>
+        ),
+      },
+      {
+        path: "coach/articles/:id/edit",
+        element: (
+          <ProtectedRoute role="coach">
+            <CoachArticleEdit />
+          </ProtectedRoute>
+        ),
+      },
+      {
+        path: "coach/comments",
+        element: (
+          <ProtectedRoute role="coach">
+            <CoachComments />
           </ProtectedRoute>
         ),
       },
@@ -523,6 +596,7 @@ export const router = createBrowserRouter([
   { path: "/cart", element: <Cart /> },
   { path: "/about", element: <AboutUs /> },
   { path: "/articles", element: <Articles /> },
+  { path: "/articles/:id", element: <ArticleDetail /> },
   { path: "/order-success", element: <OrderSuccess /> },
   // { path: "/classes/book/:id", element: <ClassBooking /> },
   // { path: "/test", element: <Test /> },

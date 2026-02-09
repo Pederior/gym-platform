@@ -6,8 +6,10 @@ import Card from "../components/ui/Card";
 import { Link } from "react-router-dom";
 import { FaRegUser } from "react-icons/fa6";
 import Footer from "../components/layout/Footer";
+import useDocumentTitle from '../hooks/useDocumentTitle';
 
 export default function AboutUs() {
+  useDocumentTitle("درباره ما");
   const stats = [
     { value: "۷۵", label: "سال تجربه" },
     { value: "۱,۴۰۰", label: "عضو" },
@@ -178,8 +180,8 @@ export default function AboutUs() {
                 فیتنس
               </span>
               <div className="h-2 w-full  mt-1.5 bg-black/10">
-                <span className="relative block h-full w-[88%] bg-linear-to-l from-crimson via-red-800 to-black animate-progress opacity-0">
-                  <span className="absolute -left-1 -top-8 text-2xl font-extralight text-crimson p-0.5 px-1.5 z-10">
+                <span className="relative block h-full w-[88%] bg-linear-to-l from-myred via-red-800 to-black animate-progress opacity-0">
+                  <span className="absolute -left-1 -top-8 text-2xl font-extralight text-myred p-0.5 px-1.5 z-10">
                     ۸۸%
                   </span>
                 </span>
@@ -191,8 +193,8 @@ export default function AboutUs() {
                 بدنسازی
               </span>
               <div className="h-2 w-full mt-1.5 bg-black/10">
-                <span className="relative block h-full w-[92%] bg-linear-to-l from-crimson via-red-800 to-black animate-progress opacity-0 delay-100">
-                  <span className="absolute -left-1 -top-8 text-2xl font-extralight text-crimson p-0.5 px-1.5 z-10">
+                <span className="relative block h-full w-[92%] bg-linear-to-l from-myred via-red-800 to-black animate-progress opacity-0 delay-100">
+                  <span className="absolute -left-1 -top-8 text-2xl font-extralight text-myred p-0.5 px-1.5 z-10">
                     ۹۲%
                   </span>
                 </span>
@@ -204,8 +206,8 @@ export default function AboutUs() {
                 آموزش شخصی
               </span>
               <div className="h-2 w-full mt-1.5 bg-black/10">
-                <span className="relative block h-full w-[94%] bg-linear-to-l from-crimson via-red-800 to-black animate-progress opacity-0 delay-200">
-                  <span className="absolute -left-1 -top-8 text-2xl font-extralight text-crimson p-0.5 px-1.5 z-10">
+                <span className="relative block h-full w-[94%] bg-linear-to-l from-myred via-red-800 to-black animate-progress opacity-0 delay-200">
+                  <span className="absolute -left-1 -top-8 text-2xl font-extralight text-myred p-0.5 px-1.5 z-10">
                     ۹۴%
                   </span>
                 </span>
@@ -217,8 +219,8 @@ export default function AboutUs() {
                 رژیم غذایی
               </span>
               <div className="h-2 w-full mt-1.5 bg-black/10">
-                <span className="relative block h-full w-[78%] bg-linear-to-l from-crimson via-red-800 to-black animate-progress opacity-0 delay-300">
-                  <span className="absolute -left-1 -top-8 text-2xl font-extralight text-crimson p-0.5 px-1.5 z-10">
+                <span className="relative block h-full w-[78%] bg-linear-to-l from-myred via-red-800 to-black animate-progress opacity-0 delay-300">
+                  <span className="absolute -left-1 -top-8 text-2xl font-extralight text-myred p-0.5 px-1.5 z-10">
                     ۷۸%
                   </span>
                 </span>
@@ -230,14 +232,13 @@ export default function AboutUs() {
                 ماساژ ورزشی
               </span>
               <div className="h-2 w-full mt-1.5 bg-black/10">
-                <span className="relative block h-full w-[86%] bg-linear-to-l from-crimson via-red-800 to-black animate-progress opacity-0 delay-300">
-                  <span className="absolute -left-1 -top-8 text-2xl font-extralight text-crimson p-0.5 px-1.5 z-10">
+                <span className="relative block h-full w-[86%] bg-linear-to-l from-myred via-red-800 to-black animate-progress opacity-0 delay-300">
+                  <span className="absolute -left-1 -top-8 text-2xl font-extralight text-myred p-0.5 px-1.5 z-10">
                     ۸۶%
                   </span>
                 </span>
               </div>
             </div>
-            
           </div>
         </div>
       </div>

@@ -1,0 +1,195 @@
+// pages/Dashboard/AdminDashboard/AdminArticles.tsx
+import { useState, useEffect } from 'react';
+import { Link } from 'react-router-dom';
+import Card from '../../../components/ui/Card';
+import { toast } from 'react-hot-toast';
+import { adminService } from '../../../services/adminService';
+import useDocumentTitle from '../../../hooks/useDocumentTitle';
+
+interface Article {
+  _id: string;
+  title: string;
+  status: 'draft' | 'published' | 'archived';
+  category: string;
+  author: { name: string; email: string };
+  commentsCount: number;
+  createdAt: string;
+}
+
+const statusConfig = {
+  draft: { label: 'پیش‌نویس', color: 'bg-gray-100 text-gray-800' },
+  published: { label: 'منتشر شده', color: 'bg-green-100 text-green-800' },
+  archived: { label: 'آرشیو شده', color: 'bg-yellow-100 text-yellow-800' }
+};
+
+const categoryLabels: Record<string, string> = {
+  nutrition: 'تغذیه',
+  workout: 'تمرین',
+  lifestyle: 'سبک زندگی',
+  motivation: 'انگیزشی',
+  health: 'سلامتی'
+};
+
+export default function AdminArticles() {
+  useDocumentTitle('مدیریت مقالات');
+  
+  const [articles, setArticles] = useState<Article[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [filters, setFilters] = useState({
+    status: '',
+    category: '',
+    search: ''
+  });
+
+  useEffect(() => {
+    fetchArticles();
+  }, [filters]);
+
+  const fetchArticles = async () => {
+    try {
+      const data = await adminService.getArticles(filters);
+      setArticles(data.articles || []);
+    } catch (err: any) {
+      toast.error(err.response?.data?.message || 'خطا در بارگذاری مقالات');
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const handleDelete = async (id: string) => {
+    if (!confirm('آیا مطمئن هستید که می‌خواهید این مقاله را حذف کنید؟')) return;
+    
+    try {
+      await adminService.deleteArticle(id);
+      toast.success('مقاله با موفقیت حذف شد');
+      fetchArticles();
+    } catch (err: any) {
+      toast.error(err.response?.data?.message || 'خطا در حذف مقاله');
+    }
+  };
+
+  return (
+    <div>
+      <div className="flex justify-between items-center mb-6">
+        <h1 className="text-2xl font-bold">مدیریت مقالات</h1>
+        <Link
+          to="/dashboard/admin/articles/create"
+          className="bg-red-600 text-white px-4 py-2 rounded-lg hover:bg-red-700"
+        >
+          + ایجاد مقاله جدید
+        </Link>
+      </div>
+
+      {/* Filters */}
+      <Card className="mb-6 p-4">
+        <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
+          <div>
+            <label className="block text-sm font-medium text-gray-700 mb-1">وضعیت</label>
+            <select
+              value={filters.status}
+              onChange={(e) => setFilters({...filters, status: e.target.value})}
+              className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-red-500"
+            >
+              <option value="">همه وضعیت‌ها</option>
+              <option value="draft">پیش‌نویس</option>
+              <option value="published">منتشر شده</option>
+              <option value="archived">آرشیو شده</option>
+            </select>
+          </div>
+          
+          <div>
+            <label className="block text-sm font-medium text-gray-700 mb-1">دسته‌بندی</label>
+            <select
+              value={filters.category}
+              onChange={(e) => setFilters({...filters, category: e.target.value})}
+              className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-red-500"
+            >
+              <option value="">همه دسته‌بندی‌ها</option>
+              <option value="nutrition">تغذیه</option>
+              <option value="workout">تمرین</option>
+              <option value="lifestyle">سبک زندگی</option>
+              <option value="motivation">انگیزشی</option>
+              <option value="health">سلامتی</option>
+            </select>
+          </div>
+          
+          <div className="md:col-span-2">
+            <label className="block text-sm font-medium text-gray-700 mb-1">جستجو</label>
+            <input
+              type="text"
+              value={filters.search}
+              onChange={(e) => setFilters({...filters, search: e.target.value})}
+              placeholder="عنوان یا نویسنده..."
+              className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-red-500"
+            />
+          </div>
+        </div>
+      </Card>
+
+      {/* Articles List */}
+      {loading ? (
+        <div className="py-8 text-center">در حال بارگذاری...</div>
+      ) : articles.length === 0 ? (
+        <Card>
+          <div className="text-center py-8">
+            <div className="text-4xl mb-4">📝</div>
+            <h3 className="font-bold text-gray-800 mb-2">مقاله‌ای یافت نشد</h3>
+            <p className="text-gray-600">با فیلترهای فعلی مقاله‌ای وجود ندارد</p>
+          </div>
+        </Card>
+      ) : (
+        <div className="space-y-4">
+          {articles.map(article => (
+            <Card key={article._id} className="p-4 hover:shadow-md transition-shadow">
+              <div className="flex justify-between items-start">
+                <div className="flex-1">
+                  <h3 className="font-bold text-lg text-gray-800">{article.title}</h3>
+                  <div className="flex gap-2 mt-2 flex-wrap">
+                    <span className={`px-2 py-1 rounded-full text-xs ${statusConfig[article.status].color}`}>
+                      {statusConfig[article.status].label}
+                    </span>
+                    <span className="px-2 py-1 bg-blue-100 text-blue-800 rounded-full text-xs">
+                      {categoryLabels[article.category] || article.category}
+                    </span>
+                    <span className="text-sm text-gray-600">
+                      {article.commentsCount} کامنت
+                    </span>
+                  </div>
+                  <div className="mt-3 text-sm">
+                    <div className="text-gray-700">
+                      <strong>نویسنده:</strong> {article.author.name} ({article.author.email})
+                    </div>
+                  </div>
+                </div>
+                <div className="text-right text-sm text-gray-500">
+                  {new Date(article.createdAt).toLocaleDateString('fa-IR')}
+                </div>
+              </div>
+              <div className="mt-4 flex gap-3">
+                <Link
+                  to={`/dashboard/admin/articles/${article._id}/edit`}
+                  className="text-blue-600 hover:text-blue-800"
+                >
+                  ویرایش
+                </Link>
+                <button
+                  onClick={() => handleDelete(article._id)}
+                  className="text-red-600 hover:text-red-800"
+                >
+                  حذف
+                </button>
+                <Link
+                  to={`/articles/${article._id}`}
+                  target="_blank"
+                  className="text-green-600 hover:text-green-800"
+                >
+                  مشاهده
+                </Link>
+              </div>
+            </Card>
+          ))}
+        </div>
+      )}
+    </div>
+  );
+}

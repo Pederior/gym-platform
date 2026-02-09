@@ -8,6 +8,8 @@ import Footer from "../../components/layout/Footer";
 import { HiHome } from "react-icons/hi";
 import { MdKeyboardDoubleArrowLeft } from "react-icons/md";
 import { Link } from "react-router-dom";
+import useDocumentTitle from '../../hooks/useDocumentTitle';
+
 interface Class {
   _id: string;
   title: string;
@@ -19,6 +21,7 @@ interface Class {
 }
 
 export default function ClassList() {
+  useDocumentTitle("کلاس‌ها");
   const [classes, setClasses] = useState<Class[]>([]);
   const [loading, setLoading] = useState(true);
   const [selectedClass, setSelectedClass] = useState<Class | null>(null);

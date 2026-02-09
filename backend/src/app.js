@@ -30,6 +30,12 @@ const subscriptionRoutes = require('./routes/subscription.routes');
 const userSubscriptionRoutes = require('./routes/userSubscription.routes');
 const ticketRoutes = require('./routes/ticket.routes');
 const adminTicketRoutes = require('./routes/adminTicket.routes');
+const articleRoutes = require('./routes/article.routes');
+const coachArticleRoutes = require('./routes/coachArticle.routes');
+const adminArticleRoutes = require('./routes/adminArticle.routes');
+const commentRoutes = require('./routes/comment.routes');
+const uploadRoutes = require('./routes/upload.routes');
+const adminCommentRoutes = require('./routes/adminComment.routes');
 
 const app = express();
 
@@ -86,12 +92,22 @@ app.use("/api/coach/videos", trainingVideoRoutes);
 app.use("/api/user/videos", userTrainingVideoRoutes);
 app.use("/api/admin/subscriptions", subscriptionRoutes);
 app.use("/api/subscriptions", userSubscriptionRoutes); 
-app.use("/api/tickets", ticketRoutes);           // برای کاربران
+app.use("/api/tickets", ticketRoutes);           
 app.use("/api/admin/tickets", adminTicketRoutes);
+app.use("/api/articles", articleRoutes);
+app.use("/api/coach/articles", coachArticleRoutes);
+app.use("/api/admin/articles", adminArticleRoutes);
+app.use("/api/comments", commentRoutes);
+app.use("/api/admin/comments", adminCommentRoutes);
 
 app.use("/api/financial", financialRoutes);
 app.use("/api/admin", adminRoutes);
 app.use("/api/admin/logs", logRoutes);
+
+
+// Upload
+app.use("/api/upload", uploadRoutes);
+app.use('/uploads', express.static(path.join(__dirname, '../uploads')));
 
 // Health check
 app.get("/api/health", (req, res) => {

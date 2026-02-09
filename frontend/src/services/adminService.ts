@@ -43,6 +43,32 @@ export interface AdminSubscriptionPlan {
   order: number;
 }
 
+export interface Article {
+  _id: string;
+  title: string;
+  content: string;
+  excerpt: string;
+  category: 'nutrition' | 'workout' | 'lifestyle' | 'motivation' | 'health';
+  status: 'draft' | 'published' | 'archived';
+  author: { name: string; email: string };
+  featuredImage?: string;
+  tags: string[];
+  readTime: number;
+  commentsCount: number;
+  createdAt: string;
+}
+
+export interface Comment {
+  _id: string;
+  content: string;
+  article: { title: string; _id: string };
+  author: { name: string; email: string; role: string };
+  parent?: { content: string; author: { name: string } };
+  likes: number;
+  status: 'pending' | 'approved' | 'rejected';
+  createdAt: string;
+}
+
 export const adminService = {
   async getSettings() {
     const res = await api.get<{ success: true; data: Settings }>('/admin/settings');
@@ -114,5 +140,73 @@ export const adminService = {
 
   async deleteSubscriptionPlan(id: string) {
     await api.delete(`/admin/subscriptions/${id}`);
+  },
+
+   async getArticles(filters: { status?: string; category?: string; search?: string; page?: number; limit?: number } = {}) {
+    const params = new URLSearchParams();
+    if (filters.status) params.append('status', filters.status);
+    if (filters.category) params.append('category', filters.category);
+    if (filters.search) params.append('search', filters.search);
+    if (filters.page) params.append('page', filters.page.toString());
+    if (filters.limit) params.append('limit', filters.limit.toString());
+    
+    const res = await api.get<{ success: true; articles: Article[]; pagination: any }>(
+      `/admin/articles${params.toString() ? '?' + params.toString() : ''}`
+    );
+    return res.data;
+  },
+
+  async getArticle(id: string) {
+    const res = await api.get<{ success: true; article: Article }>(`/admin/articles/${id}`);
+    return res.data.article;
+  },
+
+  async createArticle(article: Omit<Article, '_id' | 'author' | 'commentsCount' | 'createdAt'>) {
+    const res = await api.post<{ success: true; article: Article }>('/admin/articles', article);
+    return res.data.article;
+  },
+
+  async updateArticle(id: string, article: Partial<Omit<Article, '_id' | 'author' | 'commentsCount' | 'createdAt'>>) {
+    const res = await api.put<{ success: true; article: Article }>(`/admin/articles/${id}`, article);
+    return res.data.article;
+  },
+
+  async deleteArticle(id: string) {
+    await api.delete(`/admin/articles/${id}`);
+  },
+
+  // --- مدیریت کامنت‌ها ---
+ async getComments() {
+    const res = await api.get<{ success: true; comments: Comment[] }>(`/admin/comments`);
+    return res.data;
+  },
+
+  async replyToComment(commentId: string, content: string) {
+    const res = await api.post<{ success: true; comment: Comment }>(`/admin/comments/reply`, {
+      parentId: commentId,
+      content
+    });
+    return res.data.comment;
+  },
+
+  async deleteComment(id: string) {
+    await api.delete(`/admin/comments/${id}`);
+  },
+
+  async approveComment(id: string) {
+    await api.put(`/admin/comments/${id}/status`, { status: 'approved' });
+  },
+
+  async rejectComment(id: string) {
+    await api.put(`/admin/comments/${id}/status`, { status: 'rejected' });
+  },
+
+  async uploadImage(formData: FormData) {
+    const res = await api.post<{ success: true; imageUrl: string }>('/upload/image', formData, {
+      headers: {
+        'Content-Type': 'multipart/form-data'
+      }
+    });
+    return res.data;
   },
 };

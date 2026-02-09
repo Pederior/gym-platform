@@ -144,12 +144,12 @@ const Sidebar = ({ isCollapsed, onToggle }: SidebarProps) => {
             {
               label: "مدیریت مقالات",
               icon: <GrArticle />,
-              to: "/dashboard/admin/classes",
+              to: "/dashboard/admin/articles",
             },
             {
               label: "کامنت ها",
               icon: <LiaComment />,
-              to: "/dashboard/admin/reservations",
+              to: "/dashboard/admin/comments",
             },
           ],
         },
@@ -216,6 +216,22 @@ const Sidebar = ({ isCollapsed, onToggle }: SidebarProps) => {
           title: "ویدیوهای آموزشی ",
           icon: <MdOutlineOndemandVideo  />,
           to: "/dashboard/coach/videos",
+        },
+        {
+          title: "مقالات",
+          icon: <MdArticle  />,
+          children: [
+            {
+              label: "مدیریت مقالات",
+              icon: <GrArticle />,
+              to: "/dashboard/coach/articles",
+            },
+            {
+              label: "کامنت ها",
+              icon: <LiaComment />,
+              to: "/dashboard/coach/comments",
+            },
+          ],
         },
         {
           title: "کلاس‌ها",
