@@ -79,7 +79,7 @@ export default function CoachStudents() {
               <div className="p-4 sm:p-6">
                 <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-3 mb-4">
                   <div>
-                    <h3 className="font-bold text-lg text-foreground">{student.name}</h3>
+                    <h3 className="font-bold text-lg text-foreground">{student?.name || 'نامشخص'}</h3>
                     <p className="text-sm text-muted-foreground">{student.email}</p>
                   </div>
                   <span className={`px-2 py-1 rounded-full text-xs font-medium ${

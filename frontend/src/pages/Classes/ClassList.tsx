@@ -193,7 +193,7 @@ export default function ClassList() {
                     </h2>
                     <p className="text-sm text-muted-foreground flex items-center gap-1">
                       <FaChalkboardTeacher className="text-primary text-xl" />
-                      {cls.coach.name}
+                      {cls.coach?.name || 'مربی نامشخص'}
                     </p>
                   </div>
                   <span

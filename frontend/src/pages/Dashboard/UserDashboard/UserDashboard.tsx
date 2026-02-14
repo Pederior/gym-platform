@@ -107,7 +107,7 @@ export default function UserDashboard() {
   return (
     <div className="space-y-8">
       <h1 className="text-2xl font-bold text-foreground">
-        داشبورد کاربر — خوش آمدید، {user?.name}!
+        داشبورد کاربر — خوش آمدید، {user?.name || 'کاربر'}!
       </h1>
 
       {/* Stats Cards */}
