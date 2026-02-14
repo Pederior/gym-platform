@@ -66,7 +66,7 @@ app.use('/uploads', (req, res, next) => {
   res.header('Cross-Origin-Resource-Policy', 'cross-origin');
   res.header('Cross-Origin-Embedder-Policy', 'require-corp');
   res.header('Access-Control-Allow-Origin', process.env.NODE_ENV === 'production' 
-    ? 'https://fynixclub.vercel.app"' 
+    ? 'https://fynixclub.vercel.app' 
     : 'http://localhost:5173');
   res.header('Access-Control-Allow-Methods', 'GET, OPTIONS');
   res.header('Access-Control-Allow-Headers', 'Content-Type');
