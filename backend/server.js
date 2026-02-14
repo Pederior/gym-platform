@@ -17,8 +17,23 @@ const server = http.createServer(app);
 
 const io = socketIo(server, {
   cors: {
-    origin: process.env.FRONTEND_URL || "http://localhost:5173",
+    origin: function (origin, callback) {
+      const allowedOrigins = [
+        "https://fynixclub.vercel.app",
+        "https://fynixclub-872myzubz-ahdreza2000-8103s-projects.vercel.app",
+        "http://localhost:5173"
+      ];
+      
+      if (!origin) return callback(null, true);
+      
+      if (allowedOrigins.indexOf(origin) !== -1) {
+        callback(null, true);
+      } else {
+        callback(new Error("Not allowed by CORS"));
+      }
+    },
     methods: ["GET", "POST"],
+    credentials: true
   },
 });
 

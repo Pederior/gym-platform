@@ -5,8 +5,10 @@ import { register, clearError } from "../../store/features/authSlice";
 import Button from "../../components/ui/Button";
 import type { RegisterData } from "../../types";
 import { FaRegEye,FaRegEyeSlash  } from "react-icons/fa";
+import useDocumentTitle from "../../hooks/useDocumentTitle";
 
 export default function Register() {
+    useDocumentTitle("ثبت‌نام");
   const [formData, setFormData] = useState<RegisterData>({
     name: "",
     email: "",

@@ -5,8 +5,10 @@ import { login, clearError } from "../../store/features/authSlice";
 import Button from "../../components/ui/Button";
 import type { LoginCredentials } from "../../types";
 import { FaRegEye,FaRegEyeSlash  } from "react-icons/fa";
+import useDocumentTitle from "../../hooks/useDocumentTitle";
 
 export default function Login() {
+  useDocumentTitle("ورود به حساب");
   const [formData, setFormData] = useState<LoginCredentials>({
     email: "",
     password: "",

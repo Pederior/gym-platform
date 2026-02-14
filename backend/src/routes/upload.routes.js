@@ -47,7 +47,7 @@ router.post("/image", upload.single("image"), (req, res) => {
     }
 
     const protocol = req.secure ? "https" : "http";
-    const imageUrl = `${process.env.BASE_URL}/uploads/${filename}`;
+    const imageUrl = `${protocol}://${process.env.BASE_URL}/uploads/${req.file.filename}`;
 
     res.json({
       success: true,
