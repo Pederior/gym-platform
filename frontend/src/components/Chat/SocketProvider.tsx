@@ -1,10 +1,14 @@
-// src/context/SocketProvider.tsx
 import { useState, useEffect, useRef } from 'react'
 import io, { Socket } from 'socket.io-client'
 import { useAppSelector } from '../../store/hook'
 import { SocketContext } from './SocketContext'
 
-const SOCKET_URL = 'http://localhost:5000'
+const getSocketUrl = () => {
+  if (import.meta.env.VITE_API_BASE_URL) {
+    return import.meta.env.VITE_API_BASE_URL
+  }
+  return 'http://localhost:5000'
+}
 
 export const SocketProvider = ({ children }: { children: React.ReactNode }) => {
   const [socketState, setSocketState] = useState<{ socket: Socket | null; isConnected: boolean }>({
@@ -15,7 +19,6 @@ export const SocketProvider = ({ children }: { children: React.ReactNode }) => {
   const { user, token } = useAppSelector((state) => state.auth)
   const currentTokenRef = useRef(token)
 
-  // هر بار که token عوض می‌شه، currentTokenRef آپدیت می‌شه
   useEffect(() => {
     currentTokenRef.current = token
   }, [token])
@@ -26,7 +29,7 @@ export const SocketProvider = ({ children }: { children: React.ReactNode }) => {
     const connectSocket = () => {
       if (!currentTokenRef.current || !user?._id) return
 
-      newSocket = io(SOCKET_URL, {
+      newSocket = io(getSocketUrl(), {
         auth: { token: currentTokenRef.current },
         reconnection: true,
         reconnectionAttempts: 5,
@@ -57,7 +60,7 @@ export const SocketProvider = ({ children }: { children: React.ReactNode }) => {
         newSocket.close()
       }
     }
-  }, [user?._id]) // ⚠️ فقط به user._id وابسته شو، نه token
+  }, [user?._id])
 
   return (
     <SocketContext.Provider value={socketState}>

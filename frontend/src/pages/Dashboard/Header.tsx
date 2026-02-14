@@ -74,6 +74,7 @@ const PAGE_TITLES: Record<string, string> = {
   "/dashboard/user/classes": "کلاس‌ها",
   "/dashboard/user/progress": "پیگیری پیشرفت",
   "/dashboard/user/payments": "اعضایت و پرداخت",
+  "/dashboard/user/tickets": "تیکتینگ",
   "/dashboard/user/chat": "چت با مربی",
   "/dashboard/profile": "پروفایل",
   "/dashboard/profile/edit": "ویرایش پروفایل",
