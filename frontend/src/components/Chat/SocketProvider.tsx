@@ -4,11 +4,13 @@ import { useAppSelector } from '../../store/hook'
 import { SocketContext } from './SocketContext'
 
 const getSocketUrl = () => {
-  if (import.meta.env.VITE_API_BASE_URL) {
-    return import.meta.env.VITE_API_BASE_URL
+  if (typeof window !== 'undefined') {
+    return window.location.hostname === 'localhost' 
+      ? 'http://localhost:5000' 
+      : 'https://gym-platform-5d6p.onrender.com';
   }
-  return 'http://localhost:5000'
-}
+  return 'https://gym-platform-5d6p.onrender.com';
+};
 
 export const SocketProvider = ({ children }: { children: React.ReactNode }) => {
   const [socketState, setSocketState] = useState<{ socket: Socket | null; isConnected: boolean }>({

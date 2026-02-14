@@ -1,0 +1,1 @@
+{"indexes":[{"v":{"$numberInt":"2"},"key":{"_id":{"$numberInt":"1"}},"name":"_id_"}],"uuid":"7ce501bad95342498cb46f26468ef155","collectionName":"userdietplans","type":"collection"}
