@@ -80,7 +80,7 @@ const addMessageToTicket = async (req, res) => {
             message: message.trim()
           }
         },
-        status: 'in_progress' // وقتی کاربر پاسخ می‌ده، وضعیت به in_progress تغییر کنه
+        status: 'in_progress' 
       },
       { new: true }
     )

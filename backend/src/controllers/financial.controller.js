@@ -42,7 +42,6 @@ const getPayments = async (req, res) => {
 // --- Financial Report ---
 const getFinancialReport = async (req, res) => {
   try {
-    // درآمد ماهانه
     const monthlyRevenue = await Payment.aggregate([
       {
         $match: {
@@ -56,13 +55,10 @@ const getFinancialReport = async (req, res) => {
       { $group: { _id: null, total: { $sum: '$amount' } } }
     ])
 
-    // اشتراک‌های فعال
     const activeSubscriptions = await Subscription.countDocuments({ status: 'active' })
 
-    // تعداد کاربران
     const totalUsers = await User.countDocuments()
 
-    // نرخ موفقیت پرداخت
     const totalPayments = await Payment.countDocuments()
     const successfulPayments = await Payment.countDocuments({ status: 'completed' })
     const paymentSuccessRate = totalPayments > 0 

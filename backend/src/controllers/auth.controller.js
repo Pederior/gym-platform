@@ -18,7 +18,6 @@ const register = async (req, res) => {
       .json({ success: false, message: "کاربری با این ایمیل وجود دارد" });
   }
 
-  // فقط مدیر می‌تونه مربی یا مدیر ایجاد کنه (در production)
   const finalRole = role === "coach" || role === "admin" ? "user" : role;
 
   const user = await User.create({ name, email, password, role: finalRole });

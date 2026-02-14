@@ -45,7 +45,6 @@ const createProgress = async (req, res) => {
   try {
     const { userId, workoutId } = req.body
 
-    // بررسی اینکه آیا این برنامه متعلق به این مربی هست
     const workout = await WorkoutPlan.findOne({ 
       _id: workoutId, 
       createdBy: req.user._id 
@@ -54,7 +53,6 @@ const createProgress = async (req, res) => {
       return res.status(403).json({ success: false, message: 'شما دسترسی به این برنامه ندارید' })
     }
 
-    // ایجاد رکورد پیشرفت
     const progress = await UserProgress.create({
       user: userId,
       workout: workoutId,
@@ -76,13 +74,11 @@ const updateProgress = async (req, res) => {
     const { id } = req.params
     const { completedDays } = req.body
 
-    // پیدا کردن رکورد و بررسی مالکیت
     const progress = await UserProgress.findById(id)
     if (!progress) {
       return res.status(404).json({ success: false, message: 'رکورد پیشرفت یافت نشد' })
     }
 
-    // بررسی اینکه آیا این برنامه متعلق به این مربی هست
     const workout = await WorkoutPlan.findOne({ 
       _id: progress.workout, 
       createdBy: req.user._id 
@@ -91,11 +87,9 @@ const updateProgress = async (req, res) => {
       return res.status(403).json({ success: false, message: 'شما دسترسی به این رکورد ندارید' })
     }
 
-    // به‌روزرسانی
     progress.completedDays = completedDays
     progress.lastActivity = new Date()
     
-    // بررسی تکمیل شدن
     if (completedDays >= progress.totalDays) {
       progress.status = 'completed'
     }
@@ -126,7 +120,6 @@ const assignStudents = async (req, res) => {
       coach: null,
     }).populate("currentSubscription");
 
-    // بررسی اعتبار اشتراک
     if (
       !student ||
       !student.currentSubscription ||
@@ -220,7 +213,6 @@ const students = async (req, res) => {
       });
     }
 
-    // ✅ تبدیل به ObjectId برای مقایسه صحیح
     const coachId = new mongoose.Types.ObjectId(req.user.id);
     console.log('🔍 DEBUG: Querying students with coach:', coachId);
 

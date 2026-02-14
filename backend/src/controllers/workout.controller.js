@@ -77,14 +77,14 @@ const deleteWorkout = async (req, res) => {
 
 const getWorkoutUsers = async (req, res) => {
   try {
-    const { id } = req.params // ✅ تغییر از workoutId به id
+    const { id } = req.params 
     
     if (!mongoose.Types.ObjectId.isValid(id)) {
       return res.status(400).json({ success: false, message: 'آیدی نامعتبر' })
     }
 
     const workout = await WorkoutPlan.findOne({
-      _id: id, // ✅ استفاده از id
+      _id: id, 
       createdBy: req.user._id
     })
 
@@ -93,7 +93,7 @@ const getWorkoutUsers = async (req, res) => {
     }
 
     const userWorkouts = await UserWorkout.find({
-      workout: id, // ✅ استفاده از id
+      workout: id, 
       status: "active",
     }).populate("user", "name")
 

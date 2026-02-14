@@ -8,8 +8,7 @@ exports.getProducts = async (req, res) => {
     const limitNum = parseInt(limit);
     const pageNum = parseInt(page);
 
-    // ✅ تعریف query object
-    const query = { status: "active" }; // ✅ وضعیت فعال به عنوان پایه
+    const query = { status: "active" }; 
 
     // Sorting logic
     // switch (sort) {
@@ -40,18 +39,17 @@ exports.getProducts = async (req, res) => {
 
     const skip = (pageNum - 1) * limitNum;
 
-    // ✅ اضافه کردن فیلتر دسته‌بندی
     if (category) {
       query.category = decodeURIComponent(category);
     }
 
-    const products = await Product.find(query) // ✅ استفاده از query
+    const products = await Product.find(query) 
       // .sort(sortOptions)
       .skip(skip)
       .limit(limitNum)
       .select('-__v'); 
 
-    const total = await Product.countDocuments(query); // ✅ همون query برای شمارش
+    const total = await Product.countDocuments(query); 
 
     res.status(200).json({
       success: true,
@@ -76,7 +74,6 @@ exports.getProductById = async (req, res) => {
       return res.status(404).json({ success: false, message: 'محصول یافت نشد' });
     }
 
-    // Only show active products
     if (product.status !== 'active') {
       return res.status(404).json({ success: false, message: 'محصول یافت نشد' });
     }

@@ -45,16 +45,13 @@ const createVideo = async (req, res) => {
   try {
     const { title, description, duration, category, accessLevel, videoUrl } = req.body;
     
-    // ✅ بررسی حالت URL
     if (videoUrl) {
-      // حالت URL: فقط بررسی وجود URL
       if (!videoUrl.trim()) {
         return res
           .status(400)
           .json({ success: false, message: "URL ویدیو نمی‌تواند خالی باشد" });
       }
       
-      // ذخیره با URL موجود
       const video = await TrainingVideo.create({
         title,
         description,
@@ -69,7 +66,6 @@ const createVideo = async (req, res) => {
       return res.status(201).json({ success: true, video });
     }
     
-    // ✅ حالت آپلود فایل
     if (!req.files?.video) {
       return res
         .status(400)
@@ -79,7 +75,6 @@ const createVideo = async (req, res) => {
     const videoFile = req.files.video[0];
     const thumbnailFile = req.files.thumbnail?.[0];
 
-    // ساخت URL کامل برای فایل‌های آپلود شده
     const baseUrl = `${req.protocol}://${req.get('host')}`;
     const uploadedVideoUrl = `${baseUrl}/uploads/videos/${videoFile.filename}`;
     const uploadedThumbnailUrl = thumbnailFile

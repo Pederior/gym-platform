@@ -1,4 +1,3 @@
-// backend/src/models/User.js
 const mongoose = require("mongoose");
 const bcrypt = require("bcryptjs");
 
@@ -54,7 +53,7 @@ UserSchema.pre("save", async function () {
 });
 
 UserSchema.methods.correctPassword = async function (candidatePassword) {
-  return await bcrypt.compare(candidatePassword, this.password); // ← this.password
+  return await bcrypt.compare(candidatePassword, this.password); 
 };
 
 module.exports = mongoose.model("User", UserSchema);

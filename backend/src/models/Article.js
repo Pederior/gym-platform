@@ -56,7 +56,6 @@ const ArticleSchema = new mongoose.Schema({
   }
 }, { timestamps: true });
 
-// Index برای جستجوی بهتر
 ArticleSchema.index({ title: 'text', content: 'text', tags: 'text' });
 
 module.exports = mongoose.model('Article', ArticleSchema);

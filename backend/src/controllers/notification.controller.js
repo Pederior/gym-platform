@@ -1,6 +1,5 @@
 const Notification = require('../models/Notification')
 
-// دریافت نوتیفیکیشن‌ها
 const getNotifications = async (req, res) => {
   try {
     const notifications = await Notification.find({ 
@@ -14,7 +13,6 @@ const getNotifications = async (req, res) => {
   }
 }
 
-// حذف نوتیفیکیشن
 const deleteNotification = async (req, res) => {
   try {
     await Notification.findByIdAndDelete(req.params.id)
@@ -24,7 +22,6 @@ const deleteNotification = async (req, res) => {
   }
 }
 
-// علامت‌گذاری همه به عنوان خوانده
 const markAllAsRead = async (req, res) => {
   try {
     await Notification.updateMany(

@@ -8,7 +8,6 @@ const UserWorkoutSchema = new mongoose.Schema(
       required: true,
     },
     workout: {
-      // ← تغییر به workout (همانند داده‌های واقعی)
       type: mongoose.Schema.ObjectId,
       ref: "WorkoutPlan",
       required: true,
@@ -38,7 +37,6 @@ const UserWorkoutSchema = new mongoose.Schema(
   { timestamps: true },
 );
 
-// اطمینان از عدم تکراری بودن
 UserWorkoutSchema.index({ user: 1, workout: 1 }, { unique: true });
 
 module.exports = mongoose.model("UserWorkout", UserWorkoutSchema);

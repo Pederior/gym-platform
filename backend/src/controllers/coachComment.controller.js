@@ -4,7 +4,6 @@ const Article = require('../models/Article');
 // --- GET coach's comments
 const getCoachComments = async (req, res) => {
   try {
-    // پیدا کردن مقالات مربی
     const articles = await Article.find({ 
       author: req.user._id,
       status: 'published'
@@ -16,7 +15,6 @@ const getCoachComments = async (req, res) => {
       return res.json({ success: true, comments: [] });
     }
     
-    // پیدا کردن کامنت‌های مقالات مربی
     const comments = await Comment.find({
       article: { $in: articleIds },
       status: 'approved'
@@ -41,19 +39,16 @@ const replyToComment = async (req, res) => {
       return res.status(400).json({ success: false, message: 'اطلاعات ناقص است' });
     }
     
-    // پیدا کردن کامنت والد
     const parentComment = await Comment.findById(parentId);
     if (!parentComment) {
       return res.status(404).json({ success: false, message: 'کامنت والد یافت نشد' });
     }
     
-    // بررسی اینکه مقاله متعلق به مربی باشه
     const article = await Article.findById(parentComment.article);
     if (!article || article.author.toString() !== req.user._id.toString()) {
       return res.status(403).json({ success: false, message: 'دسترسی غیرمجاز' });
     }
     
-    // ایجاد پاسخ
     const reply = await Comment.create({
       content: content.trim(),
       article: parentComment.article,
@@ -61,7 +56,6 @@ const replyToComment = async (req, res) => {
       parent: parentId
     });
     
-    // آپدیت آمار مقاله
     await Article.findByIdAndUpdate(parentComment.article, {
       $inc: { commentsCount: 1 },
       lastCommentAt: new Date()
@@ -87,7 +81,6 @@ const deleteCoachComment = async (req, res) => {
       return res.status(404).json({ success: false, message: 'کامنت یافت نشد' });
     }
     
-    // بررسی اینکه مقاله متعلق به مربی باشه
     const article = await Article.findById(comment.article);
     if (!article || article.author.toString() !== req.user._id.toString()) {
       return res.status(403).json({ success: false, message: 'دسترسی غیرمجاز' });
@@ -95,7 +88,6 @@ const deleteCoachComment = async (req, res) => {
     
     await comment.deleteOne();
     
-    // آپدیت آمار مقاله
     await Article.findByIdAndUpdate(comment.article, {
       $inc: { commentsCount: -1 }
     });

@@ -1,4 +1,3 @@
-// models/UserTrainingVideo.js
 const mongoose = require('mongoose');
 
 const UserTrainingVideoSchema = new mongoose.Schema({
@@ -12,7 +11,7 @@ const UserTrainingVideoSchema = new mongoose.Schema({
     ref: 'TrainingVideo',
     required: true
   },
-  watchedDuration: { type: Number, default: 0 }, // به ثانیه
+  watchedDuration: { type: Number, default: 0 }, 
   isCompleted: { type: Boolean, default: false },
   lastWatchedAt: { type: Date }
 }, { timestamps: true });

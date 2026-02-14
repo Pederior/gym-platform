@@ -3,9 +3,9 @@ const mongoose = require('mongoose');
 const TrainingVideoSchema = new mongoose.Schema({
   title: { type: String, required: true },
   description: { type: String },
-  videoUrl: { type: String, required: true }, // URL ویدیو (S3, Cloudinary, یا آپلود شده)
-  thumbnail: { type: String }, // URL تصویر بندانگشتی
-  duration: { type: Number, default: 0 }, // به ثانیه
+  videoUrl: { type: String, required: true }, 
+  thumbnail: { type: String }, 
+  duration: { type: Number, default: 0 }, 
   category: { 
     type: String, 
     enum: ['nutrition', 'workout', 'lifestyle', 'motivation'],

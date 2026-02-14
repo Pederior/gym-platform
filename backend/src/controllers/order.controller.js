@@ -13,7 +13,6 @@ exports.createOrder = async (req, res) => {
       totalAmount
     } = req.body;
 
-    // Validate required fields
     if (!products || products.length === 0) {
       return res.status(400).json({ 
         success: false, 
@@ -28,7 +27,6 @@ exports.createOrder = async (req, res) => {
       });
     }
 
-    // Verify products exist and are active
     const verifiedProducts = [];
     for (const item of products) {
       const product = await Product.findById(item.productId);
@@ -55,9 +53,8 @@ exports.createOrder = async (req, res) => {
       });
     }
 
-    // Create order
     const order = await Order.create({
-      user: req.user._id, // From auth middleware
+      user: req.user._id, 
       products: verifiedProducts,
       customer,
       totalAmount,
@@ -71,7 +68,7 @@ exports.createOrder = async (req, res) => {
       type: 'order',
       orderId: order._id,
       method: 'online',
-      status: 'completed', // فرض می‌کنیم پرداخت موفق بوده
+      status: 'completed', 
       description: `خرید ${verifiedProducts.length} محصول از فروشگاه`,
       transactionId: `ORDER_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`
     });
@@ -127,7 +124,6 @@ exports.getOrderById = async (req, res) => {
       });
     }
 
-    // Check if user owns this order
     if (order.user.toString() !== req.user._id.toString()) {
       return res.status(403).json({ 
         success: false, 

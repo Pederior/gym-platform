@@ -7,13 +7,11 @@ const createComment = async (req, res) => {
   try {
     const { articleId, content, parentId = null } = req.body;
     
-    // بررسی وجود مقاله
     const article = await Article.findById(articleId);
     if (!article || article.status !== 'published') {
       return res.status(404).json({ success: false, message: 'مقاله یافت نشد' });
     }
     
-    // بررسی والد (در صورت وجود)
     if (parentId) {
       const parentComment = await Comment.findById(parentId);
       if (!parentComment || parentComment.article.toString() !== articleId) {
@@ -21,7 +19,6 @@ const createComment = async (req, res) => {
       }
     }
     
-    // ایجاد کامنت جدید
     const comment = await Comment.create({
       content,
       article: articleId,
@@ -29,13 +26,11 @@ const createComment = async (req, res) => {
       parent: parentId
     });
     
-    // آپدیت آمار مقاله
     await Article.findByIdAndUpdate(articleId, {
       $inc: { commentsCount: 1 },
       lastCommentAt: new Date()
     });
     
-    // populate کامنت برای پاسخ
     const populatedComment = await Comment.findById(comment._id)
       .populate('author', 'name email avatar')
       .populate('parent', 'author content');
@@ -52,7 +47,6 @@ const getArticleComments = async (req, res) => {
     const { articleId } = req.params;
     const { page = 1, limit = 20 } = req.query;
     
-    // بررسی وجود مقاله
     const article = await Article.findById(articleId);
     if (!article) {
       return res.status(404).json({ success: false, message: 'مقاله یافت نشد' });
@@ -98,14 +92,11 @@ const likeComment = async (req, res) => {
       return res.status(404).json({ success: false, message: 'کامنت یافت نشد' });
     }
     
-    // بررسی اینکه کاربر قبلاً لایک نکرده باشه
     const alreadyLiked = comment.likes.includes(req.user._id);
     
     if (alreadyLiked) {
-      // حذف لایک
       comment.likes = comment.likes.filter(id => id.toString() !== req.user._id.toString());
     } else {
-      // اضافه کردن لایک
       comment.likes.push(req.user._id);
     }
     
@@ -131,14 +122,12 @@ const deleteComment = async (req, res) => {
       return res.status(404).json({ success: false, message: 'کامنت یافت نشد' });
     }
     
-    // بررسی دسترسی
     if (req.user.role !== 'admin' && comment.author.toString() !== req.user._id.toString()) {
       return res.status(403).json({ success: false, message: 'دسترسی غیرمجاز' });
     }
     
     await comment.deleteOne();
     
-    // آپدیت آمار مقاله
     await Article.findByIdAndUpdate(comment.article, {
       $inc: { commentsCount: -1 }
     });

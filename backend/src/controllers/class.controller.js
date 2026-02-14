@@ -58,12 +58,10 @@ const reserveClass = async (req, res) => {
       return res.status(404).json({ success: false, message: 'کلاس یافت نشد' })
     }
 
-    // بررسی ظرفیت
     if (cls.reservedBy.length >= cls.capacity) {
       return res.status(400).json({ success: false, message: 'ظرفیت کلاس تکمیل است' })
     }
 
-    // بررسی تکراری بودن رزرو
     const alreadyReserved = cls.reservedBy.find(r => r.user.toString() === req.user._id.toString())
     if (alreadyReserved) {
       return res.status(400).json({ success: false, message: 'شما قبلاً این کلاس را رزرو کرده‌اید' })

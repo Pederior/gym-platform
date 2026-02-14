@@ -93,7 +93,6 @@ const updateUserPassword = async (req, res) => {
       return res.status(403).json({ success: false, message: "تغییر رمز عبور مدیران مجاز نیست" });
     }
 
-    // ✅ روش صحیح: مستقیم update بدون فراخوانی middleware
     const hashedPassword = await bcrypt.hash(password, 12);
     await User.findByIdAndUpdate(id, { password: hashedPassword });
 
@@ -121,7 +120,6 @@ const deleteUser = async (req, res) => {
 // --- User Dashboard: Classes ---
 const getUserClasses = async (req, res) => {
   try {
-    // ✅ کوئری صحیح برای ساختار reservedBy
     const classes = await Class.find({
       "reservedBy.user": req.user._id,
     }).populate("coach", "name");
@@ -185,7 +183,6 @@ const getUserPayments = async (req, res) => {
 };
 const getUserWorkouts = async (req, res) => {
   try {
-    // پیدا کردن رکوردهای اختصاص داده‌شده به این کاربر
     const userWorkouts = await UserWorkout.find({
       user: req.user._id,
       status: "active",
@@ -213,21 +210,18 @@ const submitWorkoutProgress = async (req, res) => {
     const { workoutId, completedDays = 1 } = req.body;
     const userId = req.user._id;
 
-    // پیدا کردن یا ایجاد رکورد پیشرفت
     let progress = await UserProgress.findOne({
       user: userId,
       workout: workoutId,
     });
 
     if (progress) {
-      // به‌روزرسانی
       progress.completedDays += completedDays;
       progress.lastActivity = new Date();
       if (progress.completedDays >= progress.totalDays) {
         progress.status = "completed";
       }
     } else {
-      // ایجاد جدید
       const workout = await WorkoutPlan.findById(workoutId);
       if (!workout) {
         return res
@@ -274,7 +268,6 @@ const getWorkoutDetail = async (req, res) => {
   try {
     const { workoutId } = req.params;
 
-    // بررسی اینکه کاربر واقعاً این برنامه رو داره
     const userWorkout = await UserWorkout.findOne({
       user: req.user._id,
       workout: workoutId,
@@ -305,7 +298,6 @@ const createSubscription = async (req, res) => {
   try {
     const { planId, duration } = req.body;
 
-    // Validate input
     if (!planId || !duration) {
       return res.status(400).json({
         success: false,
@@ -313,14 +305,12 @@ const createSubscription = async (req, res) => {
       });
     }
 
-    // Define plan prices
     const plans = {
       bronze: { monthly: 199000, quarterly: 549000, yearly: 1999000 },
       silver: { monthly: 399000, quarterly: 1099000, yearly: 3999000 },
       gold: { monthly: 699000, quarterly: 1999000, yearly: 6999000 },
     };
 
-    // Validate plan
     if (!plans[planId]) {
       return res.status(400).json({
         success: false,
@@ -328,7 +318,6 @@ const createSubscription = async (req, res) => {
       });
     }
 
-    // Validate duration
     if (!plans[planId][duration]) {
       return res.status(400).json({
         success: false,
@@ -336,10 +325,8 @@ const createSubscription = async (req, res) => {
       });
     }
 
-    // Calculate amount
     const amount = plans[planId][duration];
 
-    // Calculate expiration date
     let expiresAt = new Date();
     if (duration === "monthly") {
       expiresAt.setMonth(expiresAt.getMonth() + 1);
@@ -349,7 +336,6 @@ const createSubscription = async (req, res) => {
       expiresAt.setFullYear(expiresAt.getFullYear() + 1);
     }
 
-    // Check if user has an active subscription
     const existingSubscription = await Subscription.findOne({
       user: req.user._id,
       status: "active",
@@ -357,7 +343,6 @@ const createSubscription = async (req, res) => {
     });
 
     if (existingSubscription) {
-      // Update existing subscription
       existingSubscription.plan = planId;
       existingSubscription.duration = duration;
       existingSubscription.amount = amount;
@@ -367,12 +352,10 @@ const createSubscription = async (req, res) => {
 
       await existingSubscription.save();
 
-      // Update user's currentSubscription reference
       await User.findByIdAndUpdate(req.user._id, {
         currentSubscription: existingSubscription._id,
       });
 
-      // Create payment record
       await Payment.create({
         user: req.user._id,
         amount,
@@ -390,7 +373,6 @@ const createSubscription = async (req, res) => {
         subscription: existingSubscription,
       });
     } else {
-      // Create new subscription
       const subscription = await Subscription.create({
         user: req.user._id,
         plan: planId,
@@ -401,12 +383,10 @@ const createSubscription = async (req, res) => {
         status: "active",
       });
 
-      // Update user's currentSubscription reference
       await User.findByIdAndUpdate(req.user._id, {
         currentSubscription: subscription._id,
       });
 
-      // Create payment record
       await Payment.create({
         user: req.user._id,
         amount,

@@ -15,12 +15,11 @@ const getMessages = async (req, res) => {
       .populate("receiver", "name")
       .sort({ createdAt: 1 });
 
-    // ✅ تبدیل به فرمت مورد نیاز فرانت
     const formattedMessages = messages.map((msg) => ({
       _id: msg._id.toString(),
       sender:
         msg.sender._id.toString() === senderId.toString() ? "coach" : "user", 
-      content: msg.content, // ⚠️ تغییر از text به content
+      content: msg.content, 
       timestamp: msg.createdAt,
       read: msg.read,
     }));
@@ -33,16 +32,15 @@ const getMessages = async (req, res) => {
 
 const sendMessage = async (req, res) => {
   try {
-    const { receiverId, content } = req.body; // ⚠️ تغییر از text به content
+    const { receiverId, content } = req.body; 
     const senderId = req.user._id;
 
     const message = await Message.create({
       sender: senderId,
       receiver: receiverId,
-      content, // ⚠️ تغییر از text به content
+      content, 
     });
 
-    // ✅ تبدیل به فرمت مورد نیاز فرانت
     const formattedMessage = {
       _id: message._id.toString(),
       sender: "coach",
@@ -99,7 +97,6 @@ const getChatUsers = async (req, res) => {
 }
 const getChatCoaches = async (req, res) => {
   try {
-    // پیدا کردن مربی‌هایی که با این کاربر چت داشتن
     const coachIds = await Message.distinct('sender', { 
       receiver: req.user._id
     })

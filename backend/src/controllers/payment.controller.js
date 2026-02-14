@@ -11,7 +11,6 @@ exports.getUserPayments = async (req, res) => {
       .populate('orderId', 'products totalAmount status')
       .populate('subscriptionId', 'plan amount status');
 
-    // Format payments for frontend
     const formattedPayments = payments.map(payment => {
       let description = payment.description || '';
       let details = {};
@@ -76,7 +75,6 @@ exports.getPaymentById = async (req, res) => {
       });
     }
 
-    // Check if user owns this payment
     if (payment.user.toString() !== req.user._id.toString()) {
       return res.status(403).json({ 
         success: false, 

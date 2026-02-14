@@ -78,7 +78,6 @@ const getCoachArticleById = async (req, res) => {
   }
 };
 
-// --- GET article by ID for public (✅ این مورد نیاز شماست)
 const getPublicArticleById = async (req, res) => {
   try {
     const { id } = req.params;
@@ -92,7 +91,6 @@ const getPublicArticleById = async (req, res) => {
       return res.status(404).json({ success: false, message: 'مقاله یافت نشد' });
     }
     
-    // افزایش بازدید
     article.views += 1;
     await article.save();
     

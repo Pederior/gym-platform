@@ -18,7 +18,7 @@ const NotificationSchema = new mongoose.Schema(
     },
     relatedId: {
       type: mongoose.Schema.ObjectId,
-      ref: "User", // برای chat یا Class یا Workout
+      ref: "User", 
       required: true,
     },
     read: {

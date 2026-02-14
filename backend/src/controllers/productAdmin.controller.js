@@ -47,10 +47,8 @@ exports.getProducts = async (req, res) => {
       order = 'desc'
     } = req.query;
 
-    // Build query
     let query = {};
 
-    // Search by name or category
     if (search) {
       query.$or = [
         { name: { $regex: search, $options: 'i' } },
@@ -58,29 +56,23 @@ exports.getProducts = async (req, res) => {
       ];
     }
 
-    // Filter by type
     if (type) {
       query.type = type;
     }
 
-    // Filter by category
     if (category) {
       query.category = category;
     }
 
-    // Filter by status
     if (status) {
       query.status = status;
     }
 
-    // Count total
     const total = await Product.countDocuments(query);
 
-    // Sort options
     const sortOptions = {};
     sortOptions[sortBy] = order === 'asc' ? 1 : -1;
 
-    // Get products
     const products = await Product.find(query)
       .sort(sortOptions)
       .limit(parseInt(limit))
@@ -134,7 +126,6 @@ exports.createProduct = async (req, res) => {
       status = 'active'
     } = req.body;
 
-    // Validate required fields
     if (!name || !price || !type || !category || !description) {
       return res.status(400).json({ 
         success: false, 
@@ -142,14 +133,12 @@ exports.createProduct = async (req, res) => {
       });
     }
 
-    // Handle image upload
     let image = '';
     if (req.file) {
       const baseUrl = `${req.protocol}://${req.get('host')}`;
       image = `${baseUrl}/uploads/products/${req.file.filename}`;
     }
 
-    // Parse arrays if they are strings
     let parsedCompatiblePlans = [];
     let parsedBundles = [];
 
@@ -165,7 +154,6 @@ exports.createProduct = async (req, res) => {
         : bundles;
     }
 
-    // Create product
     const product = await Product.create({
       name,
       price: Number(price),
@@ -214,7 +202,6 @@ exports.updateProduct = async (req, res) => {
       return res.status(404).json({ success: false, message: 'محصول یافت نشد' });
     }
 
-    // Update fields
     if (name) product.name = name;
     if (price) product.price = Number(price);
     if (type) product.type = type;
@@ -222,7 +209,6 @@ exports.updateProduct = async (req, res) => {
     if (description) product.description = description;
     if (status) product.status = status;
 
-    // Parse and update arrays
     if (compatiblePlans) {
       product.compatiblePlans = typeof compatiblePlans === 'string' 
         ? JSON.parse(compatiblePlans) 
@@ -235,7 +221,6 @@ exports.updateProduct = async (req, res) => {
         : bundles;
     }
 
-    // Handle image upload
     if (req.file) {
       const baseUrl = `${req.protocol}://${req.get('host')}`;
       product.image = `${baseUrl}/uploads/products/${req.file.filename}`;

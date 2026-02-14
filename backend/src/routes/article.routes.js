@@ -1,4 +1,3 @@
-// routes/article.routes.js
 const express = require('express');
 const { getPublicArticles, getPublicArticleById } = require('../controllers/article.controller');
 

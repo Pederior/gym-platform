@@ -18,7 +18,6 @@ const createDietPlan = async (req, res) => {
   try {
     const { title, description, duration, diets } = req.body;
 
-    // اعتبارسنجی فیلدهای اجباری
     if (!title || !duration || !diets || !Array.isArray(diets) || diets.length === 0) {
       return res.status(400).json({ success: false, message: 'اطلاعات ناقص است' });
     }
@@ -91,7 +90,6 @@ const deleteDietPlan = async (req, res) => {
   try {
     const { id } = req.params;
 
-    // بررسی وجود اختصاص‌های فعال
     const activeAssignments = await UserDietPlan.countDocuments({
       dietPlan: id,
       status: 'active'
@@ -125,13 +123,11 @@ const assignDietPlan = async (req, res) => {
   try {
     const { userId, dietPlanId } = req.body;
 
-    // بررسی وجود کاربر
     const user = await User.findById(userId);
     if (!user || user.role !== 'user') {
       return res.status(404).json({ success: false, message: 'کاربر یافت نشد' });
     }
 
-    // بررسی وجود برنامه
     const dietPlan = await DietPlan.findOne({
       _id: dietPlanId,
       createdBy: req.user._id
@@ -141,7 +137,6 @@ const assignDietPlan = async (req, res) => {
       return res.status(404).json({ success: false, message: 'برنامه غذایی یافت نشد' });
     }
 
-    // بررسی تکراری بودن
     const existingAssignment = await UserDietPlan.findOne({
       user: userId,
       dietPlan: dietPlanId,
@@ -174,7 +169,6 @@ const getAssignedUsers = async (req, res) => {
   try {
     const { dietPlanId } = req.params;
 
-    // بررسی مالکیت برنامه
     const dietPlan = await DietPlan.findOne({
       _id: dietPlanId,
       createdBy: req.user._id

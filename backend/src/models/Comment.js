@@ -28,11 +28,10 @@ const CommentSchema = new mongoose.Schema({
   status: {
     type: String,
     enum: ['pending', 'approved', 'rejected'],
-    default: 'approved' // برای کاربران عادی approved، برای مهمان‌ها pending
+    default: 'approved' 
   }
 }, { timestamps: true });
 
-// Index برای performance
 CommentSchema.index({ article: 1, status: 1, createdAt: -1 });
 CommentSchema.index({ author: 1 });
 

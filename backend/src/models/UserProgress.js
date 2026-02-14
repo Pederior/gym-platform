@@ -1,5 +1,3 @@
-// models/UserProgress.js
-
 const mongoose = require('mongoose')
 
 const UserProgressSchema = new mongoose.Schema({
@@ -32,7 +30,6 @@ const UserProgressSchema = new mongoose.Schema({
   }
 }, { timestamps: true })
 
-// ایندکس برای بهینه‌سازی کوئری‌ها
 UserProgressSchema.index({ user: 1, workout: 1 }, { unique: true })
 
 module.exports = mongoose.model('UserProgress', UserProgressSchema)

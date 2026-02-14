@@ -7,16 +7,12 @@ const protect = async (req, res, next) => {
 
   if (req.headers.authorization && req.headers.authorization.startsWith('Bearer')) {
     try {
-      // گرفتن توکن
       token = req.headers.authorization.split(' ')[1];
       
-      // دیکد کردن توکن
       const decoded = jwt.verify(token, process.env.JWT_SECRET);
       
-      // گرفتن اطلاعات کاربر
       req.user = await User.findById(decoded.id).select('-password');
       
-      // ✅ بررسی وجود کاربر
       if (!req.user) {
         return res.status(401).json({ 
           success: false, 

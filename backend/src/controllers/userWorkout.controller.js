@@ -1,11 +1,10 @@
 const UserWorkout = require('../models/UserWorkout')
-const WorkoutPlan = require('../models/WorkoutPlan') // ← اضافه کردن
+const WorkoutPlan = require('../models/WorkoutPlan') 
 
 const createUserWorkout = async (req, res) => {
   try {
     const { userId, workoutId } = req.body
 
-    // بررسی وجود برنامه تمرینی
     const workout = await WorkoutPlan.findById(workoutId)
     if (!workout) {
       return res.status(404).json({ success: false, message: 'برنامه تمرینی یافت نشد' })
@@ -21,7 +20,7 @@ const createUserWorkout = async (req, res) => {
       workout: workoutId,
       assignedBy: req.user._id,
       progress: {
-        totalDays: workout.duration // ← اضافه کردن totalDays
+        totalDays: workout.duration 
       }
     })
 
