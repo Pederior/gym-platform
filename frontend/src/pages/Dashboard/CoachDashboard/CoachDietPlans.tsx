@@ -28,7 +28,6 @@ interface Student {
   };
 }
 
-// ✅ اضافه کردن interface جدید
 interface AssignedUser {
   _id: string;
   user: {
@@ -48,14 +47,12 @@ export default function CoachDietPlans() {
   const [dietPlans, setDietPlans] = useState<DietPlan[]>([]);
   const [loading, setLoading] = useState(true);
   
-  // Modal states
   const [isAssignModalOpen, setIsAssignModalOpen] = useState(false);
   const [selectedDietPlanId, setSelectedDietPlanId] = useState<string | null>(null);
   const [students, setStudents] = useState<Student[]>([]);
   const [selectedStudentId, setSelectedStudentId] = useState<string>('');
   const [modalLoading, setModalLoading] = useState(false);
 
-  // ✅ اضافه کردن state برای لیست کاربران اختصاص داده شده
   const [assignedUsers, setAssignedUsers] = useState<Record<string, AssignedUser[]>>({});
   const [expandedPlan, setExpandedPlan] = useState<string | null>(null);
 
@@ -73,7 +70,6 @@ export default function CoachDietPlans() {
         
       setDietPlans(dietPlansData);
       
-      // ✅ دریافت لیست کاربران اختصاص داده شده برای هر برنامه
       if (Array.isArray(dietPlansData)) {
         const usersMap: Record<string, AssignedUser[]> = {};
         for (const plan of dietPlansData) {
@@ -107,7 +103,6 @@ export default function CoachDietPlans() {
     }
   };
 
-  // باز کردن modal اختصاص
   const openAssignModal = async (dietPlanId: string) => {
     setSelectedDietPlanId(dietPlanId);
     setModalLoading(true);
@@ -129,7 +124,6 @@ export default function CoachDietPlans() {
     }
   };
 
-  // اختصاص برنامه به کاربر
   const handleAssignDietPlan = async () => {
     if (!selectedDietPlanId || !selectedStudentId) {
       toast.error('لطفاً یک شاگرد را انتخاب کنید');
@@ -150,7 +144,7 @@ export default function CoachDietPlans() {
           ...prev,
           [selectedDietPlanId]: Array.isArray(usersRes.data.data) ? usersRes.data.data : []
         }));
-        setExpandedPlan(selectedDietPlanId); // نمایش لیست بعد از اختصاص
+        setExpandedPlan(selectedDietPlanId);
       } catch (err) {
         console.error('Error refreshing assigned users:', err);
       }
@@ -164,40 +158,39 @@ export default function CoachDietPlans() {
     }
   };
 
-  // تغییر وضعیت نمایش لیست کاربران
   const toggleAssignedUsers = (planId: string) => {
     setExpandedPlan(expandedPlan === planId ? null : planId);
   };
 
   return (
     <div className="space-y-6">
-      <div className="flex justify-between items-center">
-        <h1 className="text-2xl font-bold">برنامه‌های غذایی</h1>
+      <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
+        <h1 className="text-xl sm:text-2xl font-bold text-foreground">برنامه‌های غذایی</h1>
         <Link
           to="/dashboard/coach/diet-plans/create"
-          className="bg-red-600 text-white px-4 py-2 rounded-lg hover:bg-red-700"
+          className="bg-primary text-primary-foreground px-4 py-2 rounded-lg hover:bg-primary/80"
         >
           ایجاد برنامه جدید
         </Link>
       </div>
 
       {loading ? (
-        <div className="py-8 text-center">در حال بارگذاری...</div>
+        <div className="py-8 text-center text-muted-foreground">در حال بارگذاری...</div>
       ) : (
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
           {dietPlans.map(plan => (
-            <div key={plan._id} className="border rounded-lg p-4 bg-white shadow-sm hover:shadow-md transition-shadow">
-              <h3 className="font-bold text-lg mb-2">{plan.title}</h3>
-              <p className="text-gray-600 text-sm mb-3">{plan.description}</p>
-              <p className="text-xs text-gray-500 mb-3">
+            <div key={plan._id} className="border border-border rounded-lg p-4 bg-card shadow-sm hover:shadow-md transition-shadow">
+              <h3 className="font-bold text-lg text-foreground mb-2">{plan.title}</h3>
+              <p className="text-muted-foreground text-sm mb-3">{plan.description}</p>
+              <p className="text-xs text-muted-foreground mb-3">
                 مدت زمان: {plan.duration} روز
               </p>
               
               <div className="mb-4">
-                <h4 className="font-medium text-gray-700 mb-2">وعده‌ها:</h4>
+                <h4 className="font-medium text-foreground mb-2">وعده‌ها:</h4>
                 <ul className="space-y-1">
                   {plan.diets.map((diet, index) => (
-                    <li key={index} className="text-sm">
+                    <li key={index} className="text-sm text-muted-foreground">
                       <strong>{diet.name}</strong> - {diet.portion}
                     </li>
                   ))}
@@ -207,29 +200,28 @@ export default function CoachDietPlans() {
               <div className="flex gap-2 mb-3">
                 <Link
                   to={`/dashboard/coach/diet-plans/edit/${plan._id}`}
-                  className="text-blue-600 hover:text-blue-800"
+                  className="text-primary hover:text-primary/80"
                 >
                   ویرایش
                 </Link>
                 <button
                   onClick={() => handleDelete(plan._id)}
-                  className="text-red-600 hover:text-red-800"
+                  className="text-destructive hover:text-destructive/80"
                 >
                   حذف
                 </button>
                 <button
                   onClick={() => openAssignModal(plan._id)}
-                  className="text-green-600 hover:text-green-800"
+                  className="text-accent hover:text-accent/80"
                 >
                   اختصاص
                 </button>
               </div>
 
-              {/* ✅ نمایش لیست کاربران اختصاص داده شده */}
-              <div className="mt-3 pt-3 border-t border-gray-100">
+              <div className="mt-3 pt-3 border-t border-border">
                 <button
                   onClick={() => toggleAssignedUsers(plan._id)}
-                  className="text-sm text-purple-600 hover:text-purple-800"
+                  className="text-sm text-primary hover:text-primary/80"
                 >
                   {expandedPlan === plan._id 
                     ? 'پنهان کردن کاربران' 
@@ -237,14 +229,14 @@ export default function CoachDietPlans() {
                 </button>
 
                 {expandedPlan === plan._id && (
-                  <div className="mt-2 p-2 bg-gray-50 rounded-lg max-h-40 overflow-y-auto">
+                  <div className="mt-2 p-2 bg-muted rounded-lg max-h-40 overflow-y-auto">
                     {assignedUsers[plan._id]?.length > 0 ? (
                       <ul className="space-y-1">
                         {assignedUsers[plan._id].map(user => (
-                          <li key={user._id} className="text-xs text-gray-700">
+                          <li key={user._id} className="text-xs text-foreground">
                             • {user.user.name} 
                             {user.completedDays > 0 && (
-                              <span className="text-green-600 ml-1">
+                              <span className="text-accent ml-1">
                                 ({user.completedDays}/{user.totalDays})
                               </span>
                             )}
@@ -252,7 +244,7 @@ export default function CoachDietPlans() {
                         ))}
                       </ul>
                     ) : (
-                      <p className="text-xs text-gray-500">کاربری یافت نشد</p>
+                      <p className="text-xs text-muted-foreground">کاربری یافت نشد</p>
                     )}
                   </div>
                 )}
@@ -264,16 +256,16 @@ export default function CoachDietPlans() {
 
       {/* Modal اختصاص برنامه غذایی */}
       {isAssignModalOpen && (
-        <div className="fixed inset-0 bg-black/50 bg-opacity-50 flex items-center justify-center z-50">
-          <div className="bg-white rounded-lg p-6 w-full max-w-md mx-4 max-h-[90vh] overflow-y-auto">
+        <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4">
+          <div className="bg-card rounded-lg p-6 w-full max-w-md mx-4 max-h-[90vh] overflow-y-auto border border-border">
             <div className="flex justify-between items-center mb-4">
-              <h3 className="text-lg font-bold">اختصاص برنامه غذایی</h3>
+              <h3 className="text-lg font-bold text-foreground">اختصاص برنامه غذایی</h3>
               <button
                 onClick={() => {
                   setIsAssignModalOpen(false);
                   setSelectedStudentId('');
                 }}
-                className="text-gray-500 hover:text-gray-700"
+                className="text-muted-foreground hover:text-foreground"
               >
                 ✕
               </button>
@@ -281,21 +273,21 @@ export default function CoachDietPlans() {
             
             {modalLoading ? (
               <div className="py-4 text-center">
-                <div className="animate-spin rounded-full h-6 w-6 border-b-2 border-red-600 mx-auto mb-2"></div>
-                در حال بارگذاری شاگردها...
+                <div className="animate-spin rounded-full h-6 w-6 border-b-2 border-primary mx-auto mb-2"></div>
+                <div className="text-muted-foreground">در حال بارگذاری شاگردها...</div>
               </div>
             ) : (
               <>
                 {students.length > 0 ? (
                   <>
-                    <p className="text-gray-600 text-sm mb-4">
+                    <p className="text-muted-foreground text-sm mb-4">
                       لطفاً شاگردی را برای اختصاص برنامه غذایی انتخاب کنید:
                     </p>
                     
                     <select
                       value={selectedStudentId}
                       onChange={(e) => setSelectedStudentId(e.target.value)}
-                      className="w-full px-3 py-2 border border-gray-300 rounded-lg mb-4 focus:ring-2 focus:ring-red-500 focus:border-red-500"
+                      className="w-full px-3 py-2 border border-border rounded-lg mb-4 focus:ring-2 focus:ring-primary bg-background text-foreground"
                     >
                       <option value="">شاگردی را انتخاب کنید</option>
                       {students.map(student => (
@@ -305,11 +297,11 @@ export default function CoachDietPlans() {
                       ))}
                     </select>
                     
-                    <div className="flex gap-2">
+                    <div className="flex flex-col sm:flex-row gap-2">
                       <button
                         onClick={handleAssignDietPlan}
                         disabled={!selectedStudentId}
-                        className="flex-1 bg-red-600 text-white px-4 py-2 rounded-lg hover:bg-red-700 disabled:opacity-50 disabled:cursor-not-allowed"
+                        className="flex-1 bg-primary text-primary-foreground px-4 py-2 rounded-lg hover:bg-primary/80 disabled:opacity-50 disabled:cursor-not-allowed"
                       >
                         اختصاص برنامه
                       </button>
@@ -318,7 +310,7 @@ export default function CoachDietPlans() {
                           setIsAssignModalOpen(false);
                           setSelectedStudentId('');
                         }}
-                        className="flex-1 bg-gray-200 text-gray-800 px-4 py-2 rounded-lg hover:bg-gray-300"
+                        className="flex-1 bg-secondary text-secondary-foreground px-4 py-2 rounded-lg hover:bg-secondary/80"
                       >
                         انصراف
                       </button>
@@ -326,14 +318,14 @@ export default function CoachDietPlans() {
                   </>
                 ) : (
                   <div className="text-center py-4">
-                    <div className="text-4xl mb-2">👥</div>
-                    <p className="text-gray-600">شاگردی برای اختصاص وجود ندارد</p>
+                    <div className="text-4xl mb-2 text-muted-foreground">👥</div>
+                    <p className="text-muted-foreground">شاگردی برای اختصاص وجود ندارد</p>
                     <button
                       onClick={() => {
                         setIsAssignModalOpen(false);
                         window.location.href = '/dashboard/coach';
                       }}
-                      className="mt-4 text-red-600 hover:text-red-800 text-sm"
+                      className="mt-4 text-primary hover:text-primary/80 text-sm"
                     >
                       بازگشت به داشبورد
                     </button>

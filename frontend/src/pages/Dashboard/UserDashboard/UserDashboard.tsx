@@ -14,6 +14,8 @@ interface CurrentWorkout {
   title: string;
   description: string;
   duration: number;
+  completedDays?: number;
+  totalDays?: number;
 }
 
 interface DietItem {
@@ -59,7 +61,7 @@ export default function UserDashboard() {
             weeklyProgress: 0,
           },
         );
-        console.log(workoutsRes.data.data);
+        
         const workouts = Array.isArray(workoutsRes.data.data)
           ? workoutsRes.data.data.filter((w) => w && w._id && w.title)
           : [];
@@ -97,42 +99,42 @@ export default function UserDashboard() {
   if (loading) {
     return (
       <div className="flex justify-center items-center h-64">
-        <div className="animate-spin rounded-full h-10 w-10 border-b-2 border-red-600"></div>
+        <div className="animate-spin rounded-full h-10 w-10 border-b-2 border-primary"></div>
       </div>
     );
   }
 
   return (
     <div className="space-y-8">
-      <h1 className="text-2xl font-bold text-gray-800">
+      <h1 className="text-2xl font-bold text-foreground">
         داشبورد کاربر — خوش آمدید، {user?.name}!
       </h1>
 
       {/* Stats Cards */}
       <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-        <div className="bg-white p-6 rounded-xl shadow hover:shadow-md transition-shadow">
-          <h3 className="text-gray-600 text-sm font-medium mb-2">
+        <div className="bg-card p-6 rounded-xl shadow hover:shadow-md transition-shadow border border-border">
+          <h3 className="text-muted-foreground text-sm font-medium mb-2">
             کلاس‌های رزرو شده
           </h3>
-          <p className="text-3xl font-bold text-gray-800">
+          <p className="text-3xl font-bold text-foreground">
             {stats?.reservedClasses || 0}
           </p>
         </div>
 
-        <div className="bg-white p-6 rounded-xl shadow hover:shadow-md transition-shadow">
-          <h3 className="text-gray-600 text-sm font-medium mb-2">
+        <div className="bg-card p-6 rounded-xl shadow hover:shadow-md transition-shadow border border-border">
+          <h3 className="text-muted-foreground text-sm font-medium mb-2">
             تمرین‌های انجام‌شده
           </h3>
-          <p className="text-3xl font-bold text-gray-800">
+          <p className="text-3xl font-bold text-foreground">
             {stats?.completedWorkouts || 0}
           </p>
         </div>
 
-        <div className="bg-white p-6 rounded-xl shadow hover:shadow-md transition-shadow">
-          <h3 className="text-gray-600 text-sm font-medium mb-2">
+        <div className="bg-card p-6 rounded-xl shadow hover:shadow-md transition-shadow border border-border">
+          <h3 className="text-muted-foreground text-sm font-medium mb-2">
             پیشرفت هفتگی
           </h3>
-          <p className="text-3xl font-bold text-gray-800">
+          <p className="text-3xl font-bold text-foreground">
             {stats?.weeklyProgress ? `${stats.weeklyProgress}%` : "—"}
           </p>
         </div>
@@ -140,30 +142,30 @@ export default function UserDashboard() {
 
       {/* Current Workout Section */}
       {currentWorkout && currentWorkout._id && currentWorkout.title ? (
-        <div className="bg-white p-6 rounded-xl shadow">
+        <div className="bg-card p-6 rounded-xl shadow border border-border">
           <div className="flex flex-col md:flex-row md:justify-between md:items-start gap-4">
             <div className="flex-1">
-              <h2 className="font-bold text-lg text-gray-800 mb-2">
+              <h2 className="font-bold text-lg text-foreground mb-2">
                 برنامه تمرینی فعلی
               </h2>
-              <h3 className="text-xl font-semibold text-gray-800 mb-2">
+              <h3 className="text-xl font-semibold text-foreground mb-2">
                 {currentWorkout.title}
               </h3>
-              <p className="text-gray-600 mb-4">{currentWorkout.description}</p>
+              <p className="text-muted-foreground mb-4">{currentWorkout.description}</p>
 
               <div className="mb-4">
-                <div className="flex justify-between text-sm text-gray-600 mb-1">
+                <div className="flex justify-between text-sm text-muted-foreground mb-1">
                   <span>پیشرفت</span>
                   <span>
                     {currentWorkout.completedDays} از {currentWorkout.totalDays}{" "}
                     روز
                   </span>
                 </div>
-                <div className="w-full bg-gray-200 rounded-full h-2">
+                <div className="w-full bg-muted rounded-full h-2">
                   <div
-                    className="bg-red-600 h-2 rounded-full transition-all duration-500"
+                    className="bg-primary h-2 rounded-full transition-all duration-500"
                     style={{
-                      width: `${(currentWorkout.completedDays / currentWorkout.totalDays) * 100}%`,
+                      width: `${(currentWorkout.completedDays! / currentWorkout.totalDays!) * 100}%`,
                     }}
                   ></div>
                 </div>
@@ -175,7 +177,7 @@ export default function UserDashboard() {
                 onClick={() =>
                   (window.location.href = `/dashboard/user/workouts/${currentWorkout._id}`)
                 }
-                className="bg-red-600 hover:bg-red-700 text-white px-4 py-2 rounded-lg text-sm font-medium transition-colors"
+                className="bg-primary hover:bg-primary/80 text-primary-foreground px-4 py-2 rounded-lg text-sm font-medium transition-colors cursor-pointer"
               >
                 مشاهده جزئیات
               </button>
@@ -183,7 +185,7 @@ export default function UserDashboard() {
                 onClick={() => {
                   /* ثبت پیشرفت */
                 }}
-                className="border border-red-600 text-red-600 hover:bg-red-50 px-4 py-2 rounded-lg text-sm font-medium transition-colors"
+                className="border border-primary text-primary hover:bg-primary/10 px-4 py-2 rounded-lg text-sm font-medium transition-colors cursor-pointer"
               >
                 ثبت پیشرفت
               </button>
@@ -191,12 +193,12 @@ export default function UserDashboard() {
           </div>
         </div>
       ) : (
-        <div className="bg-white p-6 rounded-xl shadow text-center">
+        <div className="bg-card p-6 rounded-xl shadow text-center border border-border">
           <div className="text-6xl mb-4">🏋️</div>
-          <h3 className="font-bold text-gray-800 mb-2">
+          <h3 className="font-bold text-foreground mb-2">
             برنامه تمرینی فعالی وجود ندارد
           </h3>
-          <p className="text-gray-600 mb-4">
+          <p className="text-muted-foreground mb-4">
             {user?.subscription?.plan === "bronze"
               ? "با ارتقای اشتراک خود، برنامه‌های تمرینی شخصی‌سازی‌شده دریافت کنید"
               : "منتظر اختصاص برنامه تمرینی توسط مربی خود باشید"}
@@ -204,7 +206,7 @@ export default function UserDashboard() {
           {user?.subscription?.plan === "bronze" && (
             <button
               onClick={() => (window.location.href = "/subscription")}
-              className="bg-red-600 hover:bg-red-700 text-white px-4 py-2 rounded-lg text-sm font-medium transition-colors"
+              className="bg-primary hover:bg-primary/80 text-primary-foreground px-4 py-2 rounded-lg text-sm font-medium transition-colors"
             >
               ارتقای اشتراک
             </button>
@@ -214,16 +216,16 @@ export default function UserDashboard() {
 
       {/* Subscription Info */}
       {user?.subscription && (
-        <div className="bg-white p-6 rounded-xl shadow">
-          <h2 className="font-bold text-lg text-gray-800 mb-3">اشتراک فعلی</h2>
+        <div className="bg-card p-6 rounded-xl shadow border border-border">
+          <h2 className="font-bold text-lg text-foreground mb-3">اشتراک فعلی</h2>
           <div className="flex flex-wrap items-center gap-4">
             <span
               className={`px-3 py-1 rounded-full text-sm font-medium ${
                 user.subscription.plan === "gold"
-                  ? "bg-yellow-100 text-yellow-800"
+                  ? "bg-yellow-100 text-yellow-800 dark:bg-yellow-900 dark:text-yellow-100"
                   : user.subscription.plan === "silver"
-                    ? "bg-gray-100 text-gray-800"
-                    : "bg-blue-100 text-blue-800"
+                    ? "bg-gray-100 text-gray-800 dark:bg-gray-700 dark:text-gray-100"
+                    : "bg-blue-100 text-blue-800 dark:bg-blue-900 dark:text-blue-100"
               }`}
             >
               {user.subscription.plan === "gold"
@@ -232,7 +234,7 @@ export default function UserDashboard() {
                   ? "نقره‌ای"
                   : "برنز"}
             </span>
-            <span className="text-gray-600 text-sm">
+            <span className="text-muted-foreground text-sm">
               منقضی می‌شود:{" "}
               {new Date(user.subscription.expiresAt).toLocaleDateString(
                 "fa-IR",
@@ -240,7 +242,7 @@ export default function UserDashboard() {
             </span>
             <button
               onClick={() => (window.location.href = "/subscription")}
-              className="text-red-600 hover:text-red-700 text-sm font-medium"
+              className="text-primary hover:text-primary/80 text-sm font-medium"
             >
               تمدید/ارتقا
             </button>
@@ -249,8 +251,8 @@ export default function UserDashboard() {
       )}
 
       {currentDietPlan && (
-        <div className="bg-white p-6 rounded-xl shadow">
-          <h2 className="font-bold text-lg text-gray-800 mb-3">
+        <div className="bg-card p-6 rounded-xl shadow border border-border">
+          <h2 className="font-bold text-lg text-foreground mb-3">
             برنامه غذایی فعلی
           </h2>
           <h3 className="text-xl font-semibold mb-2">
@@ -258,30 +260,17 @@ export default function UserDashboard() {
           </h3>
 
           <div className="space-y-3">
-            {currentDietPlan && (
-              <div className="bg-white p-6 rounded-xl shadow">
-                <h2 className="font-bold text-lg text-gray-800 mb-3">
-                  برنامه غذایی فعلی
-                </h2>
-                <h3 className="text-xl font-semibold mb-2">
-                  {currentDietPlan.title}
-                </h3>
-
-                <div className="space-y-3">
-                  {currentDietPlan.diets.map((diet, index) => (
-                    <div key={index} className="border-l-4 border-red-600 pl-3">
-                      <h4 className="font-medium">{diet.name}</h4>
-                      <p className="text-gray-600 text-sm">{diet.portion}</p>
-                      {diet.calories && diet.calories > 0 && (
-                        <p className="text-gray-500 text-xs">
-                          {diet.calories} کالری
-                        </p>
-                      )}
-                    </div>
-                  ))}
-                </div>
+            {currentDietPlan.diets.map((diet, index) => (
+              <div key={index} className="border-l-4 border-primary pl-3">
+                <h4 className="font-medium text-foreground">{diet.name}</h4>
+                <p className="text-muted-foreground text-sm">{diet.portion}</p>
+                {diet.calories && diet.calories > 0 && (
+                  <p className="text-muted-foreground text-xs">
+                    {diet.calories} کالری
+                  </p>
+                )}
               </div>
-            )}
+            ))}
           </div>
         </div>
       )}

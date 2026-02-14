@@ -95,4 +95,78 @@ const getReservedClasses = async (req, res) => {
   }
 }
 
-module.exports = { createClass, getClasses, getClassById, reserveClass, getReservedClasses }
+const deleteClass = async (req, res) => {
+  try {
+    const { id } = req.params;
+    
+    // پیدا کردن کلاس
+    const classItem = await Class.findById(id);
+    if (!classItem) {
+      return res.status(404).json({ success: false, message: 'کلاس یافت نشد' });
+    }
+    
+    // بررسی دسترسی (مربی مالک یا ادمین)
+    if (req.user.role !== 'admin' && classItem.coach.toString() !== req.user._id.toString()) {
+      return res.status(403).json({ success: false, message: 'دسترسی غیرمجاز' });
+    }
+    
+    // بررسی اینکه کلاس رزرو شده باشه یا نه
+    if (classItem.reservedBy.length > 0) {
+      return res.status(400).json({ 
+        success: false, 
+        message: 'این کلاس قبلاً رزرو شده است و قابل حذف نیست' 
+      });
+    }
+    
+    await classItem.deleteOne();
+    
+    res.json({ success: true, message: 'کلاس با موفقیت حذف شد' });
+  } catch (err) {
+    console.error('Delete class error:', err);
+    res.status(500).json({ success: false, message: 'خطا در حذف کلاس' });
+  }
+};
+
+const updateClass = async (req, res) => {
+  try {
+    const { id } = req.params;
+    const { title, dateTime, capacity, price } = req.body;
+    
+    if (!title || !dateTime || !capacity || !price) {
+      return res.status(400).json({ 
+        success: false, 
+        message: 'تمام فیلدها الزامی هستند' 
+      });
+    }
+    
+    const classItem = await Class.findById(id);
+    if (!classItem) {
+      return res.status(404).json({ success: false, message: 'کلاس یافت نشد' });
+    }
+    
+    if (req.user.role !== 'admin' && classItem.coach.toString() !== req.user._id.toString()) {
+      return res.status(403).json({ success: false, message: 'دسترسی غیرمجاز' });
+    }
+    
+    if (capacity < classItem.reservedBy.length) {
+      return res.status(400).json({ 
+        success: false, 
+        message: `ظرفیت نمی‌تواند کمتر از ${classItem.reservedBy.length} باشد` 
+      });
+    }
+    
+    classItem.title = title;
+    classItem.dateTime = new Date(dateTime);
+    classItem.capacity = capacity;
+    classItem.price = price;
+    
+    await classItem.save();
+    
+    res.json({ success: true, class: classItem });
+  } catch (err) {
+    console.error('Update class error:', err);
+    res.status(500).json({ success: false, message: 'خطا در به‌روزرسانی کلاس' });
+  }
+};
+
+module.exports = { createClass, getClasses, getClassById, reserveClass, getReservedClasses, deleteClass, updateClass }

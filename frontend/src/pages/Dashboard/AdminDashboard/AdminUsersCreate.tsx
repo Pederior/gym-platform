@@ -1,9 +1,6 @@
-// src/pages/Dashboard/AdminDashboard/AdminUsersCreate.tsx
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import Card from "../../../components/ui/Card";
-import Input from "../../../components/ui/Input";
-import Button from "../../../components/ui/Button";
 import { userService } from "../../../services/userService";
 import { toast } from "react-hot-toast";
 import useDocumentTitle from '../../../hooks/useDocumentTitle'
@@ -39,64 +36,68 @@ export default function AdminUsersCreate() {
       setLoading(false);
     }
   };
+  
   return (
     <div>
-      <h1 className="text-2xl font-bold text-gray-800 mb-6">
+      <h1 className="text-xl sm:text-2xl font-bold text-foreground mb-6">
         ایجاد کاربر جدید
       </h1>
 
-      <Card>
+      <Card className="bg-card">
         <form onSubmit={handleSubmit} className="space-y-6">
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">
+            <label className="block text-sm font-medium text-foreground mb-1">
               نام کامل
             </label>
-            <Input
+            <input
               name="name"
               value={formData.name}
               onChange={handleChange}
               placeholder="نام و نام خانوادگی"
               required
+              className="w-full px-3 py-2 border border-border rounded-lg focus:ring-2 focus:ring-primary focus:outline-none bg-background text-foreground"
             />
           </div>
 
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">
+            <label className="block text-sm font-medium text-foreground mb-1">
               ایمیل
             </label>
-            <Input
+            <input
               name="email"
               type="email"
               value={formData.email}
               onChange={handleChange}
               placeholder="example@phoenixclub.com"
               required
+              className="w-full px-3 py-2 border border-border rounded-lg focus:ring-2 focus:ring-primary focus:outline-none bg-background text-foreground"
             />
           </div>
 
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">
+            <label className="block text-sm font-medium text-foreground mb-1">
               رمز عبور
             </label>
-            <Input
+            <input
               name="password"
               type="password"
               value={formData.password}
               onChange={handleChange}
               placeholder="حداقل 6 کاراکتر"
               required
+              className="w-full px-3 py-2 border border-border rounded-lg focus:ring-2 focus:ring-primary focus:outline-none bg-background text-foreground"
             />
           </div>
 
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">
+            <label className="block text-sm font-medium text-foreground mb-1">
               نقش
             </label>
             <select
               name="role"
               value={formData.role}
               onChange={handleChange}
-              className="w-1/5 px-3 py-2 border text-center rounded-lg focus:ring-2 focus:ring-red-500 focus:outline-none"
+              className="w-full text-center sm:w-1/3 px-3 py-2 border border-border rounded-lg focus:ring-2 focus:ring-primary focus:outline-none bg-background text-foreground"
             >
               <option value="user">کاربر</option>
               <option value="coach">مربی</option>
@@ -104,17 +105,21 @@ export default function AdminUsersCreate() {
             </select>
           </div>
 
-          <div className="flex gap-3">
-            <Button type="submit" disabled={loading}>
+          <div className="flex flex-col sm:flex-row gap-3">
+            <button 
+              type="submit" 
+              disabled={loading}
+              className="bg-primary text-primary-foreground px-4 py-2 rounded-lg hover:bg-primary/80 disabled:opacity-50 cursor-pointer"
+            >
               {loading ? "در حال ثبت..." : "ایجاد کاربر"}
-            </Button>
-            <Button
+            </button>
+            <button
               type="button"
-              variant="secondary"
               onClick={() => navigate("/dashboard/admin/users")}
+              className="bg-secondary text-secondary-foreground px-4 py-2 rounded-lg hover:bg-secondary/80 cursor-pointer"
             >
               انصراف
-            </Button>
+            </button>
           </div>
         </form>
       </Card>

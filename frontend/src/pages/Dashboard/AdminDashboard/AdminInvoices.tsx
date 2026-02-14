@@ -25,38 +25,38 @@ export default function AdminInvoices() {
 
   const getStatusBadge = (status: string) => {
     const config: Record<string, { label: string; color: string }> = {
-      paid: { label: 'پرداخت شده', color: 'bg-green-100 text-green-800' },
-      unpaid: { label: 'پرداخت نشده', color: 'bg-yellow-100 text-yellow-800' },
-      overdue: { label: 'سررسید گذشته', color: 'bg-red-100 text-red-800' }
+      paid: { label: 'پرداخت شده', color: 'bg-green-500/10 text-green-500' },
+      unpaid: { label: 'پرداخت نشده', color: 'bg-yellow-500/10 text-yellow-500' },
+      overdue: { label: 'سررسید گذشته', color: 'bg-destructive/10 text-destructive' }
     }
     const { label, color } = config[status] || config.unpaid
-    return <span className={`px-2 py-1 rounded-full text-xs ${color}`}>{label}</span>
+    return <span className={`px-2 py-1 rounded-full text-xs font-medium ${color}`}>{label}</span>
   }
 
   return (
     <div>
-      <h1 className="text-2xl font-bold mb-6">صورت‌حساب‌ها</h1>
+      <h1 className="text-xl sm:text-2xl font-bold text-foreground mb-6">صورت‌حساب‌ها</h1>
       <Card>
         {loading ? (
-          <div className="py-8 text-center">در حال بارگذاری...</div>
+          <div className="py-8 text-center text-muted-foreground">در حال بارگذاری...</div>
         ) : (
           <div className="overflow-x-auto">
-            <table className="w-full">
+            <table className="w-full min-w-full">
               <thead>
-                <tr className="text-right text-sm text-gray-500 border-b">
-                  <th>کاربر</th>
-                  <th>مبلغ کل</th>
-                  <th>سررسید</th>
-                  <th>وضعیت</th>
+                <tr className="text-right text-sm text-muted-foreground border-b border-border">
+                  <th className="py-3 px-2">کاربر</th>
+                  <th className="py-3 px-2">مبلغ کل</th>
+                  <th className="py-3 px-2">سررسید</th>
+                  <th className="py-3 px-2">وضعیت</th>
                 </tr>
               </thead>
               <tbody>
                 {invoices.map(inv => (
-                  <tr key={inv._id} className="border-b">
-                    <td>{inv.user.name}</td>
-                    <td>{inv.totalAmount.toLocaleString()} تومان</td>
-                    <td>{new Date(inv.dueDate).toLocaleDateString('fa-IR')}</td>
-                    <td>{getStatusBadge(inv.status)}</td>
+                  <tr key={inv._id} className="border-b border-border hover:bg-muted">
+                    <td className="py-3 px-2 text-foreground">{inv.user.name}</td>
+                    <td className="py-3 px-2 text-foreground">{inv.totalAmount.toLocaleString()} تومان</td>
+                    <td className="py-3 px-2 text-muted-foreground">{new Date(inv.dueDate).toLocaleDateString('fa-IR')}</td>
+                    <td className="py-3 px-2">{getStatusBadge(inv.status)}</td>
                   </tr>
                 ))}
               </tbody>

@@ -97,9 +97,9 @@ const MuscleBuilding: React.FC = () => {
   return (
     <div
       className="relative bg-black text-white h-screen flex md:flex-row flex-col px-7 items-center bg-cover"
-      style={{ backgroundImage: "url('/images/HeaderBg.jpg')" }}
+      style={{ backgroundImage: "url('/images/muscle.jpg')" }}
     >
-      <div className="min-h-[350px] md:w-1/2 w-full mt-10 md:mt-0 md:pr-16">
+      <div className="min-h-87.5 md:w-1/2 w-full mt-10 md:mt-0 md:pr-16">
         <nav className=" w-full flex justify-start gap-6 px-6 mb-6 text-base border-b-4 border-gray-500/70">
           <span
             onClick={() => setActiveTab("muscle")}
@@ -147,7 +147,7 @@ const MuscleBuilding: React.FC = () => {
           </span>
         </nav>
         {renderContent() && (
-          <div key={activeTab} className="animate-fade-in-up min-h-[180px] flex flex-col justify-start">{renderContent()}</div>
+          <div key={activeTab} className="animate-fade-in-up min-h-45 flex flex-col justify-start">{renderContent()}</div>
         )}
       </div>
 

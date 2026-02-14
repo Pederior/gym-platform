@@ -5,8 +5,8 @@ import api from '../../../services/api';
 import { toast } from 'react-hot-toast';
 
 interface DietMeal {
-  name: string;        // صبحانه، ناهار، شام
-  time: string;        // "08:00"
+  name: string;
+  time: string;
   foods: {
     name: string;
     portion: string;
@@ -83,7 +83,6 @@ export default function CoachDietPlansCreate() {
       return;
     }
 
-    // اعتبارسنجی وعده‌ها
     for (let i = 0; i < meals.length; i++) {
       if (!meals[i].name.trim() || !meals[i].time.trim()) {
         toast.error(`لطفاً اطلاعات وعده ${i + 1} را کامل کنید`);
@@ -119,21 +118,21 @@ export default function CoachDietPlansCreate() {
 
   return (
     <div className="space-y-6">
-      <div className="flex justify-between items-center">
-        <h1 className="text-2xl font-bold text-gray-800">ایجاد برنامه غذایی جدید</h1>
+      <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
+        <h1 className="text-xl sm:text-2xl font-bold text-foreground">ایجاد برنامه غذایی جدید</h1>
         <button
           onClick={() => navigate('/dashboard/coach/diet-plans')}
-          className="text-gray-600 hover:text-gray-800"
+          className="text-muted-foreground hover:text-foreground"
         >
           انصراف
         </button>
       </div>
 
-      <form onSubmit={handleSubmit} className="bg-white p-6 rounded-xl shadow">
+      <form onSubmit={handleSubmit} className="bg-card p-4 sm:p-6 rounded-xl shadow border border-border">
         {/* Basic Info */}
         <div className="space-y-4 mb-8">
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">
+            <label className="block text-sm font-medium text-foreground mb-1">
               عنوان برنامه *
             </label>
             <input
@@ -141,13 +140,13 @@ export default function CoachDietPlansCreate() {
               name="title"
               value={formData.title}
               onChange={handleInputChange}
-              className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-red-500 focus:border-red-500"
+              className="w-full px-3 py-2 border border-border rounded-lg focus:ring-2 focus:ring-primary bg-background text-foreground"
               placeholder="مثلاً: برنامه کاهش وزن"
             />
           </div>
 
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">
+            <label className="block text-sm font-medium text-foreground mb-1">
               توضیحات
             </label>
             <textarea
@@ -155,19 +154,19 @@ export default function CoachDietPlansCreate() {
               value={formData.description}
               onChange={handleInputChange}
               rows={3}
-              className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-red-500 focus:border-red-500"
+              className="w-full px-3 py-2 border border-border rounded-lg focus:ring-2 focus:ring-primary bg-background text-foreground"
               placeholder="توضیحات اختیاری برای برنامه..."
             />
           </div>
 
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">
+            <label className="block text-sm font-medium text-foreground mb-1">
               مدت زمان (روز)
             </label>
             <select
               value={formData.duration}
               onChange={handleDurationChange}
-              className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-red-500 focus:border-red-500"
+              className="w-full px-3 py-2 border border-border rounded-lg focus:ring-2 focus:ring-primary bg-background text-foreground"
             >
               <option value={7}>7 روز</option>
               <option value={14}>14 روز</option>
@@ -179,38 +178,38 @@ export default function CoachDietPlansCreate() {
 
         {/* Meals Section */}
         <div className="space-y-6">
-          <h2 className="text-xl font-bold text-gray-800">وعده‌های غذایی</h2>
+          <h2 className="text-xl font-bold text-foreground">وعده‌های غذایی</h2>
           
           {meals.map((meal, mealIndex) => (
-            <div key={mealIndex} className="border border-gray-200 rounded-lg p-4">
+            <div key={mealIndex} className="border border-border rounded-lg p-4">
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1">
+                  <label className="block text-sm font-medium text-foreground mb-1">
                     نام وعده *
                   </label>
                   <input
                     type="text"
                     value={meal.name}
                     onChange={(e) => handleMealFieldChange(mealIndex, 'name', e.target.value)}
-                    className="w-full px-3 py-2 border border-gray-300 rounded-lg"
+                    className="w-full px-3 py-2 border border-border rounded-lg bg-background text-foreground"
                     placeholder="صبحانه، ناهار، شام"
                   />
                 </div>
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1">
+                  <label className="block text-sm font-medium text-foreground mb-1">
                     زمان *
                   </label>
                   <input
                     type="time"
                     value={meal.time}
                     onChange={(e) => handleMealFieldChange(mealIndex, 'time', e.target.value)}
-                    className="w-full px-3 py-2 border border-gray-300 rounded-lg"
+                    className="w-full px-3 py-2 border border-border rounded-lg bg-background text-foreground"
                   />
                 </div>
               </div>
 
               <div className="mb-3">
-                <label className="block text-sm font-medium text-gray-700 mb-2">
+                <label className="block text-sm font-medium text-foreground mb-2">
                   مواد غذایی
                 </label>
                 
@@ -220,21 +219,21 @@ export default function CoachDietPlansCreate() {
                       type="text"
                       value={food.name}
                       onChange={(e) => handleFoodChange(mealIndex, foodIndex, 'name', e.target.value)}
-                      className="px-3 py-2 border border-gray-300 rounded-lg"
+                      className="px-3 py-2 border border-border rounded-lg bg-background text-foreground"
                       placeholder="نام غذا"
                     />
                     <input
                       type="text"
                       value={food.portion}
                       onChange={(e) => handleFoodChange(mealIndex, foodIndex, 'portion', e.target.value)}
-                      className="px-3 py-2 border border-gray-300 rounded-lg"
+                      className="px-3 py-2 border border-border rounded-lg bg-background text-foreground"
                       placeholder="مقدار (مثلاً 2 عدد)"
                     />
                     <input
                       type="number"
                       value={food.calories}
                       onChange={(e) => handleFoodChange(mealIndex, foodIndex, 'calories', parseInt(e.target.value) || 0)}
-                      className="px-3 py-2 border border-gray-300 rounded-lg"
+                      className="px-3 py-2 border border-border rounded-lg bg-background text-foreground"
                       placeholder="کالری"
                     />
                     <div className="flex items-center">
@@ -242,7 +241,7 @@ export default function CoachDietPlansCreate() {
                         <button
                           type="button"
                           onClick={() => removeFoodFromMeal(mealIndex, foodIndex)}
-                          className="text-red-600 hover:text-red-800 px-3 py-2 bg-red-50 rounded-lg"
+                          className="text-destructive hover:text-destructive/80 px-3 py-2 bg-destructive/10 rounded-lg"
                         >
                           حذف
                         </button>
@@ -254,21 +253,21 @@ export default function CoachDietPlansCreate() {
                 <button
                   type="button"
                   onClick={() => addFoodToMeal(mealIndex)}
-                  className="text-blue-600 hover:text-blue-800 text-sm font-medium"
+                  className="text-primary hover:text-primary/80 text-sm font-medium"
                 >
                   + افزودن غذای جدید
                 </button>
               </div>
 
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">
+                <label className="block text-sm font-medium text-foreground mb-1">
                   یادداشت‌ها
                 </label>
                 <textarea
                   value={meal.notes}
                   onChange={(e) => handleMealFieldChange(mealIndex, 'notes', e.target.value)}
                   rows={2}
-                  className="w-full px-3 py-2 border border-gray-300 rounded-lg"
+                  className="w-full px-3 py-2 border border-border rounded-lg bg-background text-foreground"
                   placeholder="یادداشت‌های اختیاری..."
                 />
               </div>
@@ -281,7 +280,7 @@ export default function CoachDietPlansCreate() {
           <button
             type="submit"
             disabled={loading}
-            className="bg-red-600 hover:bg-red-700 text-white px-6 py-2 rounded-lg font-medium transition-colors disabled:opacity-50"
+            className="bg-primary hover:bg-primary/80 text-primary-foreground px-6 py-2 rounded-lg font-medium transition-colors disabled:opacity-50"
           >
             {loading ? 'در حال ایجاد...' : 'ایجاد برنامه'}
           </button>

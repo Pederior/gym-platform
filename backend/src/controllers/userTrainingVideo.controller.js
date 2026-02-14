@@ -1,16 +1,24 @@
-// controllers/userTrainingVideo.controller.js
 const TrainingVideo = require('../models/TrainingVideo');
+const Subscription = require('../models/Subscription'); 
 
 // --- GET videos available to user based on subscription
 const getUserVideos = async (req, res) => {
   try {
-    const userSubscription = req.user.currentSubscription?.plan || 'bronze';
+    let userLevel = 'bronze'; 
     
-    // تعیین سطح دسترسی بر اساس اشتراک
+    const activeSubscription = await Subscription.findOne({
+      user: req.user._id,
+      status: 'active'
+    });
+    
+    if (activeSubscription) {
+      userLevel = activeSubscription.plan; 
+    }
+    
     let allowedLevels = [];
-    if (userSubscription === 'gold') {
+    if (userLevel === 'gold') {
       allowedLevels = ['bronze', 'silver', 'gold'];
-    } else if (userSubscription === 'silver') {
+    } else if (userLevel === 'silver') {
       allowedLevels = ['bronze', 'silver'];
     } else {
       allowedLevels = ['bronze'];
@@ -25,6 +33,7 @@ const getUserVideos = async (req, res) => {
     
     res.json({ success: true, data: videos });
   } catch (err) {
+    console.error('Get user videos error:', err);
     res.status(500).json({ success: false, message: 'خطا در بارگذاری ویدیوها' });
   }
 };
@@ -33,7 +42,16 @@ const getUserVideos = async (req, res) => {
 const getVideoById = async (req, res) => {
   try {
     const { id } = req.params;
-    const userSubscription = req.user.currentSubscription?.plan || 'bronze';
+    
+    let userLevel = 'bronze';
+    const activeSubscription = await Subscription.findOne({
+      user: req.user._id,
+      status: 'active'
+    });
+    
+    if (activeSubscription) {
+      userLevel = activeSubscription.plan;
+    }
     
     const video = await TrainingVideo.findOne({
       _id: id,
@@ -44,11 +62,10 @@ const getVideoById = async (req, res) => {
       return res.status(404).json({ success: false, message: 'ویدیو یافت نشد' });
     }
     
-    // بررسی دسترسی بر اساس اشتراک
     const hasAccess = 
-      (userSubscription === 'gold') ||
-      (userSubscription === 'silver' && video.accessLevel !== 'gold') ||
-      (userSubscription === 'bronze' && video.accessLevel === 'bronze');
+      (userLevel === 'gold') ||
+      (userLevel === 'silver' && video.accessLevel !== 'gold') ||
+      (userLevel === 'bronze' && video.accessLevel === 'bronze');
     
     if (!hasAccess) {
       return res.status(403).json({ success: false, message: 'شما دسترسی به این ویدیو ندارید' });
@@ -56,6 +73,7 @@ const getVideoById = async (req, res) => {
     
     res.json({ success: true, data: video });
   } catch (err) {
+    console.error('Get video by ID error:', err);
     res.status(500).json({ success: false, message: 'خطا در بارگذاری ویدیو' });
   }
 };

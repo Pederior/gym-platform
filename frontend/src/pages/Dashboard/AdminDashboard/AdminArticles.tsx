@@ -1,4 +1,3 @@
-// pages/Dashboard/AdminDashboard/AdminArticles.tsx
 import { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import Card from '../../../components/ui/Card';
@@ -17,9 +16,9 @@ interface Article {
 }
 
 const statusConfig = {
-  draft: { label: 'پیش‌نویس', color: 'bg-gray-100 text-gray-800' },
-  published: { label: 'منتشر شده', color: 'bg-green-100 text-green-800' },
-  archived: { label: 'آرشیو شده', color: 'bg-yellow-100 text-yellow-800' }
+  draft: { label: 'پیش‌نویس', color: 'bg-muted/50 text-muted-foreground' },
+  published: { label: 'منتشر شده', color: 'bg-green-500/10 text-green-500' },
+  archived: { label: 'آرشیو شده', color: 'bg-yellow-500/10 text-yellow-500' }
 };
 
 const categoryLabels: Record<string, string> = {
@@ -70,11 +69,11 @@ export default function AdminArticles() {
 
   return (
     <div>
-      <div className="flex justify-between items-center mb-6">
-        <h1 className="text-2xl font-bold">مدیریت مقالات</h1>
+      <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-6 gap-4">
+        <h1 className="text-xl sm:text-2xl font-bold text-foreground">مدیریت مقالات</h1>
         <Link
           to="/dashboard/admin/articles/create"
-          className="bg-red-600 text-white px-4 py-2 rounded-lg hover:bg-red-700"
+          className="bg-primary text-primary-foreground px-4 py-2 rounded-lg hover:bg-primary/80"
         >
           + ایجاد مقاله جدید
         </Link>
@@ -82,13 +81,13 @@ export default function AdminArticles() {
 
       {/* Filters */}
       <Card className="mb-6 p-4">
-        <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">وضعیت</label>
+            <label className="block text-sm font-medium text-foreground mb-1">وضعیت</label>
             <select
               value={filters.status}
               onChange={(e) => setFilters({...filters, status: e.target.value})}
-              className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-red-500"
+              className="w-full px-3 py-2 border border-border rounded-lg focus:ring-2 focus:ring-primary bg-background text-foreground text-center"
             >
               <option value="">همه وضعیت‌ها</option>
               <option value="draft">پیش‌نویس</option>
@@ -98,11 +97,11 @@ export default function AdminArticles() {
           </div>
           
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">دسته‌بندی</label>
+            <label className="block text-sm font-medium text-foreground mb-1">دسته‌بندی</label>
             <select
               value={filters.category}
               onChange={(e) => setFilters({...filters, category: e.target.value})}
-              className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-red-500"
+              className="w-full px-3 py-2 border border-border rounded-lg focus:ring-2 focus:ring-primary bg-background text-foreground text-center"
             >
               <option value="">همه دسته‌بندی‌ها</option>
               <option value="nutrition">تغذیه</option>
@@ -113,14 +112,14 @@ export default function AdminArticles() {
             </select>
           </div>
           
-          <div className="md:col-span-2">
-            <label className="block text-sm font-medium text-gray-700 mb-1">جستجو</label>
+          <div className="lg:col-span-2">
+            <label className="block text-sm font-medium text-foreground mb-1">جستجو</label>
             <input
               type="text"
               value={filters.search}
               onChange={(e) => setFilters({...filters, search: e.target.value})}
               placeholder="عنوان یا نویسنده..."
-              className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-red-500"
+              className="w-full px-3 py-2 border border-border rounded-lg focus:ring-2 focus:ring-primary bg-background text-foreground"
             />
           </div>
         </div>
@@ -128,60 +127,60 @@ export default function AdminArticles() {
 
       {/* Articles List */}
       {loading ? (
-        <div className="py-8 text-center">در حال بارگذاری...</div>
+        <div className="py-8 text-center text-muted-foreground">در حال بارگذاری...</div>
       ) : articles.length === 0 ? (
         <Card>
           <div className="text-center py-8">
-            <div className="text-4xl mb-4">📝</div>
-            <h3 className="font-bold text-gray-800 mb-2">مقاله‌ای یافت نشد</h3>
-            <p className="text-gray-600">با فیلترهای فعلی مقاله‌ای وجود ندارد</p>
+            <div className="text-4xl mb-4 text-muted-foreground">📝</div>
+            <h3 className="font-bold text-foreground mb-2">مقاله‌ای یافت نشد</h3>
+            <p className="text-muted-foreground">با فیلترهای فعلی مقاله‌ای وجود ندارد</p>
           </div>
         </Card>
       ) : (
         <div className="space-y-4">
           {articles.map(article => (
             <Card key={article._id} className="p-4 hover:shadow-md transition-shadow">
-              <div className="flex justify-between items-start">
+              <div className="flex flex-col sm:flex-row justify-between items-start gap-4">
                 <div className="flex-1">
-                  <h3 className="font-bold text-lg text-gray-800">{article.title}</h3>
+                  <h3 className="font-bold text-lg text-foreground">{article.title}</h3>
                   <div className="flex gap-2 mt-2 flex-wrap">
-                    <span className={`px-2 py-1 rounded-full text-xs ${statusConfig[article.status].color}`}>
+                    <span className={`px-2 py-1 rounded-full text-xs font-medium ${statusConfig[article.status].color}`}>
                       {statusConfig[article.status].label}
                     </span>
-                    <span className="px-2 py-1 bg-blue-100 text-blue-800 rounded-full text-xs">
+                    <span className="px-2 py-1 bg-primary/10 text-primary rounded-full text-xs font-medium">
                       {categoryLabels[article.category] || article.category}
                     </span>
-                    <span className="text-sm text-gray-600">
+                    <span className="text-sm text-muted-foreground">
                       {article.commentsCount} کامنت
                     </span>
                   </div>
                   <div className="mt-3 text-sm">
-                    <div className="text-gray-700">
+                    <div className="text-foreground">
                       <strong>نویسنده:</strong> {article.author.name} ({article.author.email})
                     </div>
                   </div>
                 </div>
-                <div className="text-right text-sm text-gray-500">
+                <div className="text-right text-sm text-muted-foreground whitespace-nowrap">
                   {new Date(article.createdAt).toLocaleDateString('fa-IR')}
                 </div>
               </div>
               <div className="mt-4 flex gap-3">
                 <Link
                   to={`/dashboard/admin/articles/${article._id}/edit`}
-                  className="text-blue-600 hover:text-blue-800"
+                  className="text-primary hover:text-primary/80"
                 >
                   ویرایش
                 </Link>
                 <button
                   onClick={() => handleDelete(article._id)}
-                  className="text-red-600 hover:text-red-800"
+                  className="text-destructive hover:text-destructive/80"
                 >
                   حذف
                 </button>
                 <Link
                   to={`/articles/${article._id}`}
                   target="_blank"
-                  className="text-green-600 hover:text-green-800"
+                  className="text-accent hover:text-accent/80"
                 >
                   مشاهده
                 </Link>

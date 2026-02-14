@@ -19,17 +19,17 @@ export default function AdminProducts() {
   const [deletingId, setDeletingId] = useState<string | null>(null);
 
   const productTypes: { value: ProductType; label: string; color: string }[] = [
-    { value: "supplement", label: "مکمل", color: "bg-blue-100 text-blue-800" },
-    { value: "clothing", label: "پوشاک", color: "bg-green-100 text-green-800" },
+    { value: "supplement", label: "مکمل", color: "bg-blue-500/10 text-blue-500" },
+    { value: "clothing", label: "پوشاک", color: "bg-green-500/10 text-green-500" },
     {
       value: "accessory",
       label: "لوازم جانبی",
-      color: "bg-purple-100 text-purple-800",
+      color: "bg-purple-500/10 text-purple-500",
     },
     {
       value: "digital",
       label: "دیجیتال",
-      color: "bg-orange-100 text-orange-800",
+      color: "bg-orange-500/10 text-orange-500",
     },
   ];
 
@@ -38,9 +38,9 @@ export default function AdminProducts() {
     label: string;
     color: string;
   }[] = [
-    { value: "active", label: "فعال", color: "bg-green-100 text-green-800" },
-    { value: "inactive", label: "غیرفعال", color: "bg-red-100 text-red-800" },
-    { value: "draft", label: "پیش‌نویس", color: "bg-gray-100 text-gray-800" },
+    { value: "active", label: "فعال", color: "bg-green-500/10 text-green-500" },
+    { value: "inactive", label: "غیرفعال", color: "bg-destructive/10 text-destructive" },
+    { value: "draft", label: "پیش‌نویس", color: "bg-muted/50 text-muted-foreground" },
   ];
 
   useEffect(() => {
@@ -117,11 +117,11 @@ export default function AdminProducts() {
   return (
     <div className="space-y-6">
       {/* Header */}
-      <div className="flex justify-between items-center">
-        <h1 className="text-2xl font-bold text-gray-800">مدیریت محصولات</h1>
+      <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
+        <h1 className="text-xl sm:text-2xl font-bold text-foreground">مدیریت محصولات</h1>
         <Link
           to="/dashboard/admin/products/new"
-          className="bg-red-500 text-white px-6 py-3 rounded-lg hover:bg-red-600 transition flex items-center gap-2"
+          className="bg-primary text-primary-foreground px-4 sm:px-6 py-2 sm:py-3 rounded-lg hover:bg-primary/80 transition flex items-center gap-2"
         >
           <FaPlus />
           افزودن محصول جدید
@@ -129,17 +129,17 @@ export default function AdminProducts() {
       </div>
 
       {/* Filters */}
-      <div className="bg-white rounded-lg shadow-sm p-6">
+      <div className="bg-card rounded-lg shadow-sm p-4 sm:p-6">
         <form onSubmit={handleSearch} className="space-y-4">
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
             <div className="relative">
-              <FaSearch className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400" />
+              <FaSearch className="absolute left-3 top-1/2 transform -translate-y-1/2 text-muted-foreground" />
               <input
                 type="text"
                 placeholder="جستجو بر اساس نام یا دسته‌بندی..."
                 value={searchTerm}
                 onChange={(e) => setSearchTerm(e.target.value)}
-                className="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-red-500 focus:border-transparent"
+                className="w-full pl-10 pr-4 py-2 border border-border rounded-lg focus:ring-2 focus:ring-primary bg-background text-foreground"
               />
             </div>
 
@@ -148,7 +148,7 @@ export default function AdminProducts() {
               onChange={(e) =>
                 setFilterType(e.target.value as ProductType | "")
               }
-              className="pl-4 pr-10 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-red-500 focus:border-transparent"
+              className="pl-4 pr-10 py-2 border border-border rounded-lg focus:ring-2 focus:ring-primary bg-background text-foreground"
             >
               <option value="">همه نوع‌ها</option>
               {productTypes.map((type) => (
@@ -163,7 +163,7 @@ export default function AdminProducts() {
               onChange={(e) =>
                 setFilterStatus(e.target.value as ProductStatus | "")
               }
-              className="pl-4 pr-10 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-red-500 focus:border-transparent"
+              className="pl-4 pr-10 py-2 border border-border rounded-lg focus:ring-2 focus:ring-primary bg-background text-foreground"
             >
               <option value="">همه وضعیت‌ها</option>
               {statusOptions.map((status) => (
@@ -174,10 +174,10 @@ export default function AdminProducts() {
             </select>
           </div>
 
-          <div className="flex justify-between items-center">
+          <div className="flex flex-col sm:flex-row justify-between items-center gap-3">
             <button
               type="submit"
-              className="bg-red-500 text-white px-6 py-2 rounded-lg hover:bg-red-600 transition flex items-center gap-2"
+              className="bg-primary text-primary-foreground px-4 sm:px-6 py-2 rounded-lg hover:bg-primary/80 transition flex items-center gap-2 cursor-pointer"
             >
               <FaSearch />
               اعمال فیلترها
@@ -186,7 +186,7 @@ export default function AdminProducts() {
               <button
                 type="button"
                 onClick={clearFilters}
-                className="text-gray-600 hover:text-gray-800 transition"
+                className="text-muted-foreground hover:text-foreground transition"
               >
                 پاک کردن فیلترها
               </button>
@@ -196,41 +196,41 @@ export default function AdminProducts() {
       </div>
 
       {/* Products Table */}
-      <div className="bg-white rounded-lg shadow-sm overflow-hidden">
+      <div className="bg-card rounded-lg shadow-sm overflow-hidden">
         <div className="overflow-x-auto">
-          <table className="min-w-full divide-y divide-gray-200">
-            <thead className="bg-gray-50">
+          <table className="min-w-full divide-y divide-border">
+            <thead className="bg-muted">
               <tr>
-                <th className="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">
+                <th className="px-4 sm:px-6 py-3 text-right text-xs font-medium text-muted-foreground uppercase tracking-wider">
                   تصویر
                 </th>
-                <th className="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">
+                <th className="px-4 sm:px-6 py-3 text-right text-xs font-medium text-muted-foreground uppercase tracking-wider">
                   نام محصول
                 </th>
-                <th className="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">
+                <th className="px-4 sm:px-6 py-3 text-right text-xs font-medium text-muted-foreground uppercase tracking-wider">
                   نوع
                 </th>
-                <th className="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">
+                <th className="px-4 sm:px-6 py-3 text-right text-xs font-medium text-muted-foreground uppercase tracking-wider">
                   دسته‌بندی
                 </th>
-                <th className="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">
+                <th className="px-4 sm:px-6 py-3 text-right text-xs font-medium text-muted-foreground uppercase tracking-wider">
                   قیمت
                 </th>
-                <th className="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">
+                <th className="px-4 sm:px-6 py-3 text-right text-xs font-medium text-muted-foreground uppercase tracking-wider">
                   وضعیت
                 </th>
-                <th className="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">
+                <th className="px-4 sm:px-6 py-3 text-right text-xs font-medium text-muted-foreground uppercase tracking-wider">
                   عملیات
                 </th>
               </tr>
             </thead>
-            <tbody className="bg-white divide-y divide-gray-200">
+            <tbody className="bg-card divide-y divide-border">
               {loading ? (
                 <tr>
-                  <td colSpan={7} className="px-6 py-8 text-center">
+                  <td colSpan={7} className="px-4 sm:px-6 py-8 text-center">
                     <div className="animate-pulse space-y-4">
                       {[...Array(5)].map((_, i) => (
-                        <div key={i} className="h-16 bg-gray-200 rounded" />
+                        <div key={i} className="h-16 bg-muted rounded" />
                       ))}
                     </div>
                   </td>
@@ -239,81 +239,81 @@ export default function AdminProducts() {
                 <tr>
                   <td
                     colSpan={7}
-                    className="px-6 py-12 text-center text-gray-500"
+                    className="px-4 sm:px-6 py-12 text-center text-muted-foreground"
                   >
                     محصولی یافت نشد
                   </td>
                 </tr>
               ) : (
                 products.map((product) => (
-                  <tr key={product._id} className="hover:bg-gray-50 transition">
-                    <td className="px-6 py-4 whitespace-nowrap">
+                  <tr key={product._id} className="hover:bg-muted transition">
+                    <td className="px-4 sm:px-6 py-4 whitespace-nowrap">
                       {product.image ? (
                         <img
                           src={product.image}
                           alt={product.name}
-                          className="w-16 h-16 object-cover rounded-lg"
+                          className="w-12 h-12 sm:w-16 sm:h-16 object-cover rounded-lg"
                         />
                       ) : (
-                        <div className="w-16 h-16 bg-gray-200 rounded-lg flex items-center justify-center">
-                          <span className="text-gray-400 text-sm">
+                        <div className="w-12 h-12 sm:w-16 sm:h-16 bg-muted rounded-lg flex items-center justify-center">
+                          <span className="text-muted-foreground text-xs sm:text-sm">
                             بدون تصویر
                           </span>
                         </div>
                       )}
                     </td>
-                    <td className="px-6 py-4 whitespace-nowrap">
-                      <div className="text-sm font-medium text-gray-900">
+                    <td className="px-4 sm:px-6 py-4 whitespace-nowrap">
+                      <div className="text-sm font-medium text-foreground">
                         {product.name}
                       </div>
-                      <div className="text-xs text-gray-500 line-clamp-1 overflow-hidden text-ellipsis max-w-xs">
+                      <div className="text-xs text-muted-foreground line-clamp-1 overflow-hidden text-ellipsis max-w-xs">
                         {product.description}
                       </div>
                     </td>
-                    <td className="px-6 py-4 whitespace-nowrap">
+                    <td className="px-4 sm:px-6 py-4 whitespace-nowrap">
                       <span
-                        className={`px-3 py-1 rounded-full text-xs font-medium ${
+                        className={`px-2 sm:px-3 py-1 rounded-full text-xs sm:text-sm font-medium ${
                           productTypes.find((t) => t.value === product.type)
-                            ?.color || "bg-gray-100 text-gray-800"
+                            ?.color || "bg-muted/50 text-muted-foreground"
                         }`}
                       >
                         {productTypes.find((t) => t.value === product.type)
                           ?.label || product.type}
                       </span>
                     </td>
-                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                    <td className="px-4 sm:px-6 py-4 whitespace-nowrap text-sm text-muted-foreground">
                       {product.category}
                     </td>
-                    <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">
+                    <td className="px-4 sm:px-6 py-4 whitespace-nowrap text-sm font-medium text-foreground">
                       {product.price.toLocaleString()} تومان
                     </td>
-                    <td className="px-6 py-4 whitespace-nowrap">
+                    <td className="px-4 sm:px-6 py-4 whitespace-nowrap">
                       <button
                         onClick={() => handleToggleStatus(product)}
-                        className={`flex items-center gap-2 px-3 py-1 rounded-full text-xs font-medium ${
+                        className={`flex items-center gap-1 sm:gap-2 px-2 sm:px-3 py-1 rounded-full text-xs sm:text-sm font-medium ${
                           product.status === "active"
-                            ? "bg-green-100 text-green-800 hover:bg-green-200"
-                            : "bg-red-100 text-red-800 hover:bg-red-200"
+                            ? "bg-green-500/10 text-green-500 hover:bg-green-500/20"
+                            : "bg-destructive/10 text-destructive hover:bg-destructive/20"
                         } transition`}
                       >
                         {product.status === "active" ? (
                           <>
                             <HiStatusOnline />
-                            فعال
+                            <span className="hidden sm:inline">فعال</span>
                           </>
                         ) : (
                           <>
                             <HiStatusOffline />
-                            غیرفعال
+                            <span className="hidden sm:inline">غیرفعال</span>
                           </>
                         )}
                       </button>
                     </td>
-                    <td className="px-6 py-4 whitespace-nowrap text-sm font-medium">
-                      <div className="flex items-center gap-2">
+                    <td className="px-4 sm:px-6 py-4 whitespace-nowrap text-sm font-medium">
+                      <div className="flex items-center gap-1 sm:gap-2">
                         <Link
                           to={`/dashboard/admin/products/${product._id}/edit`}
-                          className="text-blue-600 hover:text-blue-900 transition"
+                          className="text-primary hover:text-primary/80 transition"
                           title="ویرایش"
                         >
                           <FaEdit />
@@ -321,7 +321,7 @@ export default function AdminProducts() {
                         <button
                           onClick={() => handleDelete(product._id!)}
                           disabled={deletingId === product._id}
-                          className={`text-red-600 hover:text-red-900 transition ${
+                          className={`text-destructive hover:text-destructive/80 transition cursor-pointer ${
                             deletingId === product._id
                               ? "opacity-50 cursor-not-allowed"
                               : ""
@@ -329,7 +329,7 @@ export default function AdminProducts() {
                           title="حذف"
                         >
                           {deletingId === product._id ? (
-                            <span className="animate-spin">⏳</span>
+                            <span className="animate-spin text-xs">⏳</span>
                           ) : (
                             <FaTrash />
                           )}
@@ -345,26 +345,26 @@ export default function AdminProducts() {
 
         {/* Pagination */}
         {products.length > 0 && (
-          <div className="bg-gray-50 px-6 py-4 flex justify-between items-center">
-            <div className="text-sm text-gray-700">
+          <div className="bg-muted px-4 sm:px-6 py-4 flex flex-col sm:flex-row justify-between items-center gap-3">
+            <div className="text-sm text-muted-foreground">
               نمایش {(page - 1) * 10 + 1} تا{" "}
               {Math.min(page * 10, products.length)} از {products.length} محصول
             </div>
-            <div className="flex gap-2">
+            <div className="flex gap-1 sm:gap-2">
               <button
                 onClick={() => setPage((p) => Math.max(1, p - 1))}
                 disabled={page === 1}
-                className="px-4 py-2 border border-gray-300 rounded-lg hover:bg-gray-100 disabled:opacity-50 disabled:cursor-not-allowed transition"
+                className="px-3 sm:px-4 py-2 border border-border rounded-lg hover:bg-muted transition disabled:opacity-50 disabled:cursor-not-allowed"
               >
                 قبلی
               </button>
-              <span className="px-4 py-2 bg-red-500 text-white rounded-lg">
+              <span className="px-3 sm:px-4 py-2 bg-primary text-primary-foreground rounded-lg">
                 صفحه {page}
               </span>
               <button
                 onClick={() => setPage((p) => p + 1)}
                 disabled={page >= totalPages}
-                className="px-4 py-2 border border-gray-300 rounded-lg hover:bg-gray-100 disabled:opacity-50 disabled:cursor-not-allowed transition"
+                className="px-3 sm:px-4 py-2 border border-border rounded-lg hover:bg-muted transition disabled:opacity-50 disabled:cursor-not-allowed"
               >
                 بعدی
               </button>

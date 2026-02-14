@@ -8,7 +8,6 @@ import {
 } from '../../../services/adminService';
 import useDocumentTitle from '../../../hooks/useDocumentTitle'
 
-
 export default function AdminReservations() {
   useDocumentTitle('مدیریت رزرو‌ها')
   const [activeTab, setActiveTab] = useState<'equipment' | 'rooms'>('equipment')
@@ -43,15 +42,14 @@ export default function AdminReservations() {
     fetchData();
   }, []);
 
-
   const getStatusBadge = (status: string) => {
     const config: Record<string, { label: string; color: string }> = {
-      available: { label: 'در دسترس', color: 'bg-green-100 text-green-800' },
-      reserved: { label: 'رزرو شده', color: 'bg-yellow-100 text-yellow-800' },
-      maintenance: { label: 'در حال تعمیر', color: 'bg-red-100 text-red-800' }
+      available: { label: 'در دسترس', color: 'bg-green-500/10 text-green-500' },
+      reserved: { label: 'رزرو شده', color: 'bg-yellow-500/10 text-yellow-500' },
+      maintenance: { label: 'در حال تعمیر', color: 'bg-destructive/10 text-destructive' }
     }
     const { label, color } = config[status] || config.available
-    return <span className={`px-2 py-1 rounded-full text-xs ${color}`}>{label}</span>
+    return <span className={`px-2 py-1 rounded-full text-xs font-medium ${color}`}>{label}</span>
   }
 
   // --- مدال تجهیزات ---
@@ -103,18 +101,18 @@ export default function AdminReservations() {
 
   return (
     <div>
-      <div className="flex justify-between items-center mb-6">
-        <h1 className="text-2xl font-bold">رزرو تجهیزات و سالن‌ها</h1>
-        <div className="flex gap-2">
+      <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-6 gap-4">
+        <h1 className="text-xl sm:text-2xl font-bold text-foreground">رزرو تجهیزات و سالن‌ها</h1>
+        <div className="flex flex-col sm:flex-row gap-2 w-full sm:w-auto">
           <button
             onClick={openEquipmentModal}
-            className="bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700"
+            className="bg-primary text-primary-foreground px-4 py-2 rounded-lg hover:bg-primary/80"
           >
             افزودن تجهیزات
           </button>
           <button
             onClick={openRoomModal}
-            className="bg-purple-600 text-white px-4 py-2 rounded-lg hover:bg-purple-700"
+            className="bg-accent text-accent-foreground px-4 py-2 rounded-lg hover:bg-accent/80"
           >
             افزودن سالن
           </button>
@@ -122,12 +120,12 @@ export default function AdminReservations() {
       </div>
 
       {/* تب‌ها */}
-      <div className="flex mb-4 border-b">
+      <div className="flex mb-4 border-b border-border">
         <button
           className={`px-4 py-2 font-medium ${
             activeTab === 'equipment' 
-              ? 'text-red-600 border-b-2 border-red-600' 
-              : 'text-gray-500'
+              ? 'text-primary border-b-2 border-primary' 
+              : 'text-muted-foreground'
           }`}
           onClick={() => setActiveTab('equipment')}
         >
@@ -136,8 +134,8 @@ export default function AdminReservations() {
         <button
           className={`px-4 py-2 font-medium ${
             activeTab === 'rooms' 
-              ? 'text-red-600 border-b-2 border-red-600' 
-              : 'text-gray-500'
+              ? 'text-primary border-b-2 border-primary' 
+              : 'text-muted-foreground'
           }`}
           onClick={() => setActiveTab('rooms')}
         >
@@ -147,18 +145,18 @@ export default function AdminReservations() {
 
       <Card>
         {loading ? (
-          <div className="py-8 text-center">در حال بارگذاری...</div>
+          <div className="py-8 text-center text-muted-foreground">در حال بارگذاری...</div>
         ) : activeTab === 'equipment' ? (
           <div className="space-y-4">
             {equipment.map(eq => (
-              <div key={eq._id} className="flex justify-between items-center p-4 border rounded-lg">
-                <div>
-                  <h3 className="font-bold">{eq.name}</h3>
-                  <p className="text-gray-600">نوع: {eq.type}</p>
+              <div key={eq._id} className="flex flex-col sm:flex-row justify-between items-start sm:items-center p-4 border border-border rounded-lg hover:bg-muted">
+                <div className="mb-3 sm:mb-0">
+                  <h3 className="font-bold text-foreground">{eq.name}</h3>
+                  <p className="text-sm text-muted-foreground">نوع: {eq.type}</p>
                 </div>
                 <div className="flex gap-3">
                   {getStatusBadge(eq.status)}
-                  <button className="text-blue-600">رزرو</button>
+                  <button className="text-primary hover:text-primary/80">رزرو</button>
                 </div>
               </div>
             ))}
@@ -166,14 +164,14 @@ export default function AdminReservations() {
         ) : (
           <div className="space-y-4">
             {rooms.map(room => (
-              <div key={room._id} className="flex justify-between items-center p-4 border rounded-lg">
-                <div>
-                  <h3 className="font-bold">{room.name}</h3>
-                  <p className="text-gray-600">ظرفیت: {room.capacity} نفر</p>
+              <div key={room._id} className="flex flex-col sm:flex-row justify-between items-start sm:items-center p-4 border border-border rounded-lg hover:bg-muted">
+                <div className="mb-3 sm:mb-0">
+                  <h3 className="font-bold text-foreground">{room.name}</h3>
+                  <p className="text-sm text-muted-foreground">ظرفیت: {room.capacity} نفر</p>
                 </div>
                 <div className="flex gap-3">
                   {getStatusBadge(room.status)}
-                  <button className="text-blue-600">رزرو</button>
+                  <button className="text-primary hover:text-primary/80">رزرو</button>
                 </div>
               </div>
             ))}
@@ -183,46 +181,46 @@ export default function AdminReservations() {
 
       {/* Modal افزودن تجهیزات */}
       {isEquipmentModalOpen && (
-        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
-          <div className="bg-white rounded-lg w-full max-w-md">
-            <div className="p-4 border-b">
-              <h2 className="text-lg font-bold">افزودن تجهیزات جدید</h2>
+        <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4">
+          <div className="bg-card rounded-lg w-full max-w-md border border-border">
+            <div className="p-4 border-b border-border">
+              <h2 className="text-lg font-bold text-foreground">افزودن تجهیزات جدید</h2>
             </div>
             <form onSubmit={handleEquipmentSubmit} className="p-4 space-y-4">
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">نام تجهیزات</label>
+                <label className="block text-sm font-medium text-foreground mb-1">نام تجهیزات</label>
                 <input
                   type="text"
                   name="name"
                   value={equipmentForm.name}
                   onChange={handleEquipmentChange}
-                  className="w-full px-3 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500"
+                  className="w-full px-3 py-2 border border-border rounded-lg focus:ring-2 focus:ring-primary bg-background text-foreground"
                   required
                 />
               </div>
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">نوع</label>
+                <label className="block text-sm font-medium text-foreground mb-1">نوع</label>
                 <input
                   type="text"
                   name="type"
                   value={equipmentForm.type}
                   onChange={handleEquipmentChange}
-                  className="w-full px-3 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500"
+                  className="w-full px-3 py-2 border border-border rounded-lg focus:ring-2 focus:ring-primary bg-background text-foreground"
                   required
                 />
               </div>
-              <div className="flex gap-3 pt-2">
+              <div className="flex flex-col sm:flex-row gap-3 pt-2">
                 <button
                   type="submit"
                   disabled={submitting}
-                  className="bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 disabled:opacity-50"
+                  className="bg-primary text-primary-foreground px-4 py-2 rounded-lg hover:bg-primary/80 disabled:opacity-50"
                 >
                   {submitting ? 'در حال افزودن...' : 'افزودن تجهیزات'}
                 </button>
                 <button
                   type="button"
                   onClick={closeEquipmentModal}
-                  className="bg-gray-200 text-gray-800 px-4 py-2 rounded-lg hover:bg-gray-300"
+                  className="bg-secondary text-secondary-foreground px-4 py-2 rounded-lg hover:bg-secondary/80"
                 >
                   انصراف
                 </button>
@@ -234,47 +232,47 @@ export default function AdminReservations() {
 
       {/* Modal افزودن سالن */}
       {isRoomModalOpen && (
-        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
-          <div className="bg-white rounded-lg w-full max-w-md">
-            <div className="p-4 border-b">
-              <h2 className="text-lg font-bold">افزودن سالن جدید</h2>
+        <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4">
+          <div className="bg-card rounded-lg w-full max-w-md border border-border">
+            <div className="p-4 border-b border-border">
+              <h2 className="text-lg font-bold text-foreground">افزودن سالن جدید</h2>
             </div>
             <form onSubmit={handleRoomSubmit} className="p-4 space-y-4">
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">نام سالن</label>
+                <label className="block text-sm font-medium text-foreground mb-1">نام سالن</label>
                 <input
                   type="text"
                   name="name"
                   value={roomForm.name}
                   onChange={handleRoomChange}
-                  className="w-full px-3 py-2 border rounded-lg focus:ring-2 focus:ring-purple-500"
+                  className="w-full px-3 py-2 border border-border rounded-lg focus:ring-2 focus:ring-accent bg-background text-foreground"
                   required
                 />
               </div>
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">ظرفیت (نفر)</label>
+                <label className="block text-sm font-medium text-foreground mb-1">ظرفیت (نفر)</label>
                 <input
                   type="number"
                   name="capacity"
                   value={roomForm.capacity}
                   onChange={handleRoomChange}
                   min="1"
-                  className="w-full px-3 py-2 border rounded-lg focus:ring-2 focus:ring-purple-500"
+                  className="w-full px-3 py-2 border border-border rounded-lg focus:ring-2 focus:ring-accent bg-background text-foreground"
                   required
                 />
               </div>
-              <div className="flex gap-3 pt-2">
+              <div className="flex flex-col sm:flex-row gap-3 pt-2">
                 <button
                   type="submit"
                   disabled={submitting}
-                  className="bg-purple-600 text-white px-4 py-2 rounded-lg hover:bg-purple-700 disabled:opacity-50"
+                  className="bg-accent text-accent-foreground px-4 py-2 rounded-lg hover:bg-accent/80 disabled:opacity-50"
                 >
                   {submitting ? 'در حال افزودن...' : 'افزودن سالن'}
                 </button>
                 <button
                   type="button"
                   onClick={closeRoomModal}
-                  className="bg-gray-200 text-gray-800 px-4 py-2 rounded-lg hover:bg-gray-300"
+                  className="bg-secondary text-secondary-foreground px-4 py-2 rounded-lg hover:bg-secondary/80"
                 >
                   انصراف
                 </button>

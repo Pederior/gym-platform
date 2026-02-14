@@ -1,4 +1,3 @@
-// components/UserCreateTicket.tsx
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { toast } from 'react-hot-toast';
@@ -65,20 +64,14 @@ export default function UserTicketCreate() {
 
   return (
     <div>
-      <div className="flex justify-between items-center mb-6">
-        <h1 className="text-2xl font-bold">ایجاد تیکت جدید</h1>
-        <button
-          onClick={() => navigate('/dashboard/user/tickets')}
-          className="text-gray-600 hover:text-gray-800"
-        >
-          انصراف
-        </button>
+      <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-6 gap-4">
+        <h1 className="text-xl sm:text-2xl font-bold text-foreground">ایجاد تیکت جدید</h1>
       </div>
 
       <Card>
         <form onSubmit={handleSubmit} className="space-y-6">
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">
+            <label className="block text-sm font-medium text-foreground mb-1">
               عنوان تیکت *
             </label>
             <input
@@ -86,14 +79,14 @@ export default function UserTicketCreate() {
               name="title"
               value={formData.title}
               onChange={handleInputChange}
-              className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-red-500 focus:border-red-500"
+              className="w-full px-3 py-2 border border-border rounded-lg focus:ring-2 focus:ring-primary bg-background text-foreground"
               placeholder="مشکل من در مورد..."
               required
             />
           </div>
 
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">
+            <label className="block text-sm font-medium text-foreground mb-1">
               توضیحات *
             </label>
             <textarea
@@ -101,7 +94,7 @@ export default function UserTicketCreate() {
               value={formData.description}
               onChange={handleInputChange}
               rows={6}
-              className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-red-500 focus:border-red-500"
+              className="w-full px-3 py-2 border border-border rounded-lg focus:ring-2 focus:ring-primary bg-background text-foreground"
               placeholder="لطفاً مشکل خود را به طور کامل توضیح دهید..."
               required
             />
@@ -109,14 +102,14 @@ export default function UserTicketCreate() {
 
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">
+              <label className="block text-sm font-medium text-foreground mb-1">
                 دسته‌بندی
               </label>
               <select
                 name="category"
                 value={formData.category}
                 onChange={handleInputChange}
-                className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-red-500 focus:border-red-500"
+                className="w-full px-3 py-2 border border-border rounded-lg focus:ring-2 focus:ring-primary bg-background text-foreground"
               >
                 <option value="technical">فنی</option>
                 <option value="financial">مالی</option>
@@ -126,14 +119,14 @@ export default function UserTicketCreate() {
             </div>
 
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">
+              <label className="block text-sm font-medium text-foreground mb-1">
                 اولویت
               </label>
               <select
                 name="priority"
                 value={formData.priority}
                 onChange={handleInputChange}
-                className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-red-500 focus:border-red-500"
+                className="w-full px-3 py-2 border border-border rounded-lg focus:ring-2 focus:ring-primary bg-background text-foreground"
               >
                 <option value="low">پایین</option>
                 <option value="medium">متوسط</option>
@@ -143,27 +136,27 @@ export default function UserTicketCreate() {
             </div>
           </div>
 
-          <div className="bg-yellow-50 p-4 rounded-lg">
-            <h4 className="font-medium text-yellow-800 mb-2">💡 نکات مهم:</h4>
-            <ul className="text-xs text-yellow-700 space-y-1">
+          <div className="bg-accent/10 p-4 rounded-lg">
+            <h4 className="font-medium text-accent mb-2">💡 نکات مهم:</h4>
+            <ul className="text-xs text-accent space-y-1">
               <li>• لطفاً مشکل خود را به طور کامل و دقیق توضیح دهید</li>
               <li>• تصاویر یا اطلاعات اضافی را در توضیحات ذکر کنید</li>
               <li>• پاسخ تیکت‌ها معمولاً ظرف 24-48 ساعت ارسال می‌شود</li>
             </ul>
           </div>
 
-          <div className="flex justify-end gap-3">
+          <div className="flex flex-col sm:flex-row justify-end gap-3">
             <button
               type="button"
               onClick={() => navigate('/dashboard/user/tickets')}
-              className="bg-gray-200 text-gray-800 px-4 py-2 rounded-lg hover:bg-gray-300"
+              className="bg-secondary text-secondary-foreground px-4 py-2 rounded-lg hover:bg-secondary/80 cursor-pointer"
             >
               انصراف
             </button>
             <button
               type="submit"
               disabled={loading}
-              className="bg-red-600 text-white px-4 py-2 rounded-lg hover:bg-red-700 disabled:opacity-50"
+              className="bg-primary text-primary-foreground px-4 py-2 rounded-lg hover:bg-primary/80 disabled:opacity-50 cursor-pointer"
             >
               {loading ? 'در حال ایجاد...' : 'ایجاد تیکت'}
             </button>

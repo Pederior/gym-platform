@@ -154,33 +154,24 @@ export const coachService = {
   // --- مدیریت کامنت‌ها ---
   async getComments() {
     const res = await api.get<{ success: true; comments: Comment[] }>(
-      `/coach/comments`,
+      "/coach/comments",
     );
     return res.data;
   },
 
   async replyToComment(commentId: string, content: string) {
     const res = await api.post<{ success: true; comment: Comment }>(
-      `/comments/reply`,
+      "/coach/comments/reply",
       {
         parentId: commentId,
         content,
       },
     );
-    return res.data.comment;
+    return res.data;
   },
 
   async deleteComment(id: string) {
     await api.delete(`/coach/comments/${id}`);
-  },
-  
-  async uploadImage(formData: FormData) {
-    const res = await api.post<{ success: true; imageUrl: string }>('/upload/image', formData, {
-      headers: {
-        'Content-Type': 'multipart/form-data'
-      }
-    });
-    return res.data;
   },
 };
 

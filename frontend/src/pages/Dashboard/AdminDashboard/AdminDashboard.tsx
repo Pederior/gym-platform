@@ -4,7 +4,7 @@ import KpiCard from "./KpiCard";
 import { TbMoneybag, TbCalendarEvent, TbShoppingCart } from "react-icons/tb";
 import { IoPeopleSharp } from "react-icons/io5";
 import api from "../../../services/api";
-import useDocumentTitle from '../../../hooks/useDocumentTitle';
+import useDocumentTitle from "../../../hooks/useDocumentTitle";
 
 interface DashboardSummary {
   activeUsers: number;
@@ -22,14 +22,18 @@ const AdminDashboard: React.FC = () => {
   const [summary, setSummary] = useState<DashboardSummary | null>(null);
   const [loading, setLoading] = useState(true);
   const { token } = useAppSelector((state) => state.auth);
-  useDocumentTitle('داشبورد ادمین');
+  useDocumentTitle("داشبورد ادمین");
+
   useEffect(() => {
     const fetchDashboardData = async () => {
       try {
-        const response = await api.get('/dashboard/admin/summary');
+        const response = await api.get("/dashboard/admin/summary");
         setSummary(response.data.data);
       } catch (err: any) {
-        console.error("Error fetching dashboard data:", err.response?.data || err.message);
+        console.error(
+          "Error fetching dashboard data:",
+          err.response?.data || err.message,
+        );
       } finally {
         setLoading(false);
       }
@@ -43,7 +47,7 @@ const AdminDashboard: React.FC = () => {
   if (loading) {
     return (
       <div className="flex justify-center items-center h-64">
-        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-red-500"></div>
+        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary"></div>
       </div>
     );
   }
@@ -51,11 +55,11 @@ const AdminDashboard: React.FC = () => {
   if (!summary) {
     return (
       <div className="text-center py-16">
-        <div className="text-6xl mb-4 text-gray-500">📊</div>
-        <h3 className="text-xl font-semibold text-gray-600 mb-2">
+        <div className="text-6xl mb-4 text-muted-foreground">📊</div>
+        <h3 className="text-xl font-semibold text-foreground mb-2">
           خطای بارگذاری داده‌ها
         </h3>
-        <p className="text-gray-500">لطفاً صفحه را رفرش کنید</p>
+        <p className="text-muted-foreground">لطفاً صفحه را رفرش کنید</p>
       </div>
     );
   }
@@ -63,11 +67,13 @@ const AdminDashboard: React.FC = () => {
   return (
     <>
       <div className="flex items-center justify-between mb-6">
-        <div className="text-lg font-semibold text-gray-800">خلاصه عملکرد</div>
+        <div className="text-lg font-semibold text-foreground">
+          خلاصه عملکرد
+        </div>
         <div className="flex items-center space-x-2 rtl:space-x-reverse">
           <button
             onClick={() => window.location.reload()}
-            className="text-sm text-gray-600 hover:text-gray-800 flex items-center"
+            className="text-sm text-muted-foreground hover:text-foreground flex items-center"
           >
             <svg
               className="w-5 h-5 ml-1"
@@ -117,8 +123,13 @@ const AdminDashboard: React.FC = () => {
       </div>
 
       {/* Recent Activities */}
-      <div className="bg-white rounded-xl shadow-sm p-6">
-        <h3 className="text-lg font-semibold text-gray-800 mb-4">
+      <div
+        className="bg-card rounded-xl p-6 border border-border
+        shadow-sm dark:shadow-none
+      dark:border-white/10
+      dark:bg-white/5"
+      >
+        <h3 className="text-lg font-semibold text-foreground mb-4">
           فعالیت‌های اخیر
         </h3>
         <div className="space-y-4">
@@ -127,10 +138,12 @@ const AdminDashboard: React.FC = () => {
               key={index}
               className="flex items-start space-x-3 rtl:space-x-reverse"
             >
-              <div className="shrink-0 w-2 h-2 bg-red-500 rounded-full mt-2 ml-2"></div>
+              <div className="shrink-0 w-2 h-2 bg-primary rounded-full mt-2 ml-2"></div>
               <div className="flex-1 min-w-0">
-                <p className="text-sm text-gray-700">{activity.message}</p>
-                <p className="text-xs text-gray-500 mt-1">{activity.time}</p>
+                <p className="text-sm text-foreground">{activity.message}</p>
+                <p className="text-xs text-muted-foreground mt-1">
+                  {activity.time}
+                </p>
               </div>
             </div>
           ))}

@@ -2,8 +2,10 @@ import { useState, useRef, useEffect } from "react";
 import { IoMdNotifications } from "react-icons/io";
 import { FaUser, FaCog, FaSignOutAlt, FaHome, FaTimes } from "react-icons/fa";
 import { Link, useNavigate, useLocation } from "react-router-dom";
-import { useAppSelector } from "../../store/hook";
+import { useAppSelector, useAppDispatch } from "../../store/hook";
 import api from "../../services/api";
+import { IoMoon, IoSunny } from "react-icons/io5";
+import { toggleDarkMode } from "../../store/features/darkModeSlice";
 
 interface BaseNotification {
   _id: string;
@@ -57,6 +59,11 @@ const PAGE_TITLES: Record<string, string> = {
   "/dashboard/admin/logs": "لاگ‌ها و امنیت",
   "/dashboard/coach/workouts": "برنامه‌های تمرینی",
   "/dashboard/coach/progress": "پیگیری پیشرفت",
+  "/dashboard/coach/students": "لیست شاگردان",
+  "/dashboard/coach/diet-plans": "برنامه‌های غذایی",
+  "/dashboard/coach/articles": "مدیریت مقالات",
+  "/dashboard/coach/comments": "کامنت ها",
+  "/dashboard/coach/videos": "ویدیوهای آموزشی",
   "/dashboard/user/userstore": "فروشگاه شخصی",
   "/dashboard/coach/classes": "کلاس‌ها",
   "/dashboard/coach/chat": "چت با کاربران",
@@ -73,20 +80,30 @@ const PAGE_TITLES: Record<string, string> = {
   "/": "صفحه اصلی",
 };
 
-const Header = () => {
-  // const [search, setSearch] = useState("");
+interface HeaderProps {
+  onToggleSidebar?: () => void;
+  isMobile?: boolean;
+}
+
+const Header = ({ onToggleSidebar, isMobile }: HeaderProps) => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [isNotificationOpen, setIsNotificationOpen] = useState(false);
   const [notifications, setNotifications] = useState<Notification[]>([]);
   const [loadingNotifications, setLoadingNotifications] = useState(false);
   const [isChatPage, setIsChatPage] = useState(false);
+  const { darkMode } = useAppSelector((state) => state.darkMode);
 
   const menuRef = useRef<HTMLDivElement>(null);
   const notificationRef = useRef<HTMLDivElement>(null);
   const { user } = useAppSelector((state) => state.auth);
+  const dispatch = useAppDispatch();
   const navigate = useNavigate();
   const location = useLocation();
-  // بستن منوها با کلیک خارج
+
+  const handleToggleDarkMode = () => {
+    dispatch(toggleDarkMode());
+  };
+
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
       if (menuRef.current && !menuRef.current.contains(event.target as Node)) {
@@ -103,13 +120,11 @@ const Header = () => {
     return () => document.removeEventListener("mousedown", handleClickOutside);
   }, []);
 
-  // تشخیص صفحه چت
   useEffect(() => {
     const isChat = location.pathname.includes("/chat");
     setIsChatPage(isChat);
   }, [location.pathname]);
 
-  // دریافت نوتیفیکیشن‌ها
   const fetchNotifications = async () => {
     try {
       setLoadingNotifications(true);
@@ -122,7 +137,6 @@ const Header = () => {
     }
   };
 
-  // حذف نوتیفیکیشن
   const deleteNotification = async (id: string) => {
     try {
       await api.delete(`/notifications/${id}`);
@@ -132,7 +146,6 @@ const Header = () => {
     }
   };
 
-  // علامت‌گذاری همه به عنوان خوانده
   const markAllAsRead = async () => {
     try {
       await api.post("/notifications/mark-all-read");
@@ -142,7 +155,6 @@ const Header = () => {
     }
   };
 
-  // بارگذاری نوتیفیکیشن‌ها وقتی باز می‌شه
   useEffect(() => {
     if (isNotificationOpen) {
       fetchNotifications();
@@ -170,7 +182,6 @@ const Header = () => {
     return "داشبورد";
   };
 
-  // تابع تجمیع نوتیفیکیشن‌های چت
   const getAggregatedChatNotifications = (): AggregatedChatNotification[] => {
     const chatNotifs = notifications.filter(
       (n): n is ChatNotification => n.type === "chat",
@@ -223,11 +234,9 @@ const Header = () => {
     });
   };
 
-  // فیلتر نوتیفیکیشن‌ها بر اساس صفحه
   const nonChatNotifications = notifications.filter((n) => n.type !== "chat");
   const aggregatedChatNotifications = getAggregatedChatNotifications();
 
-  // نمایش نوتیفیکیشن‌ها
   let displayNotifications: Notification[] = [];
   if (isChatPage) {
     displayNotifications = nonChatNotifications;
@@ -241,37 +250,61 @@ const Header = () => {
   const unreadCount = displayNotifications.length;
 
   return (
-    <header className="bg-white shadow-md px-6 py-4 flex items-center justify-between">
+    <header className="bg-background border-b border-border px-4 py-3 flex items-center justify-between">
+      {/* دکمه منو برای موبایل */}
+      {isMobile && onToggleSidebar && (
+        <button
+          onClick={onToggleSidebar}
+          className="p-2 text-foreground hover:text-primary transition-colors mr-2"
+        >
+          <svg
+            className="w-6 h-6"
+            fill="none"
+            stroke="currentColor"
+            viewBox="0 0 24 24"
+          >
+            <path
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              strokeWidth={2}
+              d="M4 6h16M4 12h16M4 18h16"
+            />
+          </svg>
+        </button>
+      )}
+
       {/* Breadcrumb */}
-      <div className="flex items-center space-x-2 text-sm text-gray-600">
+      <div className="flex items-center space-x-2 text-sm text-muted-foreground">
         <span>داشبورد</span>
         <span>›</span>
-        <span className="text-gray-800 font-medium">
+        <span className="text-foreground font-medium">
           {getCurrentPageTitle()}
         </span>
       </div>
 
-      <div className="flex items-center space-x-4">
-        {/* جستجو */}
-        {/* <div className="relative">
-          <input
-            type="text"
-            placeholder="جستجو ..."
-            value={search}
-            onChange={(e) => setSearch(e.target.value)}
-            className="border border-gray-300 rounded-full px-4 py-2 w-64 focus:outline-none focus:ring-2 focus:ring-red-500 focus:border-transparent"
-          />
-        </div> */}
+      <div className="flex items-center space-x-3">
+        {/* دکمه Dark Mode */}
+        <button
+          onClick={handleToggleDarkMode}
+          className="p-2 rounded-full bg-muted hover:bg-secondary transition-colors cursor-pointer"
+          title={darkMode ? "حالت روشن" : "حالت تاریک"}
+        >
+          {darkMode ? (
+            <IoSunny className="text-yellow-400 text-xl" />
+          ) : (
+            <IoMoon className="text-foreground text-xl" />
+          )}
+        </button>
 
         {/* نوتیفیکیشن */}
         <div className="relative" ref={notificationRef}>
           <button
             onClick={() => setIsNotificationOpen(!isNotificationOpen)}
-            className="relative p-2 text-gray-600 hover:text-gray-900 transition"
+            className="relative p-2 text-muted-foreground hover:text-foreground transition"
           >
-            <IoMdNotifications className="text-3xl cursor-pointer" />
+            <IoMdNotifications className="text-2xl md:text-3xl cursor-pointer" />
             {unreadCount > 0 && (
-              <span className="absolute -top-1 -right-1 bg-red-500 text-white text-xs rounded-full h-5 w-5 flex items-center justify-center">
+              <span className="absolute -top-1 -right-1 bg-destructive text-destructive-foreground text-xs rounded-full h-5 w-5 flex items-center justify-center">
                 {unreadCount}
               </span>
             )}
@@ -279,13 +312,15 @@ const Header = () => {
 
           {/* Dropdown نوتیفیکیشن */}
           {isNotificationOpen && (
-            <div className="absolute left-0 mt-2 w-80 bg-white rounded-lg shadow-lg py-2 z-50 border border-gray-200 max-h-96 overflow-y-auto">
-              <div className="px-4 py-3 border-b border-gray-200 flex justify-between items-center">
-                <h3 className="font-semibold text-gray-800">اعلان‌ها</h3>
+            <div className="absolute left-0 mt-2 w-80 bg-popover rounded-lg shadow-lg py-2 z-50 border border-border max-h-96 overflow-y-auto">
+              <div className="px-4 py-3 border-b border-border flex justify-between items-center">
+                <h3 className="font-semibold text-popover-foreground">
+                  اعلان‌ها
+                </h3>
                 {displayNotifications.length > 0 && (
                   <button
                     onClick={markAllAsRead}
-                    className="text-sm text-blue-600 hover:text-blue-800"
+                    className="text-sm text-primary hover:text-primary/80"
                   >
                     علامت‌گذاری همه به عنوان خوانده
                   </button>
@@ -293,30 +328,30 @@ const Header = () => {
               </div>
 
               {loadingNotifications ? (
-                <div className="py-4 text-center text-gray-500">
+                <div className="py-4 text-center text-muted-foreground">
                   در حال بارگذاری...
                 </div>
               ) : displayNotifications.length === 0 ? (
-                <div className="py-8 text-center text-gray-500">
+                <div className="py-8 text-center text-muted-foreground">
                   اعلانی یافت نشد
                 </div>
               ) : (
-                <div className="divide-y divide-gray-100">
+                <div className="divide-y divide-border">
                   {displayNotifications.map((notification) => (
                     <div
                       key={notification._id}
-                      className="px-4 py-3 hover:bg-gray-50 relative"
+                      className="px-4 py-3 hover:bg-muted relative"
                     >
                       <button
                         onClick={() => deleteNotification(notification._id)}
-                        className="absolute left-4 top-1/2 transform -translate-y-1/2 text-gray-400 hover:text-red-500"
+                        className="absolute left-4 top-1/2 transform -translate-y-1/2 text-muted-foreground hover:text-destructive"
                       >
                         <FaTimes className="text-xs" />
                       </button>
-                      <p className="text-sm text-gray-700 pr-6">
+                      <p className="text-sm text-popover-foreground pr-6">
                         {notification.message}
                       </p>
-                      <p className="text-xs text-gray-500 mt-1">
+                      <p className="text-xs text-muted-foreground mt-1">
                         {new Date(notification.createdAt).toLocaleDateString(
                           "fa-IR",
                         )}
@@ -333,46 +368,48 @@ const Header = () => {
         <div className="relative" ref={menuRef}>
           <button
             onClick={() => setIsMenuOpen(!isMenuOpen)}
-            className="w-10 h-10 rounded-full bg-red-500 flex items-center justify-center text-white font-bold text-sm hover:bg-red-600 transition cursor-pointer"
+            className="w-8 h-8 md:w-10 md:h-10 rounded-full bg-primary text-primary-foreground flex items-center justify-center font-bold text-xs md:text-sm hover:bg-primary/80 transition cursor-pointer"
           >
             {user?.avatar ? (
               <img
                 src={user.avatar}
                 alt="پروفایل"
-                className="w-full h-full object-cover rounded-full border border-red-500 shadow-md"
+                className="w-full h-full object-cover rounded-full border border-primary shadow-md"
               />
             ) : user?.name ? (
-              <span className="text-white font-medium">
+              <span className="text-primary-foreground font-medium text-xs md:text-sm">
                 {user.name.charAt(0).toUpperCase()}
               </span>
             ) : (
-              <span className="text-white">👤</span>
+              <span className="text-primary-foreground text-xs">👤</span>
             )}
           </button>
 
           {/* منوی کشویی */}
           {isMenuOpen && (
-            <div className="absolute left-0 mt-2 w-56 bg-white rounded-lg shadow-lg py-2 z-50 border border-gray-200 ">
-              <div className="px-4 py-2 border-b border-gray-100">
-                <p className="font-medium text-gray-800">{user?.name}</p>
-                <p className="text-xs text-gray-500">{user?.email}</p>
+            <div className="absolute left-0 mt-2 w-56 bg-popover rounded-lg shadow-lg py-2 z-50 border border-border">
+              <div className="px-4 py-2 border-b border-border">
+                <p className="font-medium text-popover-foreground">
+                  {user?.name}
+                </p>
+                <p className="text-xs text-muted-foreground">{user?.email}</p>
               </div>
 
               <Link
                 to="/"
-                className="px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 flex items-center"
+                className="px-4 py-2 text-sm text-foreground hover:bg-muted flex items-center"
                 onClick={() => setIsMenuOpen(false)}
               >
-                <FaHome className="ml-2 text-gray-500" />
+                <FaHome className="ml-2 text-muted-foreground" />
                 صفحه اصلی
               </Link>
 
               <Link
                 to="/dashboard/profile"
-                className="px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 flex items-center"
+                className="px-4 py-2 text-sm text-foreground hover:bg-muted flex items-center"
                 onClick={() => setIsMenuOpen(false)}
               >
-                <FaUser className="ml-2 text-gray-500" />
+                <FaUser className="ml-2 text-muted-foreground" />
                 پروفایل
               </Link>
 
@@ -384,18 +421,18 @@ const Header = () => {
                       ? "/dashboard/admin/settings/club"
                       : "/dashboard/user/settings"
                 }
-                className="px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 flex items-center"
+                className="px-4 py-2 text-sm text-foreground hover:bg-muted flex items-center"
                 onClick={() => setIsMenuOpen(false)}
               >
-                <FaCog className="ml-2 text-gray-500" />
+                <FaCog className="ml-2 text-muted-foreground" />
                 تنظیمات
               </Link>
 
               <button
                 onClick={handleLogout}
-                className="w-full text-left px-4 py-2 text-sm text-red-600 hover:bg-red-50 hover:text-red-800 flex items-center"
+                className="w-full text-left px-4 py-2 text-sm text-destructive hover:bg-destructive/10 flex items-center"
               >
-                <FaSignOutAlt className="ml-2 text-red-500" />
+                <FaSignOutAlt className="ml-2 text-destructive" />
                 خروج
               </button>
             </div>

@@ -12,10 +12,8 @@ export default function CoachTrainingVideoCreate() {
   const [formData, setFormData] = useState({
     title: '',
     description: '',
-    // حالت URL
     videoUrl: '',
     thumbnailUrl: '',
-    // حالت آپلود
     videoFile: null as File | null,
     thumbnailFile: null as File | null,
     duration: 0,
@@ -23,7 +21,7 @@ export default function CoachTrainingVideoCreate() {
     accessLevel: 'gold' as 'bronze' | 'silver' | 'gold'
   });
   
-  const [uploadType, setUploadType] = useState<'url' | 'file'>('url'); // حالت فعلی
+  const [uploadType, setUploadType] = useState<'url' | 'file'>('url');
   const [videoPreview, setVideoPreview] = useState<string | null>(null);
   const [thumbnailPreview, setThumbnailPreview] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
@@ -37,7 +35,6 @@ export default function CoachTrainingVideoCreate() {
     const file = e.target.files?.[0];
     
     if (file) {
-      // اعتبارسنجی نوع فایل
       if (fileType === 'video' && !file.type.startsWith('video/')) {
         toast.error('لطفاً فایل ویدیو معتبر انتخاب کنید');
         return;
@@ -48,7 +45,6 @@ export default function CoachTrainingVideoCreate() {
         return;
       }
       
-      // اعتبارسنجی حجم فایل
       const maxSize = fileType === 'video' ? 100 * 1024 * 1024 : 5 * 1024 * 1024;
       if (file.size > maxSize) {
         toast.error(fileType === 'video' 
@@ -75,7 +71,6 @@ export default function CoachTrainingVideoCreate() {
       return;
     }
 
-    // اعتبارسنجی بر اساس نوع آپلود
     if (uploadType === 'url') {
       if (!formData.videoUrl.trim()) {
         toast.error('لطفاً URL ویدیو را وارد کنید');
@@ -99,13 +94,11 @@ export default function CoachTrainingVideoCreate() {
       };
 
       if (uploadType === 'url') {
-        // ارسال URL
         payload.videoUrl = formData.videoUrl;
         payload.thumbnail = formData.thumbnailUrl || null;
         
         await api.post('/coach/videos', payload);
       } else {
-        // ارسال فایل
         const formDataToSend = new FormData();
         formDataToSend.append('title', formData.title);
         formDataToSend.append('description', formData.description);
@@ -154,35 +147,35 @@ export default function CoachTrainingVideoCreate() {
 
   return (
     <div className="space-y-6">
-      <div className="flex justify-between items-center">
-        <h1 className="text-2xl font-bold">ایجاد ویدیوی آموزشی جدید</h1>
+      <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
+        <h1 className="text-xl sm:text-2xl font-bold text-foreground">ایجاد ویدیوی آموزشی جدید</h1>
         <button
           onClick={() => navigate('/dashboard/coach/videos')}
-          className="text-gray-600 hover:text-gray-800"
+          className="text-muted-foreground hover:text-foreground"
         >
           انصراف
         </button>
       </div>
 
       {/* Toggle Upload Type */}
-      <div className="bg-white p-4 rounded-xl shadow">
-        <div className="flex space-x-4 space-x-reverse">
+      <div className="bg-card p-4 rounded-xl shadow border border-border">
+        <div className="flex space-x-2 sm:space-x-4 rtl:space-x-reverse">
           <button
             onClick={() => setUploadType('url')}
-            className={`flex-1 px-4 py-2 rounded-lg text-sm font-medium transition-colors ${
+            className={`flex-1 px-3 sm:px-4 py-2 rounded-lg text-sm font-medium transition-colors ${
               uploadType === 'url'
-                ? 'bg-red-600 text-white'
-                : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
+                ? 'bg-primary text-primary-foreground'
+                : 'bg-secondary text-secondary-foreground hover:bg-secondary/80'
             }`}
           >
             استفاده از URL
           </button>
           <button
             onClick={() => setUploadType('file')}
-            className={`flex-1 px-4 py-2 rounded-lg text-sm font-medium transition-colors ${
+            className={`flex-1 px-3 sm:px-4 py-2 rounded-lg text-sm font-medium transition-colors ${
               uploadType === 'file'
-                ? 'bg-red-600 text-white'
-                : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
+                ? 'bg-primary text-primary-foreground'
+                : 'bg-secondary text-secondary-foreground hover:bg-secondary/80'
             }`}
           >
             آپلود فایل
@@ -190,12 +183,12 @@ export default function CoachTrainingVideoCreate() {
         </div>
       </div>
 
-      <form onSubmit={handleSubmit} className="bg-white p-6 rounded-xl shadow">
+      <form onSubmit={handleSubmit} className="bg-card p-4 sm:p-6 rounded-xl shadow border border-border">
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
           {/* Basic Info */}
           <div className="space-y-4">
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">
+              <label className="block text-sm font-medium text-foreground mb-1">
                 عنوان ویدیو *
               </label>
               <input
@@ -203,13 +196,13 @@ export default function CoachTrainingVideoCreate() {
                 name="title"
                 value={formData.title}
                 onChange={handleInputChange}
-                className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-red-500 focus:border-red-500"
+                className="w-full px-3 py-2 border border-border rounded-lg focus:ring-2 focus:ring-primary bg-background text-foreground"
                 placeholder="مثلاً: تمرین پرس سینه"
               />
             </div>
 
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">
+              <label className="block text-sm font-medium text-foreground mb-1">
                 توضیحات
               </label>
               <textarea
@@ -217,14 +210,14 @@ export default function CoachTrainingVideoCreate() {
                 value={formData.description}
                 onChange={handleInputChange}
                 rows={4}
-                className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-red-500 focus:border-red-500"
+                className="w-full px-3 py-2 border border-border rounded-lg focus:ring-2 focus:ring-primary bg-background text-foreground"
                 placeholder="توضیحات اختیاری برای ویدیو..."
               />
             </div>
 
             {/* Video Input - Dynamic based on upload type */}
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">
+              <label className="block text-sm font-medium text-foreground mb-1">
                 {uploadType === 'url' ? 'URL ویدیو *' : 'فایل ویدیو *'}
               </label>
               
@@ -234,11 +227,11 @@ export default function CoachTrainingVideoCreate() {
                   name="videoUrl"
                   value={formData.videoUrl}
                   onChange={handleInputChange}
-                  className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-red-500 focus:border-red-500"
+                  className="w-full px-3 py-2 border border-border rounded-lg focus:ring-2 focus:ring-primary bg-background text-foreground"
                   placeholder="https://example.com/video.mp4"
                 />
               ) : (
-                <div className="border-2 border-dashed border-gray-300 rounded-lg p-4 text-center">
+                <div className="border-2 border-dashed border-border rounded-lg p-4 text-center">
                   <input
                     type="file"
                     accept="video/*"
@@ -248,15 +241,14 @@ export default function CoachTrainingVideoCreate() {
                   />
                   <label 
                     htmlFor="video-upload" 
-                    className="cursor-pointer text-red-600 hover:text-red-800"
+                    className="cursor-pointer text-primary hover:text-primary/80"
                   >
                     {formData.videoFile ? formData.videoFile.name : 'انتخاب فایل ویدیو'}
                   </label>
-                  <p className="text-xs text-gray-500 mt-1">
+                  <p className="text-xs text-muted-foreground mt-1">
                     فرمت‌های پشتیبانی شده: MP4, WebM, OGG (حداکثر 100MB)
                   </p>
                   
-                  {/* Video Preview */}
                   {videoPreview && (
                     <div className="mt-2">
                       <video 
@@ -272,7 +264,7 @@ export default function CoachTrainingVideoCreate() {
 
             {/* Thumbnail Input - Dynamic based on upload type */}
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">
+              <label className="block text-sm font-medium text-foreground mb-1">
                 {uploadType === 'url' ? 'URL تصویر بندانگشتی' : 'تصویر بندانگشتی'}
               </label>
               
@@ -282,11 +274,11 @@ export default function CoachTrainingVideoCreate() {
                   name="thumbnailUrl"
                   value={formData.thumbnailUrl}
                   onChange={handleInputChange}
-                  className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-red-500 focus:border-red-500"
+                  className="w-full px-3 py-2 border border-border rounded-lg focus:ring-2 focus:ring-primary bg-background text-foreground"
                   placeholder="https://example.com/thumbnail.jpg"
                 />
               ) : (
-                <div className="border-2 border-dashed border-gray-300 rounded-lg p-4 text-center">
+                <div className="border-2 border-dashed border-border rounded-lg p-4 text-center">
                   <input
                     type="file"
                     accept="image/*"
@@ -296,15 +288,14 @@ export default function CoachTrainingVideoCreate() {
                   />
                   <label 
                     htmlFor="thumbnail-upload" 
-                    className="cursor-pointer text-red-600 hover:text-red-800"
+                    className="cursor-pointer text-primary hover:text-primary/80"
                   >
                     {formData.thumbnailFile ? formData.thumbnailFile.name : 'انتخاب تصویر'}
                   </label>
-                  <p className="text-xs text-gray-500 mt-1">
+                  <p className="text-xs text-muted-foreground mt-1">
                     فرمت‌های پشتیبانی شده: JPG, PNG, GIF (حداکثر 5MB)
                   </p>
                   
-                  {/* Thumbnail Preview */}
                   {thumbnailPreview && (
                     <div className="mt-2">
                       <img 
@@ -322,7 +313,7 @@ export default function CoachTrainingVideoCreate() {
           {/* Settings */}
           <div className="space-y-4">
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">
+              <label className="block text-sm font-medium text-foreground mb-1">
                 مدت زمان (ثانیه)
               </label>
               <input
@@ -331,20 +322,20 @@ export default function CoachTrainingVideoCreate() {
                 value={formData.duration}
                 onChange={handleInputChange}
                 min="0"
-                className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-red-500 focus:border-red-500"
+                className="w-full px-3 py-2 border border-border rounded-lg focus:ring-2 focus:ring-primary bg-background text-foreground"
                 placeholder="300"
               />
             </div>
 
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">
+              <label className="block text-sm font-medium text-foreground mb-1">
                 دسته‌بندی
               </label>
               <select
                 name="category"
                 value={formData.category}
                 onChange={handleInputChange}
-                className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-red-500 focus:border-red-500"
+                className="w-full px-3 py-2 border border-border rounded-lg focus:ring-2 focus:ring-primary bg-background text-foreground"
               >
                 {getCategoryOptions().map(option => (
                   <option key={option.value} value={option.value}>
@@ -355,14 +346,14 @@ export default function CoachTrainingVideoCreate() {
             </div>
 
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">
+              <label className="block text-sm font-medium text-foreground mb-1">
                 سطح دسترسی *
               </label>
               <select
                 name="accessLevel"
                 value={formData.accessLevel}
                 onChange={handleInputChange}
-                className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-red-500 focus:border-red-500"
+                className="w-full px-3 py-2 border border-border rounded-lg focus:ring-2 focus:ring-primary bg-background text-foreground"
               >
                 {getAccessLevelOptions().map(option => (
                   <option key={option.value} value={option.value}>
@@ -370,14 +361,14 @@ export default function CoachTrainingVideoCreate() {
                   </option>
                 ))}
               </select>
-              <p className="text-xs text-gray-500 mt-1">
+              <p className="text-xs text-muted-foreground mt-1">
                 تعیین کنید چه کاربرانی می‌توانند این ویدیو را ببینند
               </p>
             </div>
 
-            <div className="bg-yellow-50 p-4 rounded-lg">
-              <h4 className="font-medium text-yellow-800 mb-2">💡 نکات مهم:</h4>
-              <ul className="text-xs text-yellow-700 space-y-1">
+            <div className="bg-accent/10 p-4 rounded-lg">
+              <h4 className="font-medium text-accent mb-2">💡 نکات مهم:</h4>
+              <ul className="text-xs text-accent space-y-1">
                 <li>• برای YouTube، لینک embed استفاده کنید</li>
                 <li>• آپلود فایل برای ویدیوهای خصوصی مناسب‌تر است</li>
                 <li>• تصویر بندانگشتی بهبود ظاهر لیست را فراهم می‌کند</li>
@@ -390,7 +381,7 @@ export default function CoachTrainingVideoCreate() {
           <button
             type="submit"
             disabled={loading}
-            className="bg-red-600 hover:bg-red-700 text-white px-6 py-2 rounded-lg font-medium transition-colors disabled:opacity-50"
+            className="bg-primary hover:bg-primary/80 text-primary-foreground px-6 py-2 rounded-lg font-medium transition-colors disabled:opacity-50"
           >
             {loading ? 'در حال پردازش...' : 'ایجاد ویدیو'}
           </button>

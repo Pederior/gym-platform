@@ -25,25 +25,25 @@ export default function AdminSubscriptions() {
 
   const getStatusBadge = (status: string) => {
     const config: Record<string, { label: string; color: string }> = {
-      active: { label: 'فعال', color: 'bg-green-100 text-green-800' },
-      expired: { label: 'منقضی', color: 'bg-red-100 text-red-800' },
-      canceled: { label: 'لغو شده', color: 'bg-gray-100 text-gray-800' }
+      active: { label: 'فعال', color: 'bg-green-500/10 text-green-500' },
+      expired: { label: 'منقضی', color: 'bg-destructive/10 text-destructive' },
+      canceled: { label: 'لغو شده', color: 'bg-muted/50 text-muted-foreground' }
     }
     const { label, color } = config[status] || config.expired
-    return <span className={`px-2 py-1 rounded-full text-xs ${color}`}>{label}</span>
+    return <span className={`px-2 py-1 rounded-full text-xs font-medium ${color}`}>{label}</span>
   }
 
   return (
     <div>
-      <h1 className="text-2xl font-bold mb-6">اشتراک‌ها</h1>
-      <Card>
+      <h1 className="text-xl sm:text-2xl font-bold text-foreground mb-6">اشتراک‌ها</h1>
+      <Card className='bg-card'>
         {loading ? (
-          <div className="py-8 text-center">در حال بارگذاری...</div>
+          <div className="py-8 text-center text-muted-foreground">در حال بارگذاری...</div>
         ) : (
           <div className="overflow-x-auto">
-            <table className="w-full">
+            <table className="w-full min-w-full">
               <thead>
-                <tr className="text-right text-sm text-gray-500 border-b">
+                <tr className="text-right text-sm text-muted-foreground border-b border-border">
                   <th className="py-3 px-2">کاربر</th>
                   <th className="py-3 px-2">طرح</th>
                   <th className="py-3 px-2">مبلغ</th>
@@ -54,12 +54,12 @@ export default function AdminSubscriptions() {
               </thead>
               <tbody>
                 {subs.map(sub => (
-                  <tr key={sub._id} className="border-b">
-                    <td className="py-3 px-2">{sub.user.name}</td>
-                    <td className="py-3 px-2">{sub.plan}</td>
-                    <td className="py-3 px-2">{sub.amount.toLocaleString()} تومان</td>
-                    <td className="py-3 px-2">{new Date(sub.startDate).toLocaleDateString('fa-IR')}</td>
-                    <td className="py-3 px-2">{new Date(sub.endDate).toLocaleDateString('fa-IR')}</td>
+                  <tr key={sub._id} className="border-b border-border hover:bg-muted">
+                    <td className="py-3 px-2 text-foreground">{sub.user.name}</td>
+                    <td className="py-3 px-2 text-foreground">{sub.plan}</td>
+                    <td className="py-3 px-2 text-foreground">{sub.amount.toLocaleString()} تومان</td>
+                    <td className="py-3 px-2 text-muted-foreground">{new Date(sub.startDate).toLocaleDateString('fa-IR')}</td>
+                    <td className="py-3 px-2 text-muted-foreground">{new Date(sub.endDate).toLocaleDateString('fa-IR')}</td>
                     <td className="py-3 px-2">{getStatusBadge(sub.status)}</td>
                   </tr>
                 ))}

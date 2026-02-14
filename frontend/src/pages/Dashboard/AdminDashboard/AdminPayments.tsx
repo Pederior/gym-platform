@@ -25,40 +25,40 @@ export default function AdminPayments() {
 
   const getStatusBadge = (status: string) => {
     const config: Record<string, { label: string; color: string }> = {
-      completed: { label: 'تکمیل شده', color: 'bg-green-100 text-green-800' },
-      pending: { label: 'در انتظار', color: 'bg-yellow-100 text-yellow-800' },
-      failed: { label: 'ناموفق', color: 'bg-red-100 text-red-800' }
+      completed: { label: 'تکمیل شده', color: 'bg-green-500/10 text-green-500' },
+      pending: { label: 'در انتظار', color: 'bg-yellow-500/10 text-yellow-500' },
+      failed: { label: 'ناموفق', color: 'bg-destructive/10 text-destructive' }
     }
     const { label, color } = config[status] || config.completed
-    return <span className={`px-2 py-1 rounded-full text-xs ${color}`}>{label}</span>
+    return <span className={`px-2 py-1 rounded-full text-xs font-medium ${color}`}>{label}</span>
   }
 
   return (
     <div>
-      <h1 className="text-2xl font-bold mb-6">پرداخت‌ها</h1>
+      <h1 className="text-xl sm:text-2xl font-bold text-foreground mb-6">پرداخت‌ها</h1>
       <Card>
         {loading ? (
-          <div className="py-8 text-center">در حال بارگذاری...</div>
+          <div className="py-8 text-center text-muted-foreground">در حال بارگذاری...</div>
         ) : (
           <div className="overflow-x-auto">
-            <table className="w-full">
+            <table className="w-full min-w-full">
               <thead>
-                <tr className="text-right text-sm text-gray-500">
-                  <th className=' px-2'>کاربر</th>
-                  <th className=' px-2'>مبلغ</th>
-                  <th className=' px-2'>روش</th>
-                  <th className=' px-3'>وضعیت</th>
-                  <th className=' px-2'>تاریخ</th>
+                <tr className="text-right text-sm text-muted-foreground border-b border-border">
+                  <th className="py-3 px-2">کاربر</th>
+                  <th className="py-3 px-2">مبلغ</th>
+                  <th className="py-3 px-2">روش</th>
+                  <th className="py-3 px-2">وضعیت</th>
+                  <th className="py-3 px-2">تاریخ</th>
                 </tr>
               </thead>
               <tbody>
                 {payments.map(p => (
-                  <tr key={p._id} className="border-b py-2">
-                    <td className='py-3 px-2'>{p.user.name}</td>
-                    <td className='py-3 px-2'>{p.amount.toLocaleString()} تومان</td>
-                    <td className='py-3 px-2'>{p.method}</td>
-                    <td className='py-3 px-2'>{getStatusBadge(p.status)}</td>
-                    <td className='py-3 px-2'>{new Date(p.createdAt).toLocaleDateString('fa-IR')}</td>
+                  <tr key={p._id} className="border-b border-border hover:bg-muted">
+                    <td className="py-3 px-2 text-foreground">{p.user.name}</td>
+                    <td className="py-3 px-2 text-foreground">{p.amount.toLocaleString()} تومان</td>
+                    <td className="py-3 px-2 text-foreground">{p.method}</td>
+                    <td className="py-3 px-2">{getStatusBadge(p.status)}</td>
+                    <td className="py-3 px-2 text-muted-foreground">{new Date(p.createdAt).toLocaleDateString('fa-IR')}</td>
                   </tr>
                 ))}
               </tbody>

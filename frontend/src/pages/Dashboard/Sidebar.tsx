@@ -12,7 +12,7 @@ import {
   MdSettingsInputComponent,
   MdStore,
   MdOutlineOndemandVideo,
-  MdArticle 
+  MdArticle,
 } from "react-icons/md";
 import {
   FaChartLine,
@@ -21,7 +21,12 @@ import {
   FaMoneyBillTransfer,
 } from "react-icons/fa6";
 import { AiFillDollarCircle, AiOutlineDollar } from "react-icons/ai";
-import { IoChatboxEllipses, IoPeopleSharp, IoFastFood, IoTicketSharp   } from "react-icons/io5";
+import {
+  IoChatboxEllipses,
+  IoPeopleSharp,
+  IoFastFood,
+  IoTicketSharp,
+} from "react-icons/io5";
 import { FaClipboardList, FaChartBar } from "react-icons/fa";
 import { TbReportSearch } from "react-icons/tb";
 import { FaCalendarPlus } from "react-icons/fa";
@@ -37,7 +42,7 @@ interface MenuItem {
   to?: string;
   children?: {
     label: string;
-    icon: ReactNode; 
+    icon: ReactNode;
     to: string;
   }[];
 }
@@ -45,16 +50,24 @@ interface MenuItem {
 interface SidebarProps {
   isCollapsed: boolean;
   onToggle: () => void;
+  isMobile?: boolean;
 }
 
-const Sidebar = ({ isCollapsed, onToggle }: SidebarProps) => {
+const Sidebar = ({ isCollapsed, onToggle, isMobile = false }: SidebarProps) => {
   const [openMenu, setOpenMenu] = useState<string | null>(null);
   const { user } = useAppSelector((state) => state.auth);
   const role = user?.role || "user";
 
   const toggleMenu = (menu: string) => {
+    // در موبایل: اگر sidebar باز است، زیرمنو را باز کن (بدون بستن sidebar)
+    if (isMobile && !isCollapsed) {
+      setOpenMenu(openMenu === menu ? null : menu);
+      return;
+    }
+
+    // در دسکتاپ: رفتار قبلی
     if (isCollapsed) {
-      onToggle(); 
+      onToggle();
       setTimeout(() => {
         setOpenMenu(openMenu === menu ? null : menu);
       }, 100);
@@ -62,13 +75,6 @@ const Sidebar = ({ isCollapsed, onToggle }: SidebarProps) => {
       setOpenMenu(openMenu === menu ? null : menu);
     }
   };
-
-  // const toggleSidebar = () => {
-  //   setIsCollapsed(!isCollapsed);
-  //   if (!isCollapsed) {
-  //     setOpenMenu(null);
-  //   }
-  // };
 
   const menuItems: MenuItem[] = useMemo(() => {
     if (role === "admin") {
@@ -139,7 +145,7 @@ const Sidebar = ({ isCollapsed, onToggle }: SidebarProps) => {
         },
         {
           title: "مقالات",
-          icon: <MdArticle  />,
+          icon: <MdArticle />,
           children: [
             {
               label: "مدیریت مقالات",
@@ -190,7 +196,7 @@ const Sidebar = ({ isCollapsed, onToggle }: SidebarProps) => {
     } else if (role === "coach") {
       return [
         { title: "داشبورد", icon: <TbSmartHome />, to: "/dashboard/coach" },
-        { title: "شاگردان", icon: <TbSmartHome />, to: "/dashboard/coach/students" },
+        { title: "شاگردان", icon: <TbUser />, to: "/dashboard/coach/students" },
         {
           title: "برنامه‌های تمرینی",
           icon: <GiMuscleUp />,
@@ -214,12 +220,12 @@ const Sidebar = ({ isCollapsed, onToggle }: SidebarProps) => {
         },
         {
           title: "ویدیوهای آموزشی ",
-          icon: <MdOutlineOndemandVideo  />,
+          icon: <MdOutlineOndemandVideo />,
           to: "/dashboard/coach/videos",
         },
         {
           title: "مقالات",
-          icon: <MdArticle  />,
+          icon: <MdArticle />,
           children: [
             {
               label: "مدیریت مقالات",
@@ -264,12 +270,12 @@ const Sidebar = ({ isCollapsed, onToggle }: SidebarProps) => {
         },
         {
           title: "برنامه غذایی",
-          icon: <IoFastFood  />,
+          icon: <IoFastFood />,
           to: "/dashboard/user/diet-plans",
         },
         {
           title: "ویدیو های آموزشی",
-          icon: <MdOutlineOndemandVideo   />,
+          icon: <MdOutlineOndemandVideo />,
           to: "/dashboard/user/videos",
         },
         {
@@ -277,11 +283,6 @@ const Sidebar = ({ isCollapsed, onToggle }: SidebarProps) => {
           icon: <MdClass />,
           to: "/dashboard/user/classes",
         },
-        // {
-        //   title: "پیگیری پیشرفت",
-        //   icon: <FaChartLine />,
-        //   to: "/dashboard/user/progress",
-        // },
         {
           title: "چت با مربی",
           icon: <IoChatboxEllipses />,
@@ -301,27 +302,31 @@ const Sidebar = ({ isCollapsed, onToggle }: SidebarProps) => {
     }
   }, [role]);
 
+  if (isMobile && isCollapsed) return null;
+
   return (
-    <aside 
+    <aside
       className={`h-screen fixed right-0 top-0 overflow-y-auto transition-all duration-300 z-50 ${
-        isCollapsed 
-          ? 'w-16 bg-red-800' 
-          : 'w-64 bg-red-600'
-      }`}
+        isCollapsed ? "w-16 bg-primary" : "w-64 bg-primary"
+      } ${isMobile ? "shadow-lg" : ""}`}
     >
-      <div className={`p-4 border-b border-red-500 flex items-center justify-between ${
-        isCollapsed ? 'justify-center' : ''
-      }`}>
+      <div
+        className={`p-3 md:p-4 border-b border-primary-50 flex items-center justify-between ${
+          isCollapsed ? "justify-center" : ""
+        }`}
+      >
         {!isCollapsed && (
-          <Link to="/">
-            <h1 className="text-xl font-bold text-white">فینیکس کلاب</h1>
+          <Link to="/" className="no-underline">
+            <h1 className="text-lg font-bold text-primary-foreground truncate">
+              فینیکس کلاب
+            </h1>
           </Link>
         )}
-        <button 
+        <button
           onClick={onToggle}
-          className="w-8 h-8 bg-red-700/90 rounded-full flex items-center justify-center cursor-pointer text-white hover:bg-red-700"
+          className="w-7 h-7 md:w-8 md:h-8 bg-primary-80 rounded-full flex items-center justify-center cursor-pointer text-primary-foreground hover:bg-primary transition-colors text-xs md:text-base"
         >
-          {isCollapsed ? '»' : '«'}
+          {isCollapsed ? "»" : "«"}
         </button>
       </div>
 
@@ -331,20 +336,31 @@ const Sidebar = ({ isCollapsed, onToggle }: SidebarProps) => {
             {item.children && item.children.length > 0 ? (
               <button
                 onClick={() => toggleMenu(item.title)}
-                className={`flex items-center w-full p-3 rounded-lg hover:bg-red-700/90 transition text-white ${
-                  isCollapsed ? 'justify-center px-0' : 'text-right'
-                }`}
+                className={`flex items-center w-full p-2 md:p-3 rounded-lg hover:bg-primary-80 transition-colors text-primary-foreground ${
+                  isCollapsed ? "justify-center px-0" : "text-right"
+                }
+                  ${
+                    isMobile && !isCollapsed
+                      ? "py-3 text-base" 
+                      : ""
+                  }`}
                 title={isCollapsed ? item.title : undefined}
               >
-                <span className={`${isCollapsed ? 'text-xl' : 'text-xl ml-2'}`}>
+                <span
+                  className={`${isCollapsed ? "text-lg md:text-xl" : "text-lg md:text-xl ml-2"}`}
+                >
                   {item.icon}
                 </span>
                 {!isCollapsed && (
                   <>
-                    <span className="flex-1 mr-2">{item.title}</span>
+                    <span className="flex-1 mr-2 text-sm md:text-base">
+                      {item.title}
+                    </span>
                     <span
                       className={`transform transition-transform text-xs ${
-                        openMenu === item.title ? "rotate-180" : ""
+                        openMenu === item.title
+                          ? "rotate-180 text-primary-foreground"
+                          : "text-primary-foreground-70"
                       }`}
                     >
                       ▼
@@ -355,27 +371,35 @@ const Sidebar = ({ isCollapsed, onToggle }: SidebarProps) => {
             ) : (
               <Link
                 to={item.to || "#"}
-                className={`flex items-center w-full p-3 rounded-lg hover:bg-red-700/90 transition text-white ${
-                  isCollapsed ? 'justify-center px-0' : 'text-right'
+                className={`flex items-center w-full p-2 md:p-3 rounded-lg hover:bg-primary-80 transition-colors text-primary-foreground ${
+                  isCollapsed ? "justify-center px-0" : "text-right"
+                } ${
+                  isMobile && !isCollapsed 
+                    ? "py-3 text-base" 
+                    : ""
                 }`}
                 title={isCollapsed ? item.title : undefined}
               >
-                <span className={`${isCollapsed ? 'text-xl' : 'text-xl ml-2'}`}>
+                <span
+                  className={`${isCollapsed ? "text-lg md:text-xl" : "text-lg md:text-xl ml-2"}`}
+                >
                   {item.icon}
                 </span>
                 {!isCollapsed && (
-                  <span className="flex-1 mr-2">{item.title}</span>
+                  <span className="flex-1 mr-2 text-sm md:text-base">
+                    {item.title}
+                  </span>
                 )}
               </Link>
             )}
 
-            {/* زیرمنوها - فقط در حالت expanded */}
+            {/* زیرمنوها - فقط وقتی sidebar باز است و در حالت non-collapsed */}
             {item.children &&
               item.children.length > 0 &&
               openMenu === item.title &&
               !isCollapsed && (
                 <div
-                  className="pr-4 mt-1 space-y-1 mr-2 overflow-hidden bg-red-800/60 rounded-2xl"
+                  className="pr-3 md:pr-4 mt-1 space-y-1 mr-2 overflow-hidden bg-primary-80 rounded-xl md:rounded-2xl"
                   style={{
                     maxHeight: openMenu === item.title ? "500px" : "0",
                     opacity: openMenu === item.title ? 1 : 0,
@@ -386,9 +410,13 @@ const Sidebar = ({ isCollapsed, onToggle }: SidebarProps) => {
                     <Link
                       key={childIdx}
                       to={child.to}
-                      className="w-full flex items-center p-2 text-sm rounded hover:bg-red-700 text-white transition text-right "
+                      className={`w-full flex items-center p-2 text-xs md:text-sm rounded hover:bg-primary-90 text-primary-foreground transition-colors text-right ${
+                        isMobile ? "py-2 text-base" : ""
+                      }`}
                     >
-                      <span className="text-lg ml-2">{child.icon}</span>
+                      <span className="text-base md:text-lg ml-2">
+                        {child.icon}
+                      </span>
                       <span>{child.label}</span>
                     </Link>
                   ))}

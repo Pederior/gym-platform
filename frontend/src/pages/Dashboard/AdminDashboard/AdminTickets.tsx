@@ -60,24 +60,24 @@ export default function AdminTickets() {
 
   const getStatusBadge = (status: string) => {
     const config: Record<string, { label: string; color: string }> = {
-      open: { label: 'باز', color: 'bg-blue-100 text-blue-800' },
-      in_progress: { label: 'در حال بررسی', color: 'bg-yellow-100 text-yellow-800' },
-      resolved: { label: 'حل شده', color: 'bg-green-100 text-green-800' },
-      closed: { label: 'بسته شده', color: 'bg-gray-100 text-gray-800' }
+      open: { label: 'باز', color: 'bg-blue-500/10 text-blue-500' },
+      in_progress: { label: 'در حال بررسی', color: 'bg-yellow-500/10 text-yellow-500' },
+      resolved: { label: 'حل شده', color: 'bg-green-500/10 text-green-500' },
+      closed: { label: 'بسته شده', color: 'bg-muted/50 text-muted-foreground' }
     };
     const { label, color } = config[status] || config.open;
-    return <span className={`px-2 py-1 rounded-full text-xs ${color}`}>{label}</span>;
+    return <span className={`px-2 py-1 rounded-full text-xs font-medium ${color}`}>{label}</span>;
   };
 
   const getPriorityBadge = (priority: string) => {
     const config: Record<string, { label: string; color: string }> = {
-      low: { label: 'پایین', color: 'bg-green-100 text-green-800' },
-      medium: { label: 'متوسط', color: 'bg-yellow-100 text-yellow-800' },
-      high: { label: 'بالا', color: 'bg-orange-100 text-orange-800' },
-      urgent: { label: 'فوری', color: 'bg-red-100 text-red-800' }
+      low: { label: 'پایین', color: 'bg-green-500/10 text-green-500' },
+      medium: { label: 'متوسط', color: 'bg-yellow-500/10 text-yellow-500' },
+      high: { label: 'بالا', color: 'bg-orange-500/10 text-orange-500' },
+      urgent: { label: 'فوری', color: 'bg-red-500/10 text-red-500' }
     };
     const { label, color } = config[priority] || config.medium;
-    return <span className={`px-2 py-1 rounded-full text-xs ${color}`}>{label}</span>;
+    return <span className={`px-2 py-1 rounded-full text-xs font-medium ${color}`}>{label}</span>;
   };
 
   const getCategoryLabel = (category: string) => {
@@ -91,24 +91,24 @@ export default function AdminTickets() {
   };
 
   if (loading) {
-    return <div className="p-8 text-center">در حال بارگذاری...</div>;
+    return <div className="p-8 text-center text-muted-foreground">در حال بارگذاری...</div>;
   }
 
   return (
     <div>
       <div className="flex justify-between items-center mb-6">
-        <h1 className="text-2xl font-bold">مدیریت تیکت‌ها</h1>
+        <h1 className="text-xl sm:text-2xl font-bold text-foreground">مدیریت تیکت‌ها</h1>
       </div>
 
       {/* Filters */}
       <Card className="mb-6 p-4">
         <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">وضعیت</label>
+            <label className="block text-sm font-medium text-foreground mb-1">وضعیت</label>
             <select
               value={filters.status}
               onChange={(e) => handleFilterChange('status', e.target.value)}
-              className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-red-500"
+              className="w-full px-3 py-2 border border-border rounded-lg focus:ring-2 focus:ring-primary focus:outline-none bg-background text-foreground"
             >
               <option value="all">همه</option>
               <option value="open">باز</option>
@@ -119,11 +119,11 @@ export default function AdminTickets() {
           </div>
           
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">دسته‌بندی</label>
+            <label className="block text-sm font-medium text-foreground mb-1">دسته‌بندی</label>
             <select
               value={filters.category}
               onChange={(e) => handleFilterChange('category', e.target.value)}
-              className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-red-500"
+              className="w-full px-3 py-2 border border-border rounded-lg focus:ring-2 focus:ring-primary focus:outline-none bg-background text-foreground"
             >
               <option value="all">همه</option>
               <option value="technical">فنی</option>
@@ -134,11 +134,11 @@ export default function AdminTickets() {
           </div>
           
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">اولویت</label>
+            <label className="block text-sm font-medium text-foreground mb-1">اولویت</label>
             <select
               value={filters.priority}
               onChange={(e) => handleFilterChange('priority', e.target.value)}
-              className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-red-500"
+              className="w-full px-3 py-2 border border-border rounded-lg focus:ring-2 focus:ring-primary focus:outline-none bg-background text-foreground"
             >
               <option value="all">همه</option>
               <option value="low">پایین</option>
@@ -154,44 +154,44 @@ export default function AdminTickets() {
       {tickets.length === 0 ? (
         <Card>
           <div className="text-center py-8">
-            <div className="text-4xl mb-4">🎫</div>
-            <h3 className="font-bold text-gray-800 mb-2">تیکتی یافت نشد</h3>
-            <p className="text-gray-600">با توجه به فیلترهای اعمال شده، تیکتی وجود ندارد</p>
+            <div className="text-4xl mb-4 text-muted-foreground">🎫</div>
+            <h3 className="font-bold text-foreground mb-2">تیکتی یافت نشد</h3>
+            <p className="text-muted-foreground">با توجه به فیلترهای اعمال شده، تیکتی وجود ندارد</p>
           </div>
         </Card>
       ) : (
         <div className="space-y-4">
           {tickets.map(ticket => (
             <Card key={ticket._id} className="p-4 hover:shadow-md transition-shadow">
-              <div className="flex justify-between items-start">
+              <div className="flex flex-col sm:flex-row justify-between items-start gap-4">
                 <div className="flex-1">
-                  <h3 className="font-bold text-lg text-gray-800">{ticket.title}</h3>
+                  <h3 className="font-bold text-lg text-foreground">{ticket.title}</h3>
                   <div className="flex gap-2 mt-2 flex-wrap">
                     {getStatusBadge(ticket.status)}
                     {getPriorityBadge(ticket.priority)}
-                    <span className="text-sm text-gray-600">
+                    <span className="text-sm text-muted-foreground">
                       {getCategoryLabel(ticket.category)}
                     </span>
                   </div>
                   <div className="mt-3 text-sm">
-                    <div className="text-gray-700">
+                    <div className="text-foreground">
                       <strong>کاربر:</strong> {ticket.user.name} ({ticket.user.email})
                     </div>
                     {ticket.admin && (
-                      <div className="text-gray-700 mt-1">
+                      <div className="text-foreground mt-1">
                         <strong>ادمین:</strong> {ticket.admin.name}
                       </div>
                     )}
                   </div>
                 </div>
-                <div className="text-right text-sm text-gray-500">
+                <div className="text-right text-sm text-muted-foreground whitespace-nowrap">
                   {new Date(ticket.createdAt).toLocaleDateString('fa-IR')}
                 </div>
               </div>
               <div className="mt-4 flex justify-end">
                 <Link
                   to={`/dashboard/admin/tickets/${ticket._id}`}
-                  className="text-blue-600 hover:text-blue-800"
+                  className="text-primary hover:text-primary/80"
                 >
                   مشاهده جزئیات
                 </Link>

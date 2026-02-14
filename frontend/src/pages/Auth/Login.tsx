@@ -4,6 +4,7 @@ import { useAppDispatch, useAppSelector } from "../../store/hook";
 import { login, clearError } from "../../store/features/authSlice";
 import Button from "../../components/ui/Button";
 import type { LoginCredentials } from "../../types";
+import { FaRegEye,FaRegEyeSlash  } from "react-icons/fa";
 
 export default function Login() {
   const [formData, setFormData] = useState<LoginCredentials>({
@@ -14,7 +15,6 @@ export default function Login() {
   const dispatch = useAppDispatch();
   const navigate = useNavigate();
   
-  // ✅ state برای نمایش/پنهان کردن رمز عبور
   const [showPassword, setShowPassword] = useState(false);
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -92,7 +92,7 @@ export default function Login() {
               onClick={() => setShowPassword(!showPassword)}
               className="absolute right-3 top-8 text-gray-500 hover:text-gray-700"
             >
-              {showPassword ? '🙈' : '👁️'}
+              {showPassword ? <FaRegEyeSlash className="text-xl"/> : <FaRegEye className="text-xl"/>}
             </button>
           </div>
 

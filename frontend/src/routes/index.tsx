@@ -84,6 +84,8 @@ import ClassList from "../pages/Classes/ClassList";
 import ProtectedRoute from "./ProtectedRoute";
 import OrderSuccess from "../pages/Store/OrderSuccess";
 import ArticleDetail from "../pages/Articles/ArticleDetail";
+import FAQ from "../pages/FAQ";
+import NotFound from "../pages/NotFound";
 
 export const router = createBrowserRouter([
   // صفحات عمومی
@@ -598,6 +600,8 @@ export const router = createBrowserRouter([
   { path: "/articles", element: <Articles /> },
   { path: "/articles/:id", element: <ArticleDetail /> },
   { path: "/order-success", element: <OrderSuccess /> },
+  { path: "/faq", element: <FAQ /> },
+  { path: "*", element: <NotFound /> },
   // { path: "/classes/book/:id", element: <ClassBooking /> },
   // { path: "/test", element: <Test /> },
 ]);

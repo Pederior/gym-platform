@@ -89,11 +89,11 @@ export default function AdminClasses() {
 
   return (
     <div>
-      <div className="flex justify-between items-center mb-6">
-        <h1 className="text-2xl font-bold">مدیریت کلاس‌ها</h1>
+      <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-6 gap-4">
+        <h1 className="text-xl sm:text-2xl font-bold text-foreground">مدیریت کلاس‌ها</h1>
         <button
           onClick={openModal}
-          className="bg-red-600 text-white px-4 py-2 rounded-lg hover:bg-red-700"
+          className="bg-primary text-primary-foreground px-4 py-2 rounded-lg hover:bg-primary/80 cursor-pointer"
         >
           ایجاد کلاس جدید
         </button>
@@ -101,31 +101,31 @@ export default function AdminClasses() {
 
       <Card>
         {loading ? (
-          <div className="py-8 text-center">در حال بارگذاری...</div>
+          <div className="py-8 text-center text-muted-foreground">در حال بارگذاری...</div>
         ) : (
           <div className="overflow-x-auto">
-            <table className="w-full">
+            <table className="w-full min-w-full">
               <thead>
-                <tr className="text-right text-sm text-gray-500 border-b">
-                  <th>عنوان</th>
-                  <th>مربی</th>
-                  <th>تاریخ و ساعت</th>
-                  <th>ظرفیت</th>
-                  <th>هزینه</th>
-                  <th>عملیات</th>
+                <tr className="text-right text-sm text-muted-foreground border-b border-border">
+                  <th className="py-3 px-2">عنوان</th>
+                  <th className="py-3 px-2">مربی</th>
+                  <th className="py-3 px-2">تاریخ و ساعت</th>
+                  <th className="py-3 px-2">ظرفیت</th>
+                  <th className="py-3 px-2">هزینه</th>
+                  <th className="py-3 px-2">عملیات</th>
                 </tr>
               </thead>
               <tbody>
                 {classes.map(cls => (
-                  <tr key={cls._id} className="border-b">
-                    <td>{cls.title}</td>
-                    <td>{cls.coach.name}</td>
-                    <td>{new Date(cls.dateTime).toLocaleDateString('fa-IR')}</td>
-                    <td>{cls.reservedBy.length}/{cls.capacity}</td>
-                    <td>{cls.price.toLocaleString()} تومان</td>
-                    <td>
-                      <button className="text-blue-600 mr-3">ویرایش</button>
-                      <button className="text-red-600">حذف</button>
+                  <tr key={cls._id} className="border-b border-border hover:bg-muted">
+                    <td className="py-3 px-2 text-foreground">{cls.title}</td>
+                    <td className="py-3 px-2 text-foreground">{cls.coach.name}</td>
+                    <td className="py-3 px-2 text-muted-foreground">{new Date(cls.dateTime).toLocaleDateString('fa-IR')}</td>
+                    <td className="py-3 px-2 text-foreground">{cls.reservedBy.length}/{cls.capacity}</td>
+                    <td className="py-3 px-2 text-foreground">{cls.price.toLocaleString()} تومان</td>
+                    <td className="py-3 px-2">
+                      <button className="text-primary hover:text-primary/80 ml-3 cursor-pointer">ویرایش</button>
+                      <button className="text-destructive hover:text-destructive/80 cursor-pointer">حذف</button>
                     </td>
                   </tr>
                 ))}
@@ -137,30 +137,30 @@ export default function AdminClasses() {
 
       {/* Modal ایجاد کلاس */}
       {isModalOpen && (
-        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
-          <div className="bg-white rounded-lg w-full max-w-md">
-            <div className="p-4 border-b">
-              <h2 className="text-lg font-bold">ایجاد کلاس جدید</h2>
+        <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4">
+          <div className="bg-card rounded-lg w-full max-w-md border border-border">
+            <div className="p-4 border-b border-border">
+              <h2 className="text-lg font-bold text-foreground">ایجاد کلاس جدید</h2>
             </div>
             <form onSubmit={handleSubmit} className="p-4 space-y-4">
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">عنوان کلاس</label>
+                <label className="block text-sm font-medium text-foreground mb-1">عنوان کلاس</label>
                 <input
                   type="text"
                   name="title"
                   value={formData.title}
                   onChange={handleChange}
-                  className="w-full px-3 py-2 border rounded-lg focus:ring-2 focus:ring-red-500"
+                  className="w-full px-3 py-2 border border-border rounded-lg focus:ring-2 focus:ring-primary bg-background text-foreground"
                   required
                 />
               </div>
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">مربی</label>
+                <label className="block text-sm font-medium text-foreground mb-1">مربی</label>
                 <select
                   name="coach"
                   value={formData.coach}
                   onChange={handleChange}
-                  className="w-full px-3 py-2 border rounded-lg focus:ring-2 focus:ring-red-500"
+                  className="w-full px-3 py-2 border border-border rounded-lg focus:ring-2 focus:ring-primary bg-background text-foreground text-center"
                   required
                 >
                   <option value="">انتخاب مربی</option>
@@ -170,52 +170,52 @@ export default function AdminClasses() {
                 </select>
               </div>
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">تاریخ و ساعت</label>
+                <label className="block text-sm font-medium text-foreground mb-1">تاریخ و ساعت</label>
                 <input
                   type="datetime-local"
                   name="dateTime"
                   value={formData.dateTime}
                   onChange={handleChange}
-                  className="w-full px-3 py-2 border rounded-lg focus:ring-2 focus:ring-red-500"
+                  className="w-full px-3 py-2 border border-border rounded-lg focus:ring-2 focus:ring-primary bg-background text-foreground"
                   required
                 />
               </div>
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">ظرفیت</label>
+                <label className="block text-sm font-medium text-foreground mb-1">ظرفیت</label>
                 <input
                   type="number"
                   name="capacity"
                   value={formData.capacity}
                   onChange={handleChange}
                   min="1"
-                  className="w-full px-3 py-2 border rounded-lg focus:ring-2 focus:ring-red-500"
+                  className="w-full px-3 py-2 border border-border rounded-lg focus:ring-2 focus:ring-primary bg-background text-foreground"
                   required
                 />
               </div>
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">هزینه (تومان)</label>
+                <label className="block text-sm font-medium text-foreground mb-1">هزینه (تومان)</label>
                 <input
                   type="number"
                   name="price"
                   value={formData.price}
                   onChange={handleChange}
                   min="0"
-                  className="w-full px-3 py-2 border rounded-lg focus:ring-2 focus:ring-red-500"
+                  className="w-full px-3 py-2 border border-border rounded-lg focus:ring-2 focus:ring-primary bg-background text-foreground"
                   required
                 />
               </div>
-              <div className="flex gap-3 pt-2">
+              <div className="flex flex-col sm:flex-row gap-3 pt-2">
                 <button
                   type="submit"
                   disabled={submitting}
-                  className="bg-red-600 text-white px-4 py-2 rounded-lg hover:bg-red-700 disabled:opacity-50"
+                  className="bg-primary text-primary-foreground px-4 py-2 rounded-lg hover:bg-primary/80 disabled:opacity-50"
                 >
                   {submitting ? 'در حال ایجاد...' : 'ایجاد کلاس'}
                 </button>
                 <button
                   type="button"
                   onClick={closeModal}
-                  className="bg-gray-200 text-gray-800 px-4 py-2 rounded-lg hover:bg-gray-300"
+                  className="bg-secondary text-secondary-foreground px-4 py-2 rounded-lg hover:bg-secondary/80"
                 >
                   انصراف
                 </button>

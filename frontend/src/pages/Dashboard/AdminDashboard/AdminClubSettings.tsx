@@ -16,27 +16,26 @@ export default function AdminSettings() {
   const [submitting, setSubmitting] = useState(false);
 
   useEffect(() => {
-  const fetchSettings = async () => {
-    try {
-      const data = await adminService.getSettings();
-      // ✅ data یک object هست، نه آرایه
-      setSettings(data);
-    } catch (err: any) {
-      console.error('Fetch settings error:', err);
-      toast.error(err.response?.data?.message || 'خطا در بارگذاری تنظیمات');
-      
-      setSettings({
-        clubName: '',
-        address: '',
-        phone: '',
-        email: ''
-      });
-    } finally {
-      setLoading(false);
-    }
-  };
-  fetchSettings();
-}, []);
+    const fetchSettings = async () => {
+      try {
+        const data = await adminService.getSettings();
+        setSettings(data);
+      } catch (err: any) {
+        console.error('Fetch settings error:', err);
+        toast.error(err.response?.data?.message || 'خطا در بارگذاری تنظیمات');
+        
+        setSettings({
+          clubName: '',
+          address: '',
+          phone: '',
+          email: ''
+        });
+      } finally {
+        setLoading(false);
+      }
+    };
+    fetchSettings();
+  }, []);
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setSettings({ ...settings, [e.target.name]: e.target.value });
@@ -56,17 +55,17 @@ export default function AdminSettings() {
   };
 
   if (loading) {
-    return <div className="p-8">در حال بارگذاری...</div>;
+    return <div className="p-4 sm:p-8 text-center text-muted-foreground">در حال بارگذاری...</div>;
   }
 
   return (
     <div>
-      <h1 className="text-2xl font-bold mb-6">تنظیمات کلی</h1>
+      <h1 className="text-xl sm:text-2xl font-bold text-foreground mb-6">تنظیمات کلی</h1>
 
       <Card>
         <form onSubmit={handleSubmit} className="space-y-6">
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">
+            <label className="block text-sm font-medium text-foreground mb-1">
               نام باشگاه
             </label>
             <input
@@ -74,13 +73,13 @@ export default function AdminSettings() {
               name="clubName"
               value={settings.clubName}
               onChange={handleChange}
-              className="w-full px-3 py-2 border rounded-lg focus:ring-2 focus:ring-red-500"
+              className="w-full px-3 py-2 border border-border rounded-lg focus:ring-2 focus:ring-primary bg-background text-foreground"
               required
             />
           </div>
 
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">
+            <label className="block text-sm font-medium text-foreground mb-1">
               آدرس
             </label>
             <input
@@ -88,12 +87,12 @@ export default function AdminSettings() {
               name="address"
               value={settings.address}
               onChange={handleChange}
-              className="w-full px-3 py-2 border rounded-lg focus:ring-2 focus:ring-red-500"
+              className="w-full px-3 py-2 border border-border rounded-lg focus:ring-2 focus:ring-primary bg-background text-foreground"
             />
           </div>
 
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">
+            <label className="block text-sm font-medium text-foreground mb-1">
               تلفن
             </label>
             <input
@@ -101,12 +100,12 @@ export default function AdminSettings() {
               name="phone"
               value={settings.phone}
               onChange={handleChange}
-              className="w-full px-3 py-2 border rounded-lg focus:ring-2 focus:ring-red-500"
+              className="w-full px-3 py-2 border border-border rounded-lg focus:ring-2 focus:ring-primary bg-background text-foreground"
             />
           </div>
 
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">
+            <label className="block text-sm font-medium text-foreground mb-1">
               ایمیل
             </label>
             <input
@@ -114,14 +113,14 @@ export default function AdminSettings() {
               name="email"
               value={settings.email}
               onChange={handleChange}
-              className="w-full px-3 py-2 border rounded-lg focus:ring-2 focus:ring-red-500"
+              className="w-full px-3 py-2 border border-border rounded-lg focus:ring-2 focus:ring-primary bg-background text-foreground"
             />
           </div>
 
           <button
             type="submit"
             disabled={submitting}
-            className="bg-red-600 text-white px-4 py-2 rounded-lg hover:bg-red-700 disabled:opacity-50"
+            className="bg-primary text-primary-foreground px-4 py-2 rounded-lg hover:bg-primary/80 disabled:opacity-50"
           >
             {submitting ? "در حال ذخیره..." : "ذخیره تنظیمات"}
           </button>

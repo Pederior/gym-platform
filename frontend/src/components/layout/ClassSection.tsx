@@ -5,7 +5,7 @@ const ClassSection: React.FC = () => {
     {
       title: "حرفه ای",
       subtitle: "تمرینات آی بی اس",
-      image: "/images/c1-1.jpg", // جایگزین کن با لینک واقعی عکس
+      image: "/images/c1-1.jpg",
     },
     {
       title: "مبتدی",
@@ -33,37 +33,39 @@ const ClassSection: React.FC = () => {
       image: "/images/c1-6.jpg",
     },
   ];
+
   return (
-    <section className="py-12 px-4 md:px-8 bg-white">
+    <section className="py-12 px-4 sm:px-6 md:px-8 bg-background">
       {/* هدر */}
-      <div className="text-center mb-20">
-        <h4 className="font-light pb-7 mt-12 text-gray-400">کلاسهای تمرین</h4>
-        <h2 className="text-2xl md:text-5xl font-light text-gray-800">
-          برخی <span className="text-red-500 font-bold">کلاس ها</span> در هر
-          سطحی
+      <div className="text-center mb-16">
+        <h4 className="font-light pb-7 mt-12 text-muted-foreground">کلاسهای تمرین</h4>
+        <h2 className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-light text-foreground">
+          برخی <span className="text-primary font-bold">کلاس ها</span> در هر سطحی
         </h2>
-        <div className="w-12 h-1 bg-red-500 mx-auto mt-4"></div>
+        <div className="w-12 h-1 bg-primary mx-auto mt-4"></div>
       </div>
 
       {/* شبکه کارت‌ها */}
-      <div className="flex justify-center w-full px-4">
-        <div className="w-11/12 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 justify-center">
+      <div className="max-w-7xl mx-auto px-4">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
           {classes.map((cls, index) => (
             <div
               key={index}
-              className="relative rounded-sm group cursor-pointer overflow-hidden transition-shadow duration-300 hover:shadow-2xl hover:animate-hoverFloat"
+              className="relative rounded-xl group cursor-pointer overflow-hidden transition-all duration-300 hover:shadow-xl hover:scale-105"
               style={{
                 backgroundImage: `url(${cls.image})`,
                 backgroundSize: "cover",
                 backgroundPosition: "center",
-                height: "220px",
+                aspectRatio: "3/2",
               }}
             >
               {/* Overlay تیره */}
-              <div className="absolute inset-0 bg-black/60 flex flex-col justify-center items-center p-6 transition-opacity group-hover:bg-black/70">
+              <div className="absolute inset-0 bg-black/60 flex flex-col justify-center items-center p-6 transition-all duration-300 group-hover:bg-black/70">
                 <div className="relative flex flex-col items-center justify-center">
-                  <span className="text-4xl text-red-500/50 font-bold -mb-3">{cls.title}</span>
-                  <span className="text-3xl font-bold text-white mb-2">
+                  <span className="text-3xl sm:text-4xl text-primary/30 font-bold -mb-2">
+                    {cls.title}
+                  </span>
+                  <span className="text-2xl sm:text-3xl font-bold text-white mb-3">
                     {cls.title}
                   </span>
                 </div>
@@ -71,7 +73,7 @@ const ClassSection: React.FC = () => {
                 <p className="text-sm text-gray-200 mb-4 text-center">
                   {cls.subtitle}
                 </p>
-                <button className="text-lg bg-red-500 hover:bg-white hover:text-red-500 text-white py-2 px-5  transition-colors cursor-pointer">
+                <button className="text-base bg-primary hover:bg-primary/80 hover:text-primary-foreground text-primary-foreground py-2 px-6 rounded-lg font-medium transition-all duration-300 cursor-pointer">
                   ثبت نام
                 </button>
               </div>

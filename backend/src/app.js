@@ -36,6 +36,7 @@ const adminArticleRoutes = require('./routes/adminArticle.routes');
 const commentRoutes = require('./routes/comment.routes');
 const uploadRoutes = require('./routes/upload.routes');
 const adminCommentRoutes = require('./routes/adminComment.routes');
+const coachCommentRoutes = require('./routes/coachComment.routes');
 
 const app = express();
 
@@ -99,6 +100,7 @@ app.use("/api/coach/articles", coachArticleRoutes);
 app.use("/api/admin/articles", adminArticleRoutes);
 app.use("/api/comments", commentRoutes);
 app.use("/api/admin/comments", adminCommentRoutes);
+app.use("/api/coach/comments", coachCommentRoutes);
 
 app.use("/api/financial", financialRoutes);
 app.use("/api/admin", adminRoutes);

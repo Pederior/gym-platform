@@ -1,16 +1,16 @@
-import { useState, useEffect, useRef } from 'react';
-import { useNavigate, useParams } from 'react-router-dom';
-import Card from '../../../components/ui/Card';
-import { toast } from 'react-hot-toast';
-import { coachService } from '../../../services/coachService';
-import useDocumentTitle from '../../../hooks/useDocumentTitle';
+import { useState, useEffect, useRef } from "react";
+import { useNavigate, useParams } from "react-router-dom";
+import Card from "../../../components/ui/Card";
+import { toast } from "react-hot-toast";
+import { coachService } from "../../../services/coachService";
+import useDocumentTitle from "../../../hooks/useDocumentTitle";
 
 interface Article {
   title: string;
   content: string;
   excerpt: string;
-  category: 'nutrition' | 'workout' | 'lifestyle' | 'motivation' | 'health';
-  status: 'draft' | 'published';
+  category: "nutrition" | "workout" | "lifestyle" | "motivation" | "health";
+  status: "draft" | "published";
   tags: string[];
   readTime: number;
   featuredImage?: string;
@@ -20,18 +20,18 @@ export default function CoachArticleForm() {
   const { id } = useParams<{ id: string }>();
   const navigate = useNavigate();
   const isEdit = !!id;
-  
-  useDocumentTitle(isEdit ? 'ویرایش مقاله' : 'ایجاد مقاله جدید');
-  
+
+  useDocumentTitle(isEdit ? "ویرایش مقاله" : "ایجاد مقاله جدید");
+
   const [formData, setFormData] = useState<Article>({
-    title: '',
-    content: '',
-    excerpt: '',
-    category: 'health',
-    status: 'draft',
-    tags: [''],
+    title: "",
+    content: "",
+    excerpt: "",
+    category: "health",
+    status: "draft",
+    tags: [""],
     readTime: 5,
-    featuredImage: undefined
+    featuredImage: undefined,
   });
   const [loading, setLoading] = useState(false);
   const [submitting, setSubmitting] = useState(false);
@@ -53,142 +53,153 @@ export default function CoachArticleForm() {
         content: data.content,
         excerpt: data.excerpt,
         category: data.category,
-        status: data.status as 'draft' | 'published',
-        tags: data.tags.length > 0 ? data.tags : [''],
+        status: data.status as "draft" | "published",
+        tags: data.tags.length > 0 ? data.tags : [""],
         readTime: data.readTime,
-        featuredImage: data.featuredImage || undefined
+        featuredImage: data.featuredImage || undefined,
       });
       if (data.featuredImage) {
         setImagePreview(data.featuredImage);
       }
     } catch (err: any) {
-      toast.error(err.response?.data?.message || 'خطا در بارگذاری مقاله');
-      navigate('/dashboard/coach/articles');
+      toast.error(err.response?.data?.message || "خطا در بارگذاری مقاله");
+      navigate("/dashboard/coach/articles");
     } finally {
       setLoading(false);
     }
   };
 
-  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
+  const handleInputChange = (
+    e: React.ChangeEvent<
+      HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement
+    >,
+  ) => {
     const { name, value } = e.target;
-    setFormData(prev => ({ ...prev, [name]: value }));
+    setFormData((prev) => ({ ...prev, [name]: value }));
   };
 
   const handleImageChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (file) {
       // اعتبارسنجی فایل
-      if (!file.type.startsWith('image/')) {
-        toast.error('فقط فایل‌های تصویری مجاز هستند');
+      if (!file.type.startsWith("image/")) {
+        toast.error("فقط فایل‌های تصویری مجاز هستند");
         return;
       }
-      
-      if (file.size > 5 * 1024 * 1024) { // 5MB
-        toast.error('حجم فایل نباید بیشتر از 5MB باشد');
+
+      if (file.size > 5 * 1024 * 1024) {
+        // 5MB
+        toast.error("حجم فایل نباید بیشتر از 5MB باشد");
         return;
       }
-      
+
       const formDataUpload = new FormData();
-      formDataUpload.append('image', file);
-      
+      formDataUpload.append("image", file);
+
       try {
         const res = await coachService.uploadImage(formDataUpload);
-        setFormData(prev => ({ ...prev, featuredImage: res.imageUrl }));
+        setFormData((prev) => ({ ...prev, featuredImage: res.imageUrl }));
         setImagePreview(res.imageUrl);
       } catch (err: any) {
-        toast.error(err.response?.data?.message || 'خطا در آپلود تصویر');
+        toast.error(err.response?.data?.message || "خطا در آپلود تصویر");
       }
     }
   };
 
   const handleImageUrlChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const url = e.target.value;
-    setFormData(prev => ({ ...prev, featuredImage: url || undefined }));
+    setFormData((prev) => ({ ...prev, featuredImage: url || undefined }));
     setImagePreview(url || null);
   };
 
   const handleTagChange = (index: number, value: string) => {
     const newTags = [...formData.tags];
     newTags[index] = value;
-    setFormData(prev => ({ ...prev, tags: newTags }));
+    setFormData((prev) => ({ ...prev, tags: newTags }));
   };
 
   const addTag = () => {
-    setFormData(prev => ({ ...prev, tags: [...prev.tags, ''] }));
+    setFormData((prev) => ({ ...prev, tags: [...prev.tags, ""] }));
   };
 
   const removeTag = (index: number) => {
     if (formData.tags.length > 1) {
       const newTags = [...formData.tags];
       newTags.splice(index, 1);
-      setFormData(prev => ({ ...prev, tags: newTags }));
+      setFormData((prev) => ({ ...prev, tags: newTags }));
     }
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    
-    if (!formData.title.trim() || !formData.content.trim() || !formData.excerpt.trim()) {
-      toast.error('عنوان، محتوا و خلاصه الزامی هستند');
+
+    if (
+      !formData.title.trim() ||
+      !formData.content.trim() ||
+      !formData.excerpt.trim()
+    ) {
+      toast.error("عنوان، محتوا و خلاصه الزامی هستند");
       return;
     }
-    
-    const validTags = formData.tags.filter(tag => tag.trim()).map(tag => tag.trim());
-    
+
+    const validTags = formData.tags
+      .filter((tag) => tag.trim())
+      .map((tag) => tag.trim());
+
     setSubmitting(true);
     try {
       if (isEdit) {
         await coachService.updateArticle(id!, {
           ...formData,
-          tags: validTags
+          tags: validTags,
         });
-        toast.success('مقاله با موفقیت به‌روز شد');
+        toast.success("مقاله با موفقیت به‌روز شد");
       } else {
         await coachService.createArticle({
           ...formData,
-          tags: validTags
+          tags: validTags,
         });
-        toast.success('مقاله با موفقیت ایجاد شد');
+        toast.success("مقاله با موفقیت ایجاد شد");
       }
-      navigate('/dashboard/coach/articles');
+      navigate("/dashboard/coach/articles");
     } catch (err: any) {
-      toast.error(err.response?.data?.message || 'خطا در ذخیره مقاله');
+      toast.error(err.response?.data?.message || "خطا در ذخیره مقاله");
     } finally {
       setSubmitting(false);
     }
   };
 
   const categoryOptions = [
-    { value: 'nutrition', label: 'تغذیه' },
-    { value: 'workout', label: 'تمرین' },
-    { value: 'lifestyle', label: 'سبک زندگی' },
-    { value: 'motivation', label: 'انگیزشی' },
-    { value: 'health', label: 'سلامتی' }
+    { value: "nutrition", label: "تغذیه" },
+    { value: "workout", label: "تمرین" },
+    { value: "lifestyle", label: "سبک زندگی" },
+    { value: "motivation", label: "انگیزشی" },
+    { value: "health", label: "سلامتی" },
   ];
 
   const statusOptions = [
-    { value: 'draft', label: 'پیش‌نویس' },
-    { value: 'published', label: 'منتشر شده' }
+    { value: "draft", label: "پیش‌نویس" },
+    { value: "published", label: "منتشر شده" },
     // مربی‌ها نمی‌تونن آرشیو کنن
   ];
 
   if (loading) {
     return (
       <div className="flex justify-center items-center h-64">
-        <div className="animate-spin rounded-full h-10 w-10 border-b-2 border-red-600"></div>
+        <div className="animate-spin rounded-full h-10 w-10 border-b-2 border-primary"></div>
       </div>
     );
   }
 
   return (
     <div>
-      <div className="flex justify-between items-center mb-6">
-        <h1 className="text-2xl font-bold">
-          {isEdit ? 'ویرایش مقاله' : 'ایجاد مقاله جدید'}
+      <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-6 gap-4">
+        <h1 className="text-xl sm:text-2xl font-bold text-foreground">
+          {isEdit ? "ویرایش مقاله" : "ایجاد مقاله جدید"}
         </h1>
         <button
-          onClick={() => navigate('/dashboard/coach/articles')}
-          className="text-gray-600 hover:text-gray-800"
+          onClick={() => navigate("/dashboard/coach/articles")}
+          className="text-muted-foreground hover:text-foreground"
         >
           انصراف
         </button>
@@ -199,7 +210,7 @@ export default function CoachArticleForm() {
           {/* Basic Info */}
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">
+              <label className="block text-sm font-medium text-foreground mb-1">
                 عنوان مقاله *
               </label>
               <input
@@ -207,23 +218,23 @@ export default function CoachArticleForm() {
                 name="title"
                 value={formData.title}
                 onChange={handleInputChange}
-                className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-red-500"
+                className="w-full px-3 py-2 border border-border rounded-lg focus:ring-2 focus:ring-primary bg-background text-foreground"
                 placeholder="عنوان جذابی برای مقاله خود انتخاب کنید"
                 required
               />
             </div>
 
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">
+              <label className="block text-sm font-medium text-foreground mb-1">
                 دسته‌بندی
               </label>
               <select
                 name="category"
                 value={formData.category}
                 onChange={handleInputChange}
-                className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-red-500"
+                className="w-full px-3 py-2 border border-border rounded-lg focus:ring-2 focus:ring-primary bg-background text-foreground"
               >
-                {categoryOptions.map(option => (
+                {categoryOptions.map((option) => (
                   <option key={option.value} value={option.value}>
                     {option.label}
                   </option>
@@ -233,7 +244,7 @@ export default function CoachArticleForm() {
           </div>
 
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">
+            <label className="block text-sm font-medium text-foreground mb-1">
               خلاصه مقاله *
             </label>
             <textarea
@@ -241,14 +252,14 @@ export default function CoachArticleForm() {
               value={formData.excerpt}
               onChange={handleInputChange}
               rows={3}
-              className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-red-500"
+              className="w-full px-3 py-2 border border-border rounded-lg focus:ring-2 focus:ring-primary bg-background text-foreground"
               placeholder="خلاصه‌ای کوتاه از مقاله (حداکثر 200 کاراکتر)"
               required
             />
           </div>
 
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">
+            <label className="block text-sm font-medium text-foreground mb-1">
               محتوای مقاله *
             </label>
             <textarea
@@ -256,7 +267,7 @@ export default function CoachArticleForm() {
               value={formData.content}
               onChange={handleInputChange}
               rows={12}
-              className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-red-500"
+              className="w-full px-3 py-2 border border-border rounded-lg focus:ring-2 focus:ring-primary bg-background text-foreground"
               placeholder="محتوای کامل مقاله را اینجا بنویسید..."
               required
             />
@@ -264,46 +275,51 @@ export default function CoachArticleForm() {
 
           {/* Featured Image */}
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">
+            <label className="block text-sm font-medium text-foreground mb-1">
               تصویر شاخص
             </label>
-            
-            {/* Upload Image */}
+
             <div className="mb-4">
-              <label className="block text-xs text-gray-600 mb-2">آپلود تصویر</label>
+              <label className="block text-xs text-muted-foreground mb-2">
+                آپلود تصویر
+              </label>
               <input
                 type="file"
                 ref={fileInputRef}
                 accept="image/*"
                 onChange={handleImageChange}
-                className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-red-500"
+                className="w-full px-3 py-2 border border-border rounded-lg focus:ring-2 focus:ring-primary bg-background text-foreground"
               />
-              <p className="text-xs text-gray-500 mt-1">فرمت‌های مجاز: JPG, PNG, GIF (حداکثر 5MB)</p>
+              <p className="text-xs text-muted-foreground mt-1">
+                فرمت‌های مجاز: JPG, PNG, GIF (حداکثر 5MB)
+              </p>
             </div>
-            
-            {/* OR Image URL */}
+
             <div>
-              <label className="block text-xs text-gray-600 mb-2">یا URL تصویر</label>
+              <label className="block text-xs text-muted-foreground mb-2">
+                یا URL تصویر
+              </label>
               <input
                 type="url"
                 name="featuredImage"
-                value={formData.featuredImage || ''}
+                value={formData.featuredImage || ""}
                 onChange={handleImageUrlChange}
                 placeholder="https://example.com/image.jpg"
-                className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-red-500"
+                className="w-full px-3 py-2 border border-border rounded-lg focus:ring-2 focus:ring-primary bg-background text-foreground"
               />
             </div>
-            
-            {/* Image Preview */}
+
             {(imagePreview || formData.featuredImage) && (
               <div className="mt-4">
-                <label className="block text-xs text-gray-600 mb-2">پیش‌نمایش تصویر</label>
+                <label className="block text-xs text-muted-foreground mb-2">
+                  پیش‌نمایش تصویر
+                </label>
                 <img
                   src={imagePreview || formData.featuredImage!}
                   alt="پیش‌نمایش تصویر شاخص"
-                  className="max-w-xs max-h-48 object-contain border rounded-lg"
+                  className="max-w-xs max-h-48 object-contain border border-border rounded-lg"
                   onError={(e) => {
-                    (e.target as HTMLImageElement).style.display = 'none';
+                    (e.target as HTMLImageElement).style.display = "none";
                   }}
                 />
               </div>
@@ -313,16 +329,16 @@ export default function CoachArticleForm() {
           {/* Settings */}
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">
+              <label className="block text-sm font-medium text-foreground mb-1">
                 وضعیت
               </label>
               <select
                 name="status"
                 value={formData.status}
                 onChange={handleInputChange}
-                className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-red-500"
+                className="w-full px-3 py-2 border border-border rounded-lg focus:ring-2 focus:ring-primary bg-background text-foreground"
               >
-                {statusOptions.map(option => (
+                {statusOptions.map((option) => (
                   <option key={option.value} value={option.value}>
                     {option.label}
                   </option>
@@ -331,7 +347,7 @@ export default function CoachArticleForm() {
             </div>
 
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">
+              <label className="block text-sm font-medium text-foreground mb-1">
                 زمان خواندن (دقیقه)
               </label>
               <input
@@ -341,14 +357,14 @@ export default function CoachArticleForm() {
                 onChange={handleInputChange}
                 min="1"
                 max="60"
-                className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-red-500"
+                className="w-full px-3 py-2 border border-border rounded-lg focus:ring-2 focus:ring-primary bg-background text-foreground"
               />
             </div>
           </div>
 
           {/* Tags */}
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">
+            <label className="block text-sm font-medium text-foreground mb-1">
               تگ‌ها
             </label>
             <div className="space-y-2">
@@ -358,14 +374,14 @@ export default function CoachArticleForm() {
                     type="text"
                     value={tag}
                     onChange={(e) => handleTagChange(index, e.target.value)}
-                    className="flex-1 px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-red-500"
+                    className="flex-1 px-3 py-2 border border-border rounded-lg focus:ring-2 focus:ring-primary bg-background text-foreground"
                     placeholder="تگ را وارد کنید..."
                   />
                   {formData.tags.length > 1 && (
                     <button
                       type="button"
                       onClick={() => removeTag(index)}
-                      className="bg-red-500 text-white px-3 rounded-lg hover:bg-red-600"
+                      className="bg-destructive text-destructive-foreground px-3 rounded-lg hover:bg-destructive/80"
                     >
                       -
                     </button>
@@ -375,25 +391,29 @@ export default function CoachArticleForm() {
               <button
                 type="button"
                 onClick={addTag}
-                className="text-blue-600 hover:text-blue-800 mt-2"
+                className="text-primary hover:text-primary/80 mt-2"
               >
                 + افزودن تگ
               </button>
             </div>
           </div>
 
-          <div className="flex gap-3 pt-2">
+          <div className="flex flex-col sm:flex-row gap-3 pt-2">
             <button
               type="submit"
               disabled={submitting}
-              className="bg-red-600 text-white px-6 py-2 rounded-lg hover:bg-red-700 disabled:opacity-50"
+              className="bg-primary text-primary-foreground px-6 py-2 rounded-lg hover:bg-primary/80 disabled:opacity-50"
             >
-              {submitting ? 'در حال ذخیره...' : isEdit ? 'به‌روزرسانی مقاله' : 'ایجاد مقاله'}
+              {submitting
+                ? "در حال ذخیره..."
+                : isEdit
+                  ? "به‌روزرسانی مقاله"
+                  : "ایجاد مقاله"}
             </button>
             <button
               type="button"
-              onClick={() => navigate('/dashboard/coach/articles')}
-              className="bg-gray-200 text-gray-800 px-6 py-2 rounded-lg hover:bg-gray-300"
+              onClick={() => navigate("/dashboard/coach/articles")}
+              className="bg-secondary text-secondary-foreground px-6 py-2 rounded-lg hover:bg-secondary/80"
             >
               انصراف
             </button>

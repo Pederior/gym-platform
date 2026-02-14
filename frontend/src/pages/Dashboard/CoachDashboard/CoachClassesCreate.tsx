@@ -41,83 +41,83 @@ export default function CoachClassesCreate() {
 
   return (
     <div>
-      <h1 className="text-2xl font-bold mb-6">ایجاد کلاس جدید</h1>
+      <h1 className="text-xl sm:text-2xl font-bold text-foreground mb-6">ایجاد کلاس جدید</h1>
 
       <Card>
         <form onSubmit={handleSubmit} className="space-y-6">
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">عنوان کلاس</label>
+            <label className="block text-sm font-medium text-foreground mb-1">عنوان کلاس</label>
             <input
               type="text"
               name="title"
               value={formData.title}
               onChange={handleChange}
-              className="w-full px-3 py-2 border rounded-lg focus:ring-2 focus:ring-red-500"
+              className="w-full px-3 py-2 border border-border rounded-lg focus:ring-2 focus:ring-primary bg-background text-foreground"
               required
             />
           </div>
 
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">توضیحات</label>
+            <label className="block text-sm font-medium text-foreground mb-1">توضیحات</label>
             <textarea
               name="description"
               value={formData.description}
               onChange={handleChange}
               rows={3}
-              className="w-full px-3 py-2 border rounded-lg focus:ring-2 focus:ring-red-500"
+              className="w-full px-3 py-2 border border-border rounded-lg focus:ring-2 focus:ring-primary bg-background text-foreground"
             />
           </div>
 
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">تاریخ و ساعت</label>
+            <label className="block text-sm font-medium text-foreground mb-1">تاریخ و ساعت</label>
             <input
               type="datetime-local"
               name="dateTime"
               value={formData.dateTime}
               onChange={handleChange}
-              className="w-full px-3 py-2 border rounded-lg focus:ring-2 focus:ring-red-500"
+              className="w-full px-3 py-2 border border-border rounded-lg focus:ring-2 focus:ring-primary bg-background text-foreground"
               required
             />
           </div>
 
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">ظرفیت</label>
+            <label className="block text-sm font-medium text-foreground mb-1">ظرفیت</label>
             <input
               type="number"
               name="capacity"
               value={formData.capacity}
               onChange={handleChange}
               min="1"
-              className="w-full px-3 py-2 border rounded-lg focus:ring-2 focus:ring-red-500"
+              className="w-full px-3 py-2 border border-border rounded-lg focus:ring-2 focus:ring-primary bg-background text-foreground"
               required
             />
           </div>
 
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">هزینه (تومان)</label>
+            <label className="block text-sm font-medium text-foreground mb-1">هزینه (تومان)</label>
             <input
               type="number"
               name="price"
               value={formData.price}
               onChange={handleChange}
               min="0"
-              className="w-full px-3 py-2 border rounded-lg focus:ring-2 focus:ring-red-500"
+              className="w-full px-3 py-2 border border-border rounded-lg focus:ring-2 focus:ring-primary bg-background text-foreground"
               required
             />
           </div>
 
-          <div className="flex gap-3 pt-2">
+          <div className="flex flex-col sm:flex-row gap-3 pt-2">
             <button
               type="submit"
               disabled={loading}
-              className="bg-red-600 text-white px-4 py-2 rounded-lg hover:bg-red-700 disabled:opacity-50"
+              className="bg-primary text-primary-foreground px-4 py-2 rounded-lg hover:bg-primary/80 disabled:opacity-50"
             >
               {loading ? 'در حال ایجاد...' : 'ایجاد کلاس'}
             </button>
             <button
               type="button"
               onClick={() => navigate('/dashboard/coach/classes')}
-              className="bg-gray-200 text-gray-800 px-4 py-2 rounded-lg hover:bg-gray-300"
+              className="bg-secondary text-secondary-foreground px-4 py-2 rounded-lg hover:bg-secondary/80"
             >
               انصراف
             </button>

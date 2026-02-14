@@ -4,7 +4,7 @@ import { logout } from "../../store/features/authSlice";
 import { useDispatch } from "react-redux";
 import { useState, useEffect, useRef } from "react";
 import { RiShoppingBag4Fill } from "react-icons/ri";
-import { TbSmartHome, TbUser, TbBellFilled } from "react-icons/tb";
+import { TbSmartHome, TbUser, TbBellFilled, TbMenu2, TbSun, TbMoon } from "react-icons/tb";
 import {
   FaUser,
   FaCog,
@@ -16,6 +16,7 @@ import {
 } from "react-icons/fa";
 import api from "../../services/api";
 import type { Product } from "../../types";
+import { toggleDarkMode } from "../../store/features/darkModeSlice";
 
 export default function Navbar() {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
@@ -25,15 +26,19 @@ export default function Navbar() {
   const [notifications, setNotifications] = useState<any[]>([]);
   const [loadingNotifications, setLoadingNotifications] = useState(false);
   const [cart, setCart] = useState<Product[]>([]);
+  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
 
   const menuRef = useRef<HTMLDivElement>(null);
   const notificationRef = useRef<HTMLDivElement>(null);
   const cartRef = useRef<HTMLDivElement>(null);
+  const mobileMenuRef = useRef<HTMLDivElement>(null);
   const location = useLocation();
 
   const { user, token } = useAppSelector((state) => state.auth);
+   const { darkMode } = useAppSelector((state) => state.darkMode);
   const dispatch = useDispatch();
   const navigate = useNavigate();
+  
   const navItems = [
     { title: "خانه", subtitle: "صفحه اصلی", route: "/" },
     { title: "درباره ما", subtitle: "ما کی هستیم", route: "/about" },
@@ -64,6 +69,9 @@ export default function Navbar() {
       }
       if (cartRef.current && !cartRef.current.contains(event.target as Node)) {
         setIsCartOpen(false);
+      }
+      if (mobileMenuRef.current && !mobileMenuRef.current.contains(event.target as Node)) {
+        setIsMobileMenuOpen(false);
       }
     };
     document.addEventListener("mousedown", handleClickOutside);
@@ -142,27 +150,26 @@ export default function Navbar() {
     setIsMenuOpen(!isMenuOpen);
   };
 
+  const handleToggleDarkMode = () => {
+    dispatch(toggleDarkMode());
+  };
+
   return (
-    <nav className="bg-linear-to-r from-black via-zinc-900/20 to-red-600/90 flex shadow-sm z-50 ">
-      <div className="flex justify-between h-24 w-full px-5">
-        <div className="flex items-center gap-2 px-2">
+    <nav className="bg-gradient-to-r from-black via-zinc-900/20 to-red-600/90 flex shadow-sm z-50">
+      <div className="flex justify-between h-24 w-full px-4 sm:px-6 lg:px-8">
+        {/* لوگو */}
+        <div className="flex items-center">
           <Link to="/" className="flex items-center no-underline select-none">
             <img
               src="/images/Logo2.png"
               alt="FynixClub"
-              className="
-                h-20
-                w-auto
-                object-contain
-                transition
-                duration-300
-                hover:scale-105
-              "
+              className="h-12 sm:h-16 md:h-20 w-auto object-contain transition duration-300 hover:scale-105"
             />
           </Link>
         </div>
 
-        <div className="flex items-center justify-center space-x-6 mt-4">
+        {/* منوی دسکتاپ */}
+        <div className="hidden md:flex items-center justify-center space-x-6 mt-4">
           {navItems.map((item, idx) => {
             const isActive = location.pathname === item.route;
             return (
@@ -201,37 +208,68 @@ export default function Navbar() {
           })}
         </div>
 
-        <div className="flex items-center space-x-4 rtl:space-x-reverse">
+        {/* آیکون‌های کاربر / دکمه موبایل */}
+        <div className="flex items-center space-x-3 rtl:space-x-reverse">
+          {/* دکمه Dark Mode - برای همه کاربران */}
+          <button
+            onClick={handleToggleDarkMode}
+            className="text-white hover:text-red-500 transition-colors p-2 rounded-full hover:bg-black/20"
+            title={darkMode ? "حالت روشن" : "حالت تاریک"}
+          >
+            {darkMode ? <TbSun className="text-xl" /> : <TbMoon className="text-xl" />}
+          </button>
+
           {token && user ? (
-            <div className="relative flex items-center gap-2">
-              {/* سبد خرید */}
-              <button
-                onClick={() => setIsCartOpen(!isCartOpen)}
-                className="relative w-10 h-10 rounded-full flex items-center justify-center font-bold text-sm cursor-pointer"
-              >
-                {cart.length > 0 && (
-                  <span className="absolute right-0 top-0 text-white bg-red-500 rounded-full px-1.5 py-0.5 text-[10px]">
-                    {cart.length}
-                  </span>
-                )}
-                <RiShoppingBag4Fill className="text-white text-2xl" />
-              </button>
+            <>
+              {/* نسخه دسکتاپ */}
+              <div className="hidden md:flex items-center gap-2">
+                {/* سبد خرید */}
+                <button
+                  onClick={() => setIsCartOpen(!isCartOpen)}
+                  className="relative w-10 h-10 rounded-full flex items-center justify-center font-bold text-sm cursor-pointer"
+                >
+                  {cart.length > 0 && (
+                    <span className="absolute right-0 top-0 text-white bg-red-500 rounded-full px-1.5 py-0.5 text-[10px]">
+                      {cart.length}
+                    </span>
+                  )}
+                  <RiShoppingBag4Fill className="text-white text-2xl" />
+                </button>
 
-              {/* نوتیفیکیشن */}
-              <button
-                onClick={() => setIsNotificationOpen(!isNotificationOpen)}
-                className="relative w-10 h-10 rounded-full flex items-center justify-center font-bold text-sm cursor-pointer"
-              >
-                {notificationCount > 0 && (
-                  <span className="absolute right-0 top-0 text-white bg-red-500 rounded-full px-1.5 py-0.5 text-[10px]">
-                    {notificationCount}
-                  </span>
-                )}
-                <TbBellFilled className="text-white text-2xl" />
-              </button>
+                {/* نوتیفیکیشن */}
+                <button
+                  onClick={() => setIsNotificationOpen(!isNotificationOpen)}
+                  className="relative w-10 h-10 rounded-full flex items-center justify-center font-bold text-sm cursor-pointer"
+                >
+                  {notificationCount > 0 && (
+                    <span className="absolute right-0 top-0 text-white bg-red-500 rounded-full px-1.5 py-0.5 text-[10px]">
+                      {notificationCount}
+                    </span>
+                  )}
+                  <TbBellFilled className="text-white text-2xl" />
+                </button>
 
-              {/* منو کاربر */}
-              <div ref={menuRef}>
+                {/* منو کاربر */}
+                <div ref={menuRef}>
+                  <button
+                    onClick={toggleMenu}
+                    className="w-10 h-10 rounded-full bg-red-500 flex items-center justify-center font-bold text-sm cursor-pointer"
+                  >
+                    {user?.avatar ? (
+                      <img
+                        src={user.avatar}
+                        alt="پروفایل"
+                        className="w-full h-full object-cover rounded-full border border-red-500 shadow-md"
+                      />
+                    ) : (
+                      <span className="text-white"><FaUser /></span>
+                    )}
+                  </button>
+                </div>
+              </div>
+
+              {/* نسخه موبایل - فقط آواتار */}
+              <div className="md:hidden ml-2">
                 <button
                   onClick={toggleMenu}
                   className="w-10 h-10 rounded-full bg-red-500 flex items-center justify-center font-bold text-sm cursor-pointer"
@@ -243,93 +281,13 @@ export default function Navbar() {
                       className="w-full h-full object-cover rounded-full border border-red-500 shadow-md"
                     />
                   ) : (
-                    <span className="text-white"><FaUser /></span>
+                    <span className="text-white text-sm"><FaUser /></span>
                   )}
                 </button>
-
-                {isMenuOpen && (
-                  <div className="absolute left-0 mt-2 w-56 bg-linear-to-b from-red-600/50 to-black text-white rounded-lg shadow-lg py-2 z-10">
-                    <div className="px-4 py-2 border-b border-red-700">
-                      <p className="font-medium">{user.name}</p>
-                      <p className="text-xs text-gray-400">{user.email}</p>
-                    </div>
-
-                    <Link
-                      to={
-                        user.role === "coach"
-                          ? "/dashboard/coach"
-                          : user.role === "admin"
-                            ? "/dashboard/admin"
-                            : "/dashboard/user"
-                      }
-                      className="block px-4 py-2 text-sm hover:bg-red-700"
-                      onClick={() => setIsMenuOpen(false)}
-                    >
-                      <span className="inline-block mr-2">
-                        <TbSmartHome />
-                      </span>{" "}
-                      داشبورد
-                    </Link>
-
-                    <Link
-                      to="/dashboard/profile"
-                      className="block px-4 py-2 text-sm hover:bg-red-600"
-                      onClick={() => setIsMenuOpen(false)}
-                    >
-                      <span className="inline-block mr-2">
-                        <TbUser />
-                      </span>{" "}
-                      پروفایل
-                    </Link>
-
-                    <Link
-                      to="/settings"
-                      className="block px-4 py-2 text-sm hover:bg-red-700"
-                      onClick={() => setIsMenuOpen(false)}
-                    >
-                      <span className="inline-block mr-2">
-                        <FaCog />
-                      </span>{" "}
-                      تنظیمات
-                    </Link>
-
-                    <Link
-                      to="/pricing"
-                      className="block px-4 py-2 text-sm hover:bg-red-800"
-                      onClick={() => setIsMenuOpen(false)}
-                    >
-                      <span className="inline-block mr-2">
-                        <FaDollarSign />
-                      </span>{" "}
-                      قیمت‌ها دوره ها
-                    </Link>
-
-                    <Link
-                      to="/faq"
-                      className="block px-4 py-2 text-sm hover:bg-red-800"
-                      onClick={() => setIsMenuOpen(false)}
-                    >
-                      <span className="inline-block mr-2">
-                        <FaQuestion />
-                      </span>{" "}
-                      سوالات متداول
-                    </Link>
-
-                    <button
-                      onClick={handleLogout}
-                      className="block w-full text-center mt-2 px-4 py-2 text-sm bg-red-800 text-white hover:bg-red-900 hover:text-white rounded-md"
-                    >
-                      <span className="inline-block mr-2">
-                        <FaSignOutAlt />
-                      </span>{" "}
-                      خروج
-                    </button>
-                  </div>
-                )}
               </div>
-            </div>
+            </>
           ) : (
-            <div className="flex items-center space-x-3 rtl:space-x-reverse">
+            <div className="hidden md:flex items-center space-x-3 rtl:space-x-reverse">
               <Link
                 to="/login"
                 className="text-sm ml-2 font-medium text-white hover:text-red-600 no-underline"
@@ -344,14 +302,94 @@ export default function Navbar() {
               </Link>
             </div>
           )}
+
+          {/* دکمه منوی موبایل */}
+          <button
+            onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
+            className="md:hidden text-white mr-2"
+          >
+            <TbMenu2 className="text-2xl" />
+          </button>
         </div>
       </div>
+
+      {/* منوی موبایل */}
+      {isMobileMenuOpen && (
+        <div 
+          ref={mobileMenuRef}
+          className="md:hidden bg-black/95 backdrop-blur-sm absolute top-24 left-0 right-0 z-50"
+        >
+          <div className="px-4 py-6 space-y-4">
+            {/* آیتم‌های منو */}
+            {navItems.map((item, idx) => (
+              <Link
+                key={idx}
+                to={item.route}
+                className={`block py-2 px-4 rounded-lg text-center ${
+                  location.pathname === item.route 
+                    ? 'bg-red-600 text-white' 
+                    : 'text-gray-300 hover:text-white hover:bg-gray-800'
+                }`}
+                onClick={() => setIsMobileMenuOpen(false)}
+              >
+                <div className="font-medium">{item.title}</div>
+                <div className="text-sm opacity-75">{item.subtitle}</div>
+              </Link>
+            ))}
+
+            {/* دکمه‌های کاربر */}
+            {token && user ? (
+              <div className="pt-4 space-y-2">
+                <Link
+                  to={
+                    user.role === "coach"
+                      ? "/dashboard/coach"
+                      : user.role === "admin"
+                        ? "/dashboard/admin"
+                        : "/dashboard/user"
+                  }
+                  className="block w-full text-center py-2 px-4 bg-red-600 text-white rounded-lg hover:bg-red-700"
+                  onClick={() => setIsMobileMenuOpen(false)}
+                >
+                  داشبورد
+                </Link>
+                <button
+                  onClick={() => {
+                    handleLogout();
+                    setIsMobileMenuOpen(false);
+                  }}
+                  className="block w-full text-center py-2 px-4 bg-gray-700 text-white rounded-lg hover:bg-gray-600"
+                >
+                  خروج
+                </button>
+              </div>
+            ) : (
+              <div className="pt-4 space-y-2">
+                <Link
+                  to="/login"
+                  className="block w-full text-center py-2 px-4 bg-gray-700 text-white rounded-lg hover:bg-gray-600"
+                  onClick={() => setIsMobileMenuOpen(false)}
+                >
+                  ورود
+                </Link>
+                <Link
+                  to="/register"
+                  className="block w-full text-center py-2 px-4 bg-red-600 text-white rounded-lg hover:bg-red-700"
+                  onClick={() => setIsMobileMenuOpen(false)}
+                >
+                  ثبت‌نام
+                </Link>
+              </div>
+            )}
+          </div>
+        </div>
+      )}
 
       {/* Modal نوتیفیکیشن */}
       {isNotificationOpen && (
         <div
           ref={notificationRef}
-          className="fixed top-36 left-16 w-80 bg-white rounded-lg shadow-lg py-2 z-50 border border-gray-200 max-h-96 overflow-y-auto"
+          className="fixed top-36 left-4 sm:left-16 w-80 bg-white rounded-lg shadow-lg py-2 z-50 border border-gray-200 max-h-96 overflow-y-auto"
         >
           <div className="px-4 py-3 border-b border-gray-200 flex justify-between items-center">
             <h3 className="font-semibold text-gray-800">اعلان‌ها</h3>
@@ -405,7 +443,7 @@ export default function Navbar() {
       {isCartOpen && (
         <div
           ref={cartRef}
-          className="fixed top-36 left-16 w-80 bg-white rounded-lg shadow-lg py-2 z-50 border border-gray-200 max-h-[calc(100vh-150px)] overflow-y-auto"
+          className="fixed top-36 left-4 sm:left-16 w-80 bg-white rounded-lg shadow-lg py-2 z-50 border border-gray-200 max-h-[calc(100vh-150px)] overflow-y-auto"
         >
           <div className="px-4 py-3 border-b border-gray-200 flex justify-between items-center">
             <h3 className="font-semibold text-gray-800">
@@ -495,6 +533,90 @@ export default function Navbar() {
               </div>
             </div>
           )}
+        </div>
+      )}
+
+      {/* منوی کاربر (دسکتاپ) */}
+      {isMenuOpen && token && user && (
+        <div
+          ref={menuRef}
+          className="fixed top-36 left-4 sm:left-16 w-56 bg-linear-to-b from-red-600/50 to-black text-white rounded-lg shadow-lg py-2 z-100"
+        >
+          <div className="px-4 py-2 border-b border-red-700">
+            <p className="font-medium">{user.name}</p>
+            <p className="text-xs text-gray-400">{user.email}</p>
+          </div>
+
+          <Link
+            to={
+              user.role === "coach"
+                ? "/dashboard/coach"
+                : user.role === "admin"
+                  ? "/dashboard/admin"
+                  : "/dashboard/user"
+            }
+            className="block px-4 py-2 text-sm hover:bg-red-700"
+            onClick={() => setIsMenuOpen(false)}
+          >
+            <span className="inline-block mr-2">
+              <TbSmartHome />
+            </span>{" "}
+            داشبورد
+          </Link>
+
+          <Link
+            to="/dashboard/profile"
+            className="block px-4 py-2 text-sm hover:bg-red-600"
+            onClick={() => setIsMenuOpen(false)}
+          >
+            <span className="inline-block mr-2">
+              <TbUser />
+            </span>{" "}
+            پروفایل
+          </Link>
+
+          <Link
+            to="/settings"
+            className="block px-4 py-2 text-sm hover:bg-red-700"
+            onClick={() => setIsMenuOpen(false)}
+          >
+            <span className="inline-block mr-2">
+              <FaCog />
+            </span>{" "}
+            تنظیمات
+          </Link>
+
+          <Link
+            to="/classes"
+            className="block px-4 py-2 text-sm hover:bg-red-800"
+            onClick={() => setIsMenuOpen(false)}
+          >
+            <span className="inline-block mr-2">
+              <FaDollarSign />
+            </span>{" "}
+            ثبت نام کلاس ها
+          </Link>
+
+          <Link
+            to="/faq"
+            className="block px-4 py-2 text-sm hover:bg-red-800"
+            onClick={() => setIsMenuOpen(false)}
+          >
+            <span className="inline-block mr-2">
+              <FaQuestion />
+            </span>{" "}
+            سوالات متداول
+          </Link>
+
+          <button
+            onClick={handleLogout}
+            className="block w-full text-center mt-2 px-4 py-2 text-sm bg-red-800 text-white hover:bg-red-900 hover:text-white rounded-md"
+          >
+            <span className="inline-block mr-2">
+              <FaSignOutAlt />
+            </span>{" "}
+            خروج
+          </button>
         </div>
       )}
     </nav>

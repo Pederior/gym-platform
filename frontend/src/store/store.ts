@@ -3,12 +3,14 @@ import authReducer from './features/authSlice'
 // import userReducer from './features/userSlice'
 // import workoutReducer from './features/workoutSlice'
 import chatReducer from './features/chatSlice'
+import darkModeReducer from './features/darkModeSlice';
 
 export const store = configureStore({
   reducer: {
     auth: authReducer,
     // user: userReducer,
     // workouts: workoutReducer,
+    darkMode: darkModeReducer,
     chat: chatReducer,
   },
 })

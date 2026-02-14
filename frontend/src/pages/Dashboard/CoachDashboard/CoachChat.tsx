@@ -116,16 +116,16 @@ export default function CoachChat() {
 
   return (
     <div>
-      <h1 className="text-2xl font-bold mb-6">چت با شاگردها</h1>
+      <h1 className="text-xl sm:text-2xl font-bold text-foreground mb-6">چت با شاگردها</h1>
 
-      <div className="flex gap-6">
+      <div className="flex flex-col lg:flex-row gap-6">
         {/* لیست شاگردها */}
-        <div className="w-1/3">
+        <div className="lg:w-1/3">
           <Card>
-            <h2 className="font-bold mb-4">شاگردها</h2>
+            <h2 className="font-bold text-foreground mb-4">شاگردها</h2>
             <div className="space-y-2 max-h-96 overflow-y-auto">
               {students.length === 0 ? (
-                <div className="text-center py-4 text-gray-500">
+                <div className="text-center py-4 text-muted-foreground">
                   شاگردی یافت نشد
                 </div>
               ) : (
@@ -135,12 +135,12 @@ export default function CoachChat() {
                     onClick={() => handleSelectStudent(student)}
                     className={`w-full text-right p-3 rounded-lg transition ${
                       selectedStudent?._id === student._id
-                        ? "bg-red-100 text-red-800"
-                        : "hover:bg-gray-100"
+                        ? "bg-primary/10 text-primary"
+                        : "hover:bg-muted"
                     }`}
                   >
                     {student.name}
-                    <div className="text-xs text-gray-500 mt-1">{student.email}</div>
+                    <div className="text-xs text-muted-foreground mt-1">{student.email}</div>
                   </button>
                 ))
               )}
@@ -152,11 +152,11 @@ export default function CoachChat() {
         <div className="flex-1">
           {selectedStudent ? (
             <Card>
-              <div className="border-b pb-3 mb-4">
-                <h2 className="font-bold">چت با {selectedStudent.name}</h2>
+              <div className="border-b border-border pb-3 mb-4">
+                <h2 className="font-bold text-foreground">چت با {selectedStudent.name}</h2>
               </div>
 
-              <div className="h-96 overflow-y-auto mb-4">
+              <div className="h-96 overflow-y-auto mb-4 pl-2.5">
                 {messages.map((message) => (
                   <div
                     key={message._id}
@@ -167,14 +167,14 @@ export default function CoachChat() {
                     <div
                       className={`inline-block p-3 rounded-lg max-w-xs ${
                         message.sender === "coach"
-                          ? "bg-blue-100 text-blue-800"
-                          : "bg-gray-100 text-gray-800"
+                          ? "bg-primary/10 text-primary"
+                          : "bg-muted text-foreground"
                       }`}
                     >
                       {message.content}
                     </div>
                     <div
-                      className={`text-xs text-gray-500 mt-1 ${
+                      className={`text-xs text-muted-foreground mt-1 ${
                         message.sender === "coach" ? "text-right" : "text-left"
                       }`}
                     >
@@ -192,12 +192,12 @@ export default function CoachChat() {
                   onChange={(e) => setNewMessage(e.target.value)}
                   onKeyPress={(e) => e.key === "Enter" && handleSendMessage()}
                   placeholder="پیام خود را بنویسید..."
-                  className="flex-1 px-3 py-2 border rounded-lg focus:ring-2 focus:ring-red-500"
+                  className="flex-1 px-3 py-2 border border-border rounded-lg focus:ring-2 focus:ring-primary bg-background text-foreground"
                 />
                 <button
                   onClick={handleSendMessage}
                   disabled={!newMessage.trim() || !isConnected}
-                  className="bg-red-600 text-white px-4 py-2 rounded-lg hover:bg-red-700 disabled:opacity-50"
+                  className="bg-primary text-primary-foreground px-4 py-2 rounded-lg hover:bg-primary/80 disabled:opacity-50"
                 >
                   ارسال
                 </button>
@@ -205,7 +205,7 @@ export default function CoachChat() {
             </Card>
           ) : (
             <Card>
-              <div className="text-center py-12 text-gray-500">
+              <div className="text-center py-12 text-muted-foreground">
                 لطفاً یک شاگرد را از لیست انتخاب کنید
               </div>
             </Card>

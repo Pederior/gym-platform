@@ -4,6 +4,7 @@ import { toast } from "react-hot-toast";
 import type { User, UserRole } from "../../../types";
 import Card from "../../../components/ui/Card";
 import useDocumentTitle from '../../../hooks/useDocumentTitle'
+import { FaRegEye,FaRegEyeSlash  } from "react-icons/fa";
 
 export default function AdminUsers() {
   useDocumentTitle('مدیریت کاربران')
@@ -24,15 +25,14 @@ export default function AdminUsers() {
   const [submitting, setSubmitting] = useState(false);
   const [passwordSubmitting, setPasswordSubmitting] = useState(false);
   
-  // ✅ state برای نمایش/پنهان کردن رمز عبور
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
 
   const getRoleBadge = (role: UserRole) => {
     const roleConfig: Record<UserRole, { label: string; color: string }> = {
-      admin: { label: "مدیر", color: "bg-red-100 text-red-800" },
-      coach: { label: "مربی", color: "bg-blue-100 text-blue-800" },
-      user: { label: "کاربر", color: "bg-gray-100 text-gray-800" },
+      admin: { label: "مدیر", color: "bg-destructive/10 text-destructive" },
+      coach: { label: "مربی", color: "bg-primary/10 text-primary" },
+      user: { label: "کاربر", color: "bg-muted/50 text-muted-foreground" },
     };
     const { label, color } = roleConfig[role];
     return (
@@ -85,8 +85,6 @@ export default function AdminUsers() {
     setEditUser(user);
     setPasswordData({ password: '', confirmPassword: '' });
     setIsPasswordModalOpen(true);
-    
-    // ✅ ریست کردن وضعیت نمایش رمز عبور
     setShowPassword(false);
     setShowConfirmPassword(false);
   };
@@ -160,49 +158,49 @@ export default function AdminUsers() {
   return (
     <div>
       <div className="flex justify-between items-center mb-6">
-        <h1 className="text-2xl font-bold text-gray-800">مدیریت کاربران</h1>
+        <h1 className="text-xl sm:text-2xl font-bold text-foreground">مدیریت کاربران</h1>
       </div>
 
-      <Card>
+      <Card className="overflow-x-auto bg-card">
         {loading ? (
-          <div className="py-8 text-center">در حال بارگذاری...</div>
+          <div className="py-8 text-center text-muted-foreground">در حال بارگذاری...</div>
         ) : (
-          <div className="overflow-x-auto">
-            <table className="w-full">
+          <div className="overflow-x-auto ">
+            <table className="w-full min-w-full">
               <thead>
-                <tr className="text-right text-sm text-gray-500 border-b">
-                  <th className="pb-3">نام</th>
-                  <th className="pb-3">ایمیل</th>
-                  <th className="pb-3">نقش</th>
-                  <th className="pb-3">تاریخ عضویت</th>
-                  <th className="pb-3">عملیات</th>
+                <tr className="text-right text-sm text-muted-foreground border-b border-border">
+                  <th className="pb-3 px-2">نام</th>
+                  <th className="pb-3 px-2">ایمیل</th>
+                  <th className="pb-3 px-2">نقش</th>
+                  <th className="pb-3 px-2">تاریخ عضویت</th>
+                  <th className="pb-3 px-2">عملیات</th>
                 </tr>
               </thead>
               <tbody>
                 {users.map((user) => (
-                  <tr key={user._id} className="border-b hover:bg-gray-50">
-                    <td className="py-3 font-medium">{user.name}</td>
-                    <td className="py-3 text-gray-600">{user.email}</td>
-                    <td className="py-3">{getRoleBadge(user.role)}</td>
-                    <td className="py-3 text-gray-600">
+                  <tr key={user._id} className="border-b border-border hover:bg-muted">
+                    <td className="py-3 px-2 font-medium text-foreground">{user.name}</td>
+                    <td className="py-3 px-2 text-muted-foreground">{user.email}</td>
+                    <td className="py-3 px-2">{getRoleBadge(user.role)}</td>
+                    <td className="py-3 px-2 text-muted-foreground">
                       {new Date(user.createdAt).toLocaleDateString("fa-IR")}
                     </td>
-                    <td className="py-3">
+                    <td className="py-3 px-2">
                       <button
                         onClick={() => openEditModal(user)}
-                        className="text-blue-600 hover:text-blue-800 ml-3 cursor-pointer"
+                        className="text-primary hover:text-primary/80 ml-2 cursor-pointer text-sm"
                       >
                         ویرایش
                       </button>
                       <button
                         onClick={() => openPasswordModal(user)}
-                        className="text-purple-600 hover:text-purple-800 ml-3 cursor-pointer"
+                        className="text-accent hover:text-accent/80 ml-2 cursor-pointer text-sm"
                       >
                         رمز عبور
                       </button>
                       <button
                         onClick={() => handleDelete(user._id)}
-                        className="text-red-600 hover:text-red-800 cursor-pointer"
+                        className="text-destructive hover:text-destructive/80 cursor-pointer text-sm"
                       >
                         حذف
                       </button>
@@ -217,41 +215,41 @@ export default function AdminUsers() {
 
       {/* Modal ویرایش اطلاعات */}
       {isModalOpen && (
-        <div className="fixed inset-0 bg-black/50 bg-opacity-50 flex items-center justify-center z-50 p-4">
-          <div className="bg-white rounded-lg w-full max-w-md">
-            <div className="p-4 border-b">
-              <h2 className="text-lg font-bold">ویرایش کاربر</h2>
+        <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4">
+          <div className="bg-card rounded-lg w-full max-w-md border border-border">
+            <div className="p-4 border-b border-border">
+              <h2 className="text-lg font-bold text-foreground">ویرایش کاربر</h2>
             </div>
             <form onSubmit={handleSubmit} className="p-4 space-y-4">
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">نام کامل</label>
+                <label className="block text-sm font-medium text-foreground mb-1">نام کامل</label>
                 <input
                   type="text"
                   name="name"
                   value={formData.name}
                   onChange={handleInputChange}
-                  className="w-full px-3 py-2 border rounded-lg focus:ring-2 focus:ring-red-500 focus:outline-none"
+                  className="w-full px-3 py-2 border border-border rounded-lg focus:ring-2 focus:ring-primary focus:outline-none bg-background text-foreground"
                   required
                 />
               </div>
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">ایمیل</label>
+                <label className="block text-sm font-medium text-foreground mb-1">ایمیل</label>
                 <input
                   type="email"
                   name="email"
                   value={formData.email}
                   onChange={handleInputChange}
-                  className="w-full px-3 py-2 border rounded-lg focus:ring-2 focus:ring-red-500 focus:outline-none"
+                  className="w-full px-3 py-2 border border-border rounded-lg focus:ring-2 focus:ring-primary focus:outline-none bg-background text-foreground"
                   required
                 />
               </div>
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">نقش</label>
+                <label className="block text-sm font-medium text-foreground mb-1">نقش</label>
                 <select
                   name="role"
                   value={formData.role}
                   onChange={handleInputChange}
-                  className="w-full px-3 py-2 border rounded-lg focus:ring-2 focus:ring-red-500 focus:outline-none"
+                  className="w-full px-3 py-2 border border-border rounded-lg focus:ring-2 focus:ring-primary focus:outline-none bg-background text-foreground"
                 >
                   <option value="user">کاربر</option>
                   <option value="coach">مربی</option>
@@ -262,14 +260,14 @@ export default function AdminUsers() {
                 <button
                   type="submit"
                   disabled={submitting}
-                  className="bg-red-600 text-white px-4 py-2 rounded-lg hover:bg-red-700 disabled:opacity-50"
+                  className="bg-primary text-primary-foreground px-4 py-2 rounded-lg hover:bg-primary/80 disabled:opacity-50 cursor-pointer"
                 >
                   {submitting ? 'در حال ذخیره...' : 'ذخیره تغییرات'}
                 </button>
                 <button
                   type="button"
                   onClick={closeModal}
-                  className="bg-gray-200 text-gray-800 px-4 py-2 rounded-lg hover:bg-gray-300"
+                  className="bg-secondary text-secondary-foreground px-4 py-2 rounded-lg hover:bg-secondary/80 cursor-pointer"
                 >
                   انصراف
                 </button>
@@ -281,54 +279,52 @@ export default function AdminUsers() {
 
       {/* Modal تغییر رمز عبور */}
       {isPasswordModalOpen && editUser && (
-        <div className="fixed inset-0 bg-black/50 bg-opacity-50 flex items-center justify-center z-50 p-4">
-          <div className="bg-white rounded-lg w-full max-w-md">
-            <div className="p-4 border-b">
-              <h2 className="text-lg font-bold">تغییر رمز عبور</h2>
-              <p className="text-sm text-gray-600 mt-1">
-                کاربر: <strong>{editUser.name}</strong>
+        <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4">
+          <div className="bg-card rounded-lg w-full max-w-md border border-border">
+            <div className="p-4 border-b border-border">
+              <h2 className="text-lg font-bold text-foreground">تغییر رمز عبور</h2>
+              <p className="text-sm text-muted-foreground mt-1">
+                کاربر: <strong className="text-foreground">{editUser.name}</strong>
               </p>
             </div>
             <form onSubmit={handlePasswordSubmit} className="p-4 space-y-4">
               <div className="relative">
-                <label className="block text-sm font-medium text-gray-700 mb-1">رمز عبور جدید</label>
+                <label className="block text-sm font-medium text-foreground mb-1">رمز عبور جدید</label>
                 <input
-                  type={showPassword ? "text" : "password"} // ✅ تغییر نوع input
+                  type={showPassword ? "text" : "password"}
                   name="password"
                   value={passwordData.password}
                   onChange={handlePasswordChange}
-                  className="w-full px-3 py-2 border rounded-lg focus:ring-2 focus:ring-purple-500 focus:outline-none pl-10"
+                  className="w-full px-3 py-2 border border-border rounded-lg focus:ring-2 focus:ring-accent focus:outline-none bg-background text-foreground pl-10"
                   placeholder="حداقل 6 کاراکتر"
                   required
                 />
-                {/* ✅ دکمه چشم */}
                 <button
                   type="button"
                   onClick={() => setShowPassword(!showPassword)}
-                  className="absolute left-3 top-8 text-gray-500 hover:text-gray-700"
+                  className="absolute left-3 top-8 text-muted-foreground hover:text-foreground"
                 >
-                  {showPassword ? '👁️' : '🙈'}
+                  {showPassword ? <FaRegEye /> : <FaRegEyeSlash />}
                 </button>
               </div>
               
               <div className="relative">
-                <label className="block text-sm font-medium text-gray-700 mb-1">تکرار رمز عبور</label>
+                <label className="block text-sm font-medium text-foreground mb-1">تکرار رمز عبور</label>
                 <input
-                  type={showConfirmPassword ? "text" : "password"} // ✅ تغییر نوع input
+                  type={showConfirmPassword ? "text" : "password"}
                   name="confirmPassword"
                   value={passwordData.confirmPassword}
                   onChange={handlePasswordChange}
-                  className="w-full px-3 py-2 border rounded-lg focus:ring-2 focus:ring-purple-500 focus:outline-none pl-10"
+                  className="w-full px-3 py-2 border border-border rounded-lg focus:ring-2 focus:ring-accent focus:outline-none bg-background text-foreground pl-10"
                   placeholder="تکرار رمز عبور"
                   required
                 />
-                {/* ✅ دکمه چشم */}
                 <button
                   type="button"
                   onClick={() => setShowConfirmPassword(!showConfirmPassword)}
-                  className="absolute left-3 top-8 text-gray-500 hover:text-gray-700"
+                  className="absolute left-3 top-8 text-muted-foreground hover:text-foreground"
                 >
-                  {showConfirmPassword ? '👁️' : '🙈'}
+                  {showConfirmPassword ? <FaRegEye /> : <FaRegEyeSlash />}
                 </button>
               </div>
               
@@ -336,14 +332,14 @@ export default function AdminUsers() {
                 <button
                   type="submit"
                   disabled={passwordSubmitting}
-                  className="bg-purple-600 text-white px-4 py-2 rounded-lg hover:bg-purple-700 disabled:opacity-50"
+                  className="bg-accent text-accent-foreground px-4 py-2 rounded-lg hover:bg-accent/80 disabled:opacity-50 cursor-pointer"
                 >
                   {passwordSubmitting ? 'در حال تغییر...' : 'تغییر رمز عبور'}
                 </button>
                 <button
                   type="button"
                   onClick={closePasswordModal}
-                  className="bg-gray-200 text-gray-800 px-4 py-2 rounded-lg hover:bg-gray-300"
+                  className="bg-secondary text-secondary-foreground px-4 py-2 rounded-lg hover:bg-secondary/80 cursor-pointer"
                 >
                   انصراف
                 </button>

@@ -8,54 +8,80 @@ import { useEffect, useState } from "react";
 import { Swiper, SwiperSlide } from "swiper/react";
 import { FaRegFolder } from "react-icons/fa6";
 import api from "../../services/api";
-import 'swiper/css';
-import ProductSorting from "./ProductSorting";
-import ProductsPerPage from "./ProductsPerPage";
+import "swiper/css";
+// import ProductSorting from "./ProductSorting";
+// import ProductsPerPage from "./ProductsPerPage";
 import type { Product } from "../../types";
 import { RiShoppingCartLine } from "react-icons/ri";
 import { toast } from "react-hot-toast";
 import useDocumentTitle from "../../hooks/useDocumentTitle";
 
-const categories = [
-  { id: 1, title: "همه محصولات", count: 8 },
-  { id: 2, title: "پودر", count: 7 },
-  { id: 3, title: "محرک", count: 4 },
-  { id: 4, title: "ست کامل", count: 3 },
-  { id: 5, title: "نسخه محدود", count: 3 },
-  { id: 6, title: "ساخت عضلات", count: 3 },
-  { id: 7, title: "انحصاری", count: 3 },
-  { id: 8, title: "مکمل غذایی", count: 1 },
-];
+// تعریف نوع دسته‌بندی
+interface Category {
+  id: string;
+  name: string;
+  count: number;
+}
 
 export default function Store() {
   useDocumentTitle("فروشگاه");
-  const [activeId, setActiveId] = useState(1);
+
+  const [activeCategory, setActiveCategory] = useState<string>("");
   const [products, setProducts] = useState<Product[]>([]);
+  const [categories, setCategories] = useState<Category[]>([]);
   const [loading, setLoading] = useState(true);
+  const [categoriesLoading, setCategoriesLoading] = useState(true);
   const [sortBy, setSortBy] = useState("menu_order");
-  const [perPage, setPerPage] = useState(16);
+  const [perPage, setPerPage] = useState(8);
   const [page, setPage] = useState(1);
   const [cart, setCart] = useState<Product[]>([]);
+  const [search, setSearch] = useState("");
 
+  // Fetch categories from API
   useEffect(() => {
+    const fetchCategories = async () => {
+      try {
+        setCategoriesLoading(true);
+        const res = await api.get("/products/categories");
+        setCategories(res.data.categories || []);
+      } catch (err) {
+        console.error("Error fetching categories:", err);
+        toast.error("خطا در بارگذاری دسته‌بندی‌ها");
+      } finally {
+        setCategoriesLoading(false);
+      }
+    };
+    fetchCategories();
+  }, []);
+
+  // Fetch products based on active category
+  useEffect(() => {
+    if (categoriesLoading) return;
+
     const fetchProducts = async () => {
       try {
-        const res = await api.get(
-          `/products?sort=${sortBy}&limit=${perPage}&page=${page}`,
-        );
+        setLoading(true);
+
+        let url = `/products?sort=${sortBy}&limit=${perPage}&page=${page}`;
+        if (activeCategory) {
+          url += `&category=${encodeURIComponent(activeCategory)}`;
+        }
+
+        const res = await api.get(url);
         setProducts(res.data.products || []);
       } catch (err) {
         console.error("Error fetching products:", err);
+        toast.error("خطا در بارگذاری محصولات");
       } finally {
         setLoading(false);
       }
     };
     fetchProducts();
-  }, [sortBy, perPage, page]);
+  }, [page, sortBy, perPage, activeCategory, categoriesLoading]);
 
   // Load cart from localStorage on mount
   useEffect(() => {
-    const savedCart = localStorage.getItem('cart');
+    const savedCart = localStorage.getItem("cart");
     if (savedCart) {
       setCart(JSON.parse(savedCart));
     }
@@ -63,7 +89,7 @@ export default function Store() {
 
   // Save cart to localStorage whenever it changes
   useEffect(() => {
-    localStorage.setItem('cart', JSON.stringify(cart));
+    localStorage.setItem("cart", JSON.stringify(cart));
   }, [cart]);
 
   const handleSortChange = (value: string) => {
@@ -77,107 +103,164 @@ export default function Store() {
   };
 
   const addToCart = (product: Product) => {
-    // Check if product is already in cart
-    const existingItem = cart.find(item => item._id === product._id);
-    
+    const existingItem = cart.find((item) => item._id === product._id);
+
     if (existingItem) {
-      toast.error('این محصول قبلاً به سبد خرید اضافه شده است', {
+      toast.error("این محصول قبلاً به سبد خرید اضافه شده است", {
         duration: 2000,
       });
       return;
     }
 
-    // Add product to cart
     const newCart = [...cart, product];
     setCart(newCart);
 
-    // Show success toast
     toast.success(`${product.name} به سبد خرید اضافه شد`, {
       duration: 2000,
-      icon: '🛒',
+      icon: "🛒",
     });
 
-    // Optional: Show cart count animation
-    const cartCountElement = document.querySelector('[data-cart-count]');
+    const cartCountElement = document.querySelector("[data-cart-count]");
     if (cartCountElement) {
-      cartCountElement.classList.add('animate-bounce');
+      cartCountElement.classList.add("animate-bounce");
       setTimeout(() => {
-        cartCountElement.classList.remove('animate-bounce');
+        cartCountElement.classList.remove("animate-bounce");
       }, 500);
     }
   };
 
+  const handleSearch = (e: React.FormEvent) => {
+    e.preventDefault();
+    // اینجا می‌تونی API call با پارامتر search انجام بدی
+    console.log("Searching for:", search);
+  };
+
   return (
-    <div className="min-h-screen bg-gray-50">
+    <div className="min-h-screen bg-background">
       {/* Header */}
       <div
-        className="w-full bg-cover bg-center"
+        className="w-full bg-cover bg-center relative"
         style={{
           backgroundImage: "url('/images/bg-header.jpg')",
         }}
       >
-        <div className="max-w-7xl mx-auto">
+        <div className="absolute inset-0 bg-black/40"></div>
+        <div className="max-w-7xl mx-auto relative z-10 px-4">
           <TopBar iconColor="gray-300" textColor="white" />
           <Navbar />
         </div>
-        <div className="max-w-7xl mx-auto flex justify-between my-5 pb-5">
-          <span className="text-white text-lg font-bold">فروشگاه</span>
+        <div className="max-w-7xl mx-auto flex justify-between my-5 pb-5 relative z-10 px-4">
           <div className="flex text-lg text-white gap-2">
             <Link to="/">
               <HiHome className="font-bold" />
             </Link>
             <MdKeyboardDoubleArrowLeft className="text-gray-300/70" />
-            <span className="text-sm">فروشگاه</span>
+            <span className="text-sm text-white">فروشگاه</span>
           </div>
         </div>
       </div>
 
       {/* Main Content Container */}
-      <div className="max-w-11/12 mx-auto px-4 sm:px-6 lg:px-8 py-8">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
         {/* Top Controls */}
         <div className="flex items-center justify-between mb-6">
-          <div className="text-sm text-gray-500">
+          <div className="text-sm text-muted-foreground">
             نمایش {products.length} نتیجه
           </div>
-          <div className="flex items-center gap-4">
-            <ProductsPerPage onPerPageChange={handlePerPageChange} />
-            <ProductSorting onSortChange={handleSortChange} />
+          <div className="w-full sm:w-1/4">
+            <form onSubmit={handleSearch}>
+              <div className="flex">
+                <input
+                  type="text"
+                  value={search}
+                  onChange={(e) => setSearch(e.target.value)}
+                  placeholder="جستجو در محصولات..."
+                  className="bg-background flex-1 border border-border rounded-r-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-primary text-foreground"
+                />
+                <button
+                  type="submit"
+                  className="bg-primary text-primary-foreground px-4 py-2 rounded-l-lg hover:bg-primary/80 cursor-pointer"
+                >
+                  جستجو
+                </button>
+              </div>
+            </form>
           </div>
         </div>
 
         {/* Categories Swiper */}
-        <Swiper
-          slidesPerView="auto"
-          spaceBetween={20}
-          dir="rtl"
-          className="pb-6 mb-8 cursor-grab"
-        >
-          {categories.map((cat) => (
-            <SwiperSlide key={cat.id} style={{ width: "230px" }}>
+        {categoriesLoading ? (
+          <div className="pb-6 mb-8">
+            <div className="animate-pulse h-12 w-32 bg-muted rounded"></div>
+          </div>
+        ) : (
+          <Swiper
+            slidesPerView="auto"
+            spaceBetween={20}
+            dir="rtl"
+            className="pb-6 mb-8 cursor-grab"
+          >
+            {/* دسته‌بندی "همه محصولات" */}
+            <SwiperSlide style={{ width: "230px" }}>
               <button
-                onClick={() => setActiveId(cat.id)}
+                onClick={() => {
+                  setActiveCategory("");
+                  setPage(1);
+                }}
                 className={`w-full flex items-center justify-start gap-4 px-4 py-4 rounded-lg transition cursor-grab hover:cursor-grabbing ${
-                  activeId === cat.id
-                    ? "bg-red-500 text-white"
-                    : "bg-gray-100 text-gray-700 hover:bg-gray-200"
+                  activeCategory === ""
+                    ? "bg-primary text-primary-foreground"
+                    : "bg-muted text-foreground hover:bg-muted/80"
                 }`}
               >
-                <div className="w-12 h-12 bg-white rounded-lg flex items-center justify-center shadow-sm">
+                <div className="w-12 h-12 bg-card rounded-lg flex items-center justify-center shadow-sm">
                   <FaRegFolder
                     className={`text-2xl ${
-                      activeId === cat.id ? "text-red-500" : "text-gray-500"
+                      activeCategory === "" ? "text-primary" : "text-muted-foreground"
                     }`}
                   />
                 </div>
-
                 <div className="text-right">
-                  <div className="font-semibold">{cat.title}</div>
-                  <div className="text-sm opacity-80">{cat.count} محصول</div>
+                  <div className="font-semibold">همه محصولات</div>
+                  <div className="text-sm opacity-80">
+                    {categories.reduce((sum, cat) => sum + cat.count, 0)} محصول
+                  </div>
                 </div>
               </button>
             </SwiperSlide>
-          ))}
-        </Swiper>
+
+            {/* دسته‌بندی‌های دینامیک */}
+            {categories.map((cat) => (
+              <SwiperSlide key={cat.name} style={{ width: "230px" }}>
+                <button
+                  onClick={() => {
+                    setActiveCategory(cat.name);
+                    setPage(1);
+                  }}
+                  className={`w-full flex items-center justify-start gap-4 px-4 py-4 rounded-lg transition cursor-grab hover:cursor-grabbing ${
+                    activeCategory === cat.name
+                      ? "bg-primary text-primary-foreground"
+                      : "bg-muted text-foreground hover:bg-muted/80"
+                  }`}
+                >
+                  <div className="w-12 h-12 bg-card rounded-lg flex items-center justify-center shadow-sm">
+                    <FaRegFolder
+                      className={`text-2xl ${
+                        activeCategory === cat.name
+                          ? "text-primary"
+                          : "text-muted-foreground"
+                      }`}
+                    />
+                  </div>
+                  <div className="text-right">
+                    <div className="font-semibold">{cat.name}</div>
+                    <div className="text-sm opacity-80">{cat.count} محصول</div>
+                  </div>
+                </button>
+              </SwiperSlide>
+            ))}
+          </Swiper>
+        )}
 
         {/* Products Grid */}
         {loading ? (
@@ -185,35 +268,37 @@ export default function Store() {
             {[...Array(perPage)].map((_, i) => (
               <div
                 key={i}
-                className="bg-white rounded-lg overflow-hidden animate-pulse"
+                className="bg-card rounded-lg overflow-hidden animate-pulse border border-border"
               >
-                <div className="h-48 bg-gray-200" />
-                <div className="bg-gray-800 p-3">
-                  <div className="h-4 bg-gray-700 rounded w-3/4 mx-auto" />
-                  <div className="h-3 bg-gray-700 rounded w-1/2 mx-auto mt-1" />
+                <div className="h-48 bg-muted" />
+                <div className="p-3">
+                  <div className="h-4 bg-muted rounded w-3/4 mx-auto" />
+                  <div className="h-3 bg-muted rounded w-1/2 mx-auto mt-1" />
                 </div>
-                <div className="bg-red-500 p-2">
-                  <div className="h-4 bg-red-600 rounded w-3/4 mx-auto" />
+                <div className="p-2">
+                  <div className="h-4 bg-primary rounded w-3/4 mx-auto" />
                 </div>
               </div>
             ))}
           </div>
         ) : products.length > 0 ? (
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-10">
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
             {products.map((product) => (
               <div
                 key={product._id}
-                className="group bg-white rounded-b-md overflow-hidden hover:shadow-md transition-shadow"
+                className="group bg-card rounded-b-md overflow-hidden hover:shadow-md transition-shadow border border-border"
               >
-                {/* Price Tag */}
-                <div className="absolute bg-black text-red-500 font-extralight px-3 py-1 z-10">
-                  <span className="font-bold text-lg">
-                    {product.price.toLocaleString()} تومان
+                <div className="absolute bg-black/80 text-primary-foreground font-extralight px-3 py-1 z-10">
+                  <span className="font-bold text-sm">
+                    {product.price !== 0 ? (
+                      <>{product.price.toLocaleString()} تومان</>
+                    ) : (
+                      "رایگان"
+                    )}
                   </span>
                 </div>
 
-                {/* Product Image */}
-                <div className="h-80 bg-gray-100 flex items-center justify-center overflow-hidden">
+                <div className="h-64 bg-muted flex items-center justify-center overflow-hidden">
                   {product.image ? (
                     <img
                       src={product.image}
@@ -221,24 +306,22 @@ export default function Store() {
                       className="h-full w-full object-cover transition-transform duration-700 group-hover:scale-110"
                     />
                   ) : (
-                    <span className="text-gray-400">بدون تصویر</span>
+                    <span className="text-muted-foreground">بدون تصویر</span>
                   )}
                 </div>
 
-                {/* Black Section */}
-                <div className="bg-black text-white p-3 h-24 flex flex-col items-center justify-center gap-1">
-                  <h3 className="font-semibold text-center">{product.name}</h3>
-                  <p className="text-sm text-center opacity-75">
+                <div className="bg-card text-foreground p-3 h-20 flex flex-col items-center justify-center gap-1">
+                  <h3 className="font-semibold text-center text-sm line-clamp-2">{product.name}</h3>
+                  <p className="text-xs text-center text-muted-foreground line-clamp-1">
                     {product.category}
                   </p>
                 </div>
 
-                <div className="bg-red-500 h-0.5 w-full"></div>
+                <div className="bg-primary h-0.5 w-full"></div>
 
-                {/* Red Button Section */}
-                <div className="bg-red-500 text-white p-2 hover:bg-black/95 transition-all duration-300 ease-in-out">
+                <div className="bg-primary text-primary-foreground p-2 hover:bg-primary/80 transition-all duration-300 ease-in-out">
                   <button
-                    className="w-full text-center flex justify-center items-center gap-2"
+                    className="w-full text-center flex justify-center items-center gap-2 text-sm"
                     onClick={() => addToCart(product)}
                   >
                     <RiShoppingCartLine />
@@ -249,27 +332,31 @@ export default function Store() {
             ))}
           </div>
         ) : (
-          <div className="text-center py-12 bg-white rounded-lg shadow-sm">
-            <p className="text-gray-500">محصولی یافت نشد</p>
+          <div className="text-center py-12 bg-card rounded-lg shadow-sm border border-border">
+            <p className="text-muted-foreground">
+              {activeCategory
+                ? `محصولی در دسته‌بندی "${activeCategory}" یافت نشد`
+                : "محصولی یافت نشد"}
+            </p>
           </div>
         )}
 
-        {/* Pagination (optional) */}
+        {/* Pagination */}
         {products.length > 0 && (
           <div className="mt-8 flex justify-center">
             <button
               onClick={() => setPage((p) => Math.max(1, p - 1))}
               disabled={page === 1}
-              className="px-4 py-2 mx-1 bg-gray-200 rounded disabled:opacity-50"
+              className="px-4 py-2 mx-1 bg-muted text-foreground rounded disabled:opacity-50 hover:bg-muted/80"
             >
               قبلی
             </button>
-            <span className="px-4 py-2 mx-1 bg-red-500 text-white rounded">
+            <span className="px-4 py-2 mx-1 bg-primary text-primary-foreground rounded">
               صفحه {page}
             </span>
             <button
               onClick={() => setPage((p) => p + 1)}
-              className="px-4 py-2 mx-1 bg-gray-200 rounded"
+              className="px-4 py-2 mx-1 bg-muted text-foreground rounded hover:bg-muted/80"
             >
               بعدی
             </button>

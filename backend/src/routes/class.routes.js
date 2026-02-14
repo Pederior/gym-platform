@@ -6,7 +6,9 @@ const {
   getClasses,
   getClassById,
   reserveClass,
-  getReservedClasses
+  getReservedClasses,
+  deleteClass,
+  updateClass
 } = require('../controllers/class.controller')
 
 const router = express.Router()
@@ -16,8 +18,10 @@ router.route('/')
   .post(protect, authorize('coach', 'admin'), createClass)
   .get(protect, getClasses)
 
-router.route('/:id')
+  router.route('/:id')
   .get(protect, getClassById)
+  .put(protect, authorize('coach', 'admin'), updateClass)
+  .delete(protect, authorize('coach', 'admin'), deleteClass);
 
 // رزرو کلاس (فقط کاربران معمولی)
 router.route('/:id/reserve')

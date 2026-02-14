@@ -7,8 +7,11 @@ import Navbar from "../../components/layout/Navbar";
 import Footer from "../../components/layout/Footer";
 import { HiHome } from "react-icons/hi";
 import { MdKeyboardDoubleArrowLeft } from "react-icons/md";
-import { Link } from "react-router-dom";
-import useDocumentTitle from '../../hooks/useDocumentTitle';
+import { Link, useNavigate } from "react-router-dom";
+import useDocumentTitle from "../../hooks/useDocumentTitle";
+import { FaChalkboardTeacher, FaCalendarAlt, FaUsers } from "react-icons/fa";
+import { BiMoneyWithdraw } from "react-icons/bi";
+import { useAppSelector } from "../../store/hook";
 
 interface Class {
   _id: string;
@@ -28,7 +31,16 @@ export default function ClassList() {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [submitting, setSubmitting] = useState(false);
 
+  const { token } = useAppSelector((state) => state.auth);
+  const navigate = useNavigate();
+
   useEffect(() => {
+    if (!token) {
+      toast.error("برای مشاهده کلاس‌ها باید ابتدا وارد حساب خود شوید");
+      navigate("/login");
+      return;
+    }
+
     const fetchClasses = async () => {
       try {
         const res = await api.get("/classes");
@@ -41,7 +53,7 @@ export default function ClassList() {
       }
     };
     fetchClasses();
-  }, []);
+  }, [token, navigate]);
 
   const handleReserveClass = (cls: Class) => {
     setSelectedClass(cls);
@@ -87,20 +99,38 @@ export default function ClassList() {
     return `${day}، ${dateStr} - ${time}`;
   };
 
+  const getCapacityColor = (cls: Class) => {
+    const percentage = (cls.reservedBy.length / cls.capacity) * 100;
+    if (percentage >= 90) return "bg-destructive";
+    if (percentage >= 70) return "bg-orange-500";
+    if (percentage >= 50) return "bg-yellow-500";
+    return "bg-green-500";
+  };
+
+  // ✅ نمایش صفحه بارگذاری یا خطا برای کاربران مهمان
+  if (!token) {
+    return (
+      <div className="min-h-screen flex items-center justify-center bg-background">
+        <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-primary"></div>
+      </div>
+    );
+  }
+
   return (
-    <div className="min-h-screen">
+    <div className="min-h-screen bg-background">
+      {/* Header */}
       <div
-        className="w-full bg-cover bg-center"
+        className="w-full bg-cover bg-center relative"
         style={{
           backgroundImage: "url('/images/bg-header.jpg')",
         }}
       >
-        <div className="max-w-7xl mx-auto">
+        <div className="absolute inset-0 bg-black/40"></div>
+        <div className="max-w-7xl mx-auto relative">
           <TopBar iconColor="gray-300" textColor="white" />
           <Navbar />
         </div>
-        <div className="max-w-7xl mx-auto flex justify-between my-5 pb-5">
-          <span className="text-white text-lg font-bold">کلاس ها</span>
+        <div className="max-w-7xl mx-auto flex justify-between my-5 pb-5 relative px-4">
           <div className="flex text-lg text-white gap-2">
             <Link to="/">
               <HiHome className="font-bold" />
@@ -111,106 +141,126 @@ export default function ClassList() {
         </div>
       </div>
 
-      <div className="max-w-7xl mx-auto px-4 py-8 mt-15 mb-15 rounded-3xl backdrop-blur-sm">
-        <div className="text-center mb-12">
-          <span className="">همین امروز شروع کنید</span>
-          <h1 className="text-5xl font-bold text-black my-6 ">
+      {/* Hero Section */}
+      <div className="max-w-7xl mx-auto px-4 py-12 md:py-16">
+        <div className="text-center mb-16">
+          <div className="inline-flex items-center gap-2 bg-primary/10 text-primary px-4 py-2 rounded-full mb-6">
+            <span className="w-2 h-2 bg-primary rounded-full"></span>
+            <span className="text-sm font-medium">همین امروز شروع کنید</span>
+          </div>
+
+          <h1 className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-bold text-foreground mb-6">
             کلاس‌های{" "}
-            <span className="text-red-500 font-light border-b-4 ">تمرین</span>{" "}
-            گروهی
+            <span className="text-primary">تمرین گروهی</span>
           </h1>
-          <p className="text-gray-400 max-w-2xl mx-auto pt-5">
+
+          <p className="text-lg text-muted-foreground max-w-3xl mx-auto leading-relaxed">
             بهترین کلاس‌های تخصصی با مربیان مجرب برای رسیدن به اهدافتان
           </p>
         </div>
 
+        {/* Classes Grid */}
         {loading ? (
-          <div className="flex justify-center items-center min-h-100">
-            <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-red-500"></div>
+          <div className="flex justify-center items-center min-h-96">
+            <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-primary"></div>
           </div>
         ) : classes.length === 0 ? (
-          <div className="text-center py-16">
-            <div className="text-6xl mb-4 text-gray-400">🏋️</div>
-            <h3 className="text-xl font-semibold text-gray-600 mb-2">
+          <div className="text-center py-24">
+            <div className="text-8xl mb-8 text-muted-foreground">🏋️‍♂️</div>
+            <h3 className="text-2xl font-bold text-foreground mb-4">
               کلاسی برای نمایش وجود ندارد
             </h3>
-            <p className="text-gray-500">
-              به زودی کلاس‌های جدیدی اضافه خواهد شد
+            <p className="text-lg text-muted-foreground max-w-md mx-auto">
+              به زودی کلاس‌های جدیدی اضافه خواهد شد. منتظر باشید!
             </p>
           </div>
         ) : (
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
             {classes.map((cls) => (
               <Card
                 key={cls._id}
-                className={`p-6 bg-white border border-gray-200 hover:border-red-300 transition-all duration-300 shadow-sm hover:shadow-md ${
-                  isClassFull(cls) ? "opacity-75" : "hover:-translate-y-1"
+                className={`p-6 bg-card border border-border hover:border-primary transition-all duration-300 shadow hover:shadow-lg ${
+                  isClassFull(cls)
+                    ? "opacity-80 cursor-not-allowed"
+                    : "hover:-translate-y-1 cursor-pointer hover:bg-muted"
                 }`}
               >
+                {/* Header */}
                 <div className="flex justify-between items-start mb-4">
                   <div>
-                    <h2 className="text-xl font-bold text-gray-800 mb-1">
+                    <h2 className="text-xl font-bold text-foreground mb-1">
                       {cls.title}
                     </h2>
-                    <p className="text-sm text-gray-600 flex items-center">
-                      <span className="ml-1">👨‍🏫</span>
+                    <p className="text-sm text-muted-foreground flex items-center gap-1">
+                      <FaChalkboardTeacher className="text-primary text-xl" />
                       {cls.coach.name}
                     </p>
                   </div>
                   <span
-                    className={`px-2 py-1 rounded-full text-xs font-medium ${
+                    className={`px-3 py-1 rounded-full text-xs font-semibold ${
                       isClassFull(cls)
-                        ? "bg-red-100 text-red-700"
-                        : "bg-green-100 text-green-700"
+                        ? "bg-destructive/10 text-destructive"
+                        : "bg-green-500/10 text-green-500"
                     }`}
                   >
                     {isClassFull(cls) ? "پر شده" : "در دسترس"}
                   </span>
                 </div>
 
-                <div className="space-y-3 mb-6">
-                  <div className="flex items-center text-gray-700">
-                    <span className="ml-2 text-blue-600">📅</span>
-                    <span className="text-sm">
+                {/* Details */}
+                <div className="space-y-4 mb-6">
+                  <div className="flex items-center text-foreground gap-2">
+                    <div className="w-8 h-8 bg-primary/10 rounded-lg flex items-center justify-center">
+                      <FaCalendarAlt className="text-primary text-base" />
+                    </div>
+                    <span className="text-sm font-bold text-primary">
                       {formatDateTime(cls.dateTime)}
                     </span>
                   </div>
 
-                  <div className="flex items-center text-gray-700">
-                    <span className="ml-2 text-purple-600">👥</span>
-                    <span className="text-sm">
+                  <div className="flex items-center text-foreground gap-2">
+                    <div className="w-8 h-8 bg-secondary/10 rounded-lg flex items-center justify-center">
+                      <FaUsers className="text-secondary-foreground text-base" />
+                    </div>
+                    <span className="text-sm text-secondary-foreground font-bold">
                       {cls.reservedBy.length}/{cls.capacity} شرکت‌کننده
                     </span>
                   </div>
 
-                  <div className="flex items-center text-gray-700">
-                    <span className="ml-2 text-green-600">💰</span>
-                    <span className="text-sm font-medium">
+                  <div className="flex items-center text-foreground gap-2">
+                    <div className="w-8 h-8 bg-accent/10 rounded-lg flex items-center justify-center">
+                      <BiMoneyWithdraw className="text-accent text-base" />
+                    </div>
+                    <span className="text-lg font-bold text-accent">
                       {cls.price.toLocaleString()} تومان
                     </span>
                   </div>
                 </div>
 
+                {/* Progress Bar */}
                 <div className="mb-6">
-                  <div className="w-full bg-gray-200 rounded-full h-2">
+                  <div className="w-full bg-muted rounded-full h-2.5 overflow-hidden">
                     <div
-                      className={`h-2 rounded-full transition-all duration-500 ${
-                        isClassFull(cls) ? "bg-red-600" : "bg-blue-600"
-                      }`}
+                      className={`h-full ${getCapacityColor(cls)} transition-all duration-700`}
                       style={{
-                        width: `${(cls.reservedBy.length / cls.capacity) * 100}%`,
+                        width: `${Math.min((cls.reservedBy.length / cls.capacity) * 100, 100)}%`,
                       }}
                     ></div>
                   </div>
+                  <div className="flex justify-between text-xs text-muted-foreground mt-1">
+                    <span>شروع</span>
+                    <span>پر شده</span>
+                  </div>
                 </div>
 
+                {/* Action Button */}
                 <button
                   onClick={() => handleReserveClass(cls)}
                   disabled={isClassFull(cls)}
-                  className={`w-full py-3 px-4 rounded-lg font-medium transition-colors ${
+                  className={`w-full py-3 px-4 rounded-xl font-semibold transition-all duration-300 ${
                     isClassFull(cls)
-                      ? "bg-gray-200 text-gray-500 cursor-not-allowed"
-                      : "bg-linear-to-r from-red-600 to-red-700 text-white hover:from-red-700 hover:to-red-800 shadow-md hover:shadow-lg"
+                      ? "bg-muted text-muted-foreground cursor-not-allowed"
+                      : "bg-primary text-primary-foreground hover:bg-primary/80 shadow hover:shadow-md transform hover:scale-105"
                   }`}
                 >
                   {isClassFull(cls) ? "ظرفیت تکمیل شده" : "عضویت در کلاس"}
@@ -223,77 +273,99 @@ export default function ClassList() {
 
       {/* Modal رزرو کلاس */}
       {isModalOpen && selectedClass && (
-        <div className="fixed inset-0 bg-black/50 bg-opacity-75 flex items-center justify-center z-50 p-4">
-          <div className="bg-red-900 border-2 border-red-700 rounded-2xl max-w-md w-full max-h-[90vh] overflow-y-auto">
-            <div className="flex justify-between items-center p-6 border-b border-red-700">
-              <h2 className="text-2xl font-bold text-white">رزرو کلاس</h2>
+        <div className="fixed inset-0 bg-black/70 backdrop-blur-sm flex items-center justify-center z-50 p-4">
+          <div className="bg-card rounded-2xl max-w-md w-full max-h-[90vh] overflow-y-auto shadow-2xl border border-border">
+            <div className="flex justify-between items-center p-6 border-b border-border">
+              <h2 className="text-xl font-bold text-foreground">رزرو کلاس</h2>
               <button
                 onClick={closeModal}
-                className="text-gray-400 hover:text-white text-2xl"
+                className="text-muted-foreground hover:text-foreground text-2xl transition-colors"
               >
                 &times;
               </button>
             </div>
 
             <div className="p-6 space-y-6">
-              <div>
-                <h3 className="text-xl font-bold text-white mb-2">
+              {/* Class Info */}
+              <div className="text-center">
+                <h3 className="text-xl font-bold text-foreground mb-2">
                   {selectedClass.title}
                 </h3>
-                <p className="text-gray-300">
-                  مربی: {selectedClass.coach.name}
+                <p className="text-muted-foreground">
+                  مربی:{" "}
+                  <span className="font-semibold text-foreground">
+                    {selectedClass.coach.name}
+                  </span>
                 </p>
               </div>
 
-              <div className="space-y-4">
-                <div className="flex justify-between">
-                  <span className="text-gray-400">تاریخ و ساعت:</span>
-                  <span className="text-white">
+              {/* Details */}
+              <div className="space-y-4 bg-muted p-4 rounded-xl">
+                <div className="flex justify-between items-center">
+                  <span className="text-muted-foreground font-medium">
+                    تاریخ و ساعت:
+                  </span>
+                  <span className="text-foreground font-semibold">
                     {formatDateTime(selectedClass.dateTime)}
                   </span>
                 </div>
 
-                <div className="flex justify-between">
-                  <span className="text-gray-400">هزینه:</span>
-                  <span className="text-white">
+                <div className="flex justify-between items-center">
+                  <span className="text-muted-foreground font-medium">هزینه:</span>
+                  <span className="text-accent font-bold">
                     {selectedClass.price.toLocaleString()} تومان
                   </span>
                 </div>
 
-                <div className="flex justify-between">
-                  <span className="text-gray-400">ظرفیت:</span>
-                  <span className="text-white">
+                <div className="flex justify-between items-center">
+                  <span className="text-muted-foreground font-medium">ظرفیت:</span>
+                  <span className="text-foreground font-semibold">
                     {selectedClass.reservedBy.length}/{selectedClass.capacity}
                   </span>
                 </div>
               </div>
 
-              <div className="w-full bg-gray-900 rounded-full h-2">
-                <div
-                  className={`h-2 rounded-full transition-all duration-500 ${
-                    isClassFull(selectedClass) ? "bg-red-600" : "bg-blue-600"
-                  }`}
-                  style={{
-                    width: `${(selectedClass.reservedBy.length / selectedClass.capacity) * 100}%`,
-                  }}
-                ></div>
+              {/* Capacity Progress */}
+              <div>
+                <div className="w-full bg-muted rounded-full h-3 overflow-hidden">
+                  <div
+                    className={`h-full ${getCapacityColor(selectedClass)} transition-all duration-700`}
+                    style={{
+                      width: `${Math.min((selectedClass.reservedBy.length / selectedClass.capacity) * 100, 100)}%`,
+                    }}
+                  ></div>
+                </div>
+                <div className="flex justify-between text-xs text-muted-foreground mt-2">
+                  <span>شروع</span>
+                  <span>پر شده</span>
+                </div>
               </div>
+
+              {/* Warning */}
+              {!isClassFull(selectedClass) && (
+                <div className="bg-accent/10 border border-accent/20 rounded-xl p-4">
+                  <p className="text-accent text-sm text-center">
+                    ✨ پس از تأیید رزرو، بلیط الکترونیکی شما صادر خواهد شد
+                  </p>
+                </div>
+              )}
             </div>
 
-            <div className="p-6 border-t border-red-700 flex gap-3">
+            {/* Actions */}
+            <div className="p-6 border-t border-border flex gap-3">
               <button
                 onClick={handleBook}
                 disabled={submitting || isClassFull(selectedClass)}
-                className={`flex-1 py-3 px-4 rounded-lg font-medium transition-colors ${
+                className={`flex-1 py-3 px-4 rounded-xl font-semibold transition-all duration-300 ${
                   isClassFull(selectedClass)
-                    ? "bg-gray-700 text-gray-500 cursor-not-allowed"
+                    ? "bg-muted text-muted-foreground cursor-not-allowed"
                     : submitting
-                      ? "bg-red-800 text-white"
-                      : "bg-linear-to-r from-red-600 to-red-700 text-white hover:from-red-700 hover:to-red-800"
+                      ? "bg-primary/70 text-primary-foreground"
+                      : "bg-primary text-primary-foreground hover:bg-primary/80 shadow hover:shadow-md"
                 }`}
               >
                 {submitting
-                  ? "در حال رزرو..."
+                  ? "در حال پردازش..."
                   : isClassFull(selectedClass)
                     ? "ظرفیت تکمیل شده"
                     : "تأیید رزرو"}
@@ -301,7 +373,7 @@ export default function ClassList() {
 
               <button
                 onClick={closeModal}
-                className="px-4 py-3 bg-gray-700 text-white rounded-lg hover:bg-gray-600"
+                className="px-4 py-3 bg-secondary text-secondary-foreground rounded-xl hover:bg-secondary/80 transition-colors font-semibold"
               >
                 انصراف
               </button>

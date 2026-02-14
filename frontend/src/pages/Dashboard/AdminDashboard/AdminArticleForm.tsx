@@ -175,7 +175,7 @@ export default function AdminArticleForm() {
   if (loading) {
     return (
       <div className="flex justify-center items-center h-64">
-        <div className="animate-spin rounded-full h-10 w-10 border-b-2 border-red-600"></div>
+        <div className="animate-spin rounded-full h-10 w-10 border-b-2 border-primary"></div>
       </div>
     );
   }
@@ -183,12 +183,12 @@ export default function AdminArticleForm() {
   return (
     <div>
       <div className="flex justify-between items-center mb-6">
-        <h1 className="text-2xl font-bold">
+        <h1 className="text-xl sm:text-2xl font-bold text-foreground">
           {isEdit ? 'ویرایش مقاله' : 'ایجاد مقاله جدید'}
         </h1>
         <button
           onClick={() => navigate('/dashboard/admin/articles')}
-          className="text-gray-600 hover:text-gray-800"
+          className="text-muted-foreground hover:text-foreground"
         >
           انصراف
         </button>
@@ -199,7 +199,7 @@ export default function AdminArticleForm() {
           {/* Basic Info */}
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">
+              <label className="block text-sm font-medium text-foreground mb-1">
                 عنوان مقاله *
               </label>
               <input
@@ -207,21 +207,21 @@ export default function AdminArticleForm() {
                 name="title"
                 value={formData.title}
                 onChange={handleInputChange}
-                className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-red-500"
+                className="w-full px-3 py-2 border border-border rounded-lg focus:ring-2 focus:ring-primary bg-background text-foreground"
                 placeholder="عنوان جذابی برای مقاله خود انتخاب کنید"
                 required
               />
             </div>
 
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">
+              <label className="block text-sm font-medium text-foreground mb-1">
                 دسته‌بندی
               </label>
               <select
                 name="category"
                 value={formData.category}
                 onChange={handleInputChange}
-                className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-red-500"
+                className="w-full px-3 py-2 border border-border rounded-lg focus:ring-2 focus:ring-primary bg-background text-foreground"
               >
                 {categoryOptions.map(option => (
                   <option key={option.value} value={option.value}>
@@ -233,7 +233,7 @@ export default function AdminArticleForm() {
           </div>
 
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">
+            <label className="block text-sm font-medium text-foreground mb-1">
               خلاصه مقاله *
             </label>
             <textarea
@@ -241,14 +241,14 @@ export default function AdminArticleForm() {
               value={formData.excerpt}
               onChange={handleInputChange}
               rows={3}
-              className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-red-500"
+              className="w-full px-3 py-2 border border-border rounded-lg focus:ring-2 focus:ring-primary bg-background text-foreground"
               placeholder="خلاصه‌ای کوتاه از مقاله (حداکثر 200 کاراکتر)"
               required
             />
           </div>
 
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">
+            <label className="block text-sm font-medium text-foreground mb-1">
               محتوای مقاله *
             </label>
             <textarea
@@ -256,7 +256,7 @@ export default function AdminArticleForm() {
               value={formData.content}
               onChange={handleInputChange}
               rows={12}
-              className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-red-500"
+              className="w-full px-3 py-2 border border-border rounded-lg focus:ring-2 focus:ring-primary bg-background text-foreground"
               placeholder="محتوای کامل مقاله را اینجا بنویسید..."
               required
             />
@@ -264,44 +264,44 @@ export default function AdminArticleForm() {
 
           {/* Featured Image */}
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">
+            <label className="block text-sm font-medium text-foreground mb-1">
               تصویر شاخص
             </label>
             
             {/* Upload Image */}
             <div className="mb-4">
-              <label className="block text-xs text-gray-600 mb-2">آپلود تصویر</label>
+              <label className="block text-xs text-muted-foreground mb-2">آپلود تصویر</label>
               <input
                 type="file"
                 ref={fileInputRef}
                 accept="image/*"
                 onChange={handleImageChange}
-                className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-red-500"
+                className="w-full px-3 py-2 border border-border rounded-lg focus:ring-2 focus:ring-primary bg-background text-foreground"
               />
-              <p className="text-xs text-gray-500 mt-1">فرمت‌های مجاز: JPG, PNG, GIF (حداکثر 5MB)</p>
+              <p className="text-xs text-muted-foreground mt-1">فرمت‌های مجاز: JPG, PNG, GIF (حداکثر 5MB)</p>
             </div>
             
             {/* OR Image URL */}
             <div>
-              <label className="block text-xs text-gray-600 mb-2">یا URL تصویر</label>
+              <label className="block text-xs text-muted-foreground mb-2">یا URL تصویر</label>
               <input
                 type="url"
                 name="featuredImage"
                 value={formData.featuredImage || ''}
                 onChange={handleImageUrlChange}
                 placeholder="https://example.com/image.jpg"
-                className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-red-500"
+                className="w-full px-3 py-2 border border-border rounded-lg focus:ring-2 focus:ring-primary bg-background text-foreground"
               />
             </div>
             
             {/* Image Preview */}
             {(imagePreview || formData.featuredImage) && (
               <div className="mt-4">
-                <label className="block text-xs text-gray-600 mb-2">پیش‌نمایش تصویر</label>
+                <label className="block text-xs text-muted-foreground mb-2">پیش‌نمایش تصویر</label>
                 <img
                   src={imagePreview || formData.featuredImage!}
                   alt="پیش‌نمایش تصویر شاخص"
-                  className="max-w-xs max-h-48 object-contain border rounded-lg"
+                  className="max-w-xs max-h-48 object-contain border border-border rounded-lg"
                   onError={(e) => {
                     (e.target as HTMLImageElement).style.display = 'none';
                   }}
@@ -313,14 +313,14 @@ export default function AdminArticleForm() {
           {/* Settings */}
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">
+              <label className="block text-sm font-medium text-foreground mb-1">
                 وضعیت
               </label>
               <select
                 name="status"
                 value={formData.status}
                 onChange={handleInputChange}
-                className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-red-500"
+                className="w-full px-3 py-2 border border-border rounded-lg focus:ring-2 focus:ring-primary bg-background text-foreground"
               >
                 {statusOptions.map(option => (
                   <option key={option.value} value={option.value}>
@@ -331,7 +331,7 @@ export default function AdminArticleForm() {
             </div>
 
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">
+              <label className="block text-sm font-medium text-foreground mb-1">
                 زمان خواندن (دقیقه)
               </label>
               <input
@@ -341,14 +341,14 @@ export default function AdminArticleForm() {
                 onChange={handleInputChange}
                 min="1"
                 max="60"
-                className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-red-500"
+                className="w-full px-3 py-2 border border-border rounded-lg focus:ring-2 focus:ring-primary bg-background text-foreground"
               />
             </div>
           </div>
 
           {/* Tags */}
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">
+            <label className="block text-sm font-medium text-foreground mb-1">
               تگ‌ها
             </label>
             <div className="space-y-2">
@@ -358,14 +358,14 @@ export default function AdminArticleForm() {
                     type="text"
                     value={tag}
                     onChange={(e) => handleTagChange(index, e.target.value)}
-                    className="flex-1 px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-red-500"
+                    className="flex-1 px-3 py-2 border border-border rounded-lg focus:ring-2 focus:ring-primary bg-background text-foreground"
                     placeholder="تگ را وارد کنید..."
                   />
                   {formData.tags.length > 1 && (
                     <button
                       type="button"
                       onClick={() => removeTag(index)}
-                      className="bg-red-500 text-white px-3 rounded-lg hover:bg-red-600"
+                      className="bg-destructive text-destructive-foreground px-3 rounded-lg hover:bg-destructive/80"
                     >
                       -
                     </button>
@@ -375,25 +375,25 @@ export default function AdminArticleForm() {
               <button
                 type="button"
                 onClick={addTag}
-                className="text-blue-600 hover:text-blue-800 mt-2"
+                className="text-primary hover:text-primary/80 mt-2"
               >
                 + افزودن تگ
               </button>
             </div>
           </div>
 
-          <div className="flex gap-3 pt-2">
+          <div className="flex flex-col sm:flex-row gap-3 pt-2">
             <button
               type="submit"
               disabled={submitting}
-              className="bg-red-600 text-white px-6 py-2 rounded-lg hover:bg-red-700 disabled:opacity-50"
+              className="bg-primary text-primary-foreground px-6 py-2 rounded-lg hover:bg-primary/80 disabled:opacity-50"
             >
               {submitting ? 'در حال ذخیره...' : isEdit ? 'به‌روزرسانی مقاله' : 'ایجاد مقاله'}
             </button>
             <button
               type="button"
               onClick={() => navigate('/dashboard/admin/articles')}
-              className="bg-gray-200 text-gray-800 px-6 py-2 rounded-lg hover:bg-gray-300"
+              className="bg-secondary text-secondary-foreground px-6 py-2 rounded-lg hover:bg-secondary/80"
             >
               انصراف
             </button>

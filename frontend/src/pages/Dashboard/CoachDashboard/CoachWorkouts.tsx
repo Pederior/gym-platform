@@ -122,11 +122,11 @@ export default function CoachWorkouts() {
 
   return (
     <div>
-      <div className="flex justify-between items-center mb-6">
-        <h1 className="text-2xl font-bold">برنامه‌های تمرینی</h1>
+      <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-6 gap-4">
+        <h1 className="text-xl sm:text-2xl font-bold text-foreground">برنامه‌های تمرینی</h1>
         <Link
           to="/dashboard/coach/workouts/create"
-          className="bg-red-600 text-white px-4 py-2 rounded-lg hover:bg-red-700"
+          className="bg-primary text-primary-foreground px-4 py-2 rounded-lg hover:bg-primary/80"
         >
           ایجاد برنامه جدید
         </Link>
@@ -134,44 +134,44 @@ export default function CoachWorkouts() {
 
       <Card>
         {loading ? (
-          <div className="py-8 text-center">در حال بارگذاری...</div>
+          <div className="py-8 text-center text-muted-foreground">در حال بارگذاری...</div>
         ) : (
           <div className="space-y-4">
             {workouts.map((workout) => (
-              <div key={workout._id} className="border rounded-lg p-4">
-                <div className="flex justify-between items-start">
-                  <div>
-                    <h3 className="font-bold">{workout.title}</h3>
-                    <p className="text-gray-600 text-sm">
+              <div key={workout._id} className="border border-border rounded-lg p-4 bg-card">
+                <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
+                  <div className="flex-1">
+                    <h3 className="font-bold text-foreground">{workout.title}</h3>
+                    <p className="text-muted-foreground text-sm">
                       {workout.description}
                     </p>
-                    <p className="text-xs text-gray-500 mt-1">
+                    <p className="text-xs text-muted-foreground mt-1">
                       مدت زمان: {workout.duration} روز • ایجاد شده:{" "}
                       {new Date(workout.createdAt).toLocaleDateString("fa-IR")}
                     </p>
                   </div>
-                  <div className="flex gap-2">
+                  <div className="flex gap-2 flex-wrap">
                     <button
                       onClick={() => openAssignModal(workout._id)}
-                      className="text-green-600 cursor-pointer"
+                      className="text-accent hover:text-accent/80 cursor-pointer text-sm"
                     >
                       اختصاص به کاربر
                     </button>
                     <button
                       onClick={() => openDetailModal(workout)}
-                      className="text-purple-600 cursor-pointer"
+                      className="text-primary hover:text-primary/80 cursor-pointer text-sm"
                     >
                       جزئیات تمرین
                     </button>
                     <Link
                       to={`/dashboard/coach/workouts/edit/${workout._id}`}
-                      className="text-blue-600"
+                      className="text-primary hover:text-primary/80 text-sm"
                     >
                       ویرایش
                     </Link>
                     <button
                       onClick={() => handleDelete(workout._id)}
-                      className="text-red-600 cursor-pointer"
+                      className="text-destructive hover:text-destructive/80 cursor-pointer text-sm"
                     >
                       حذف
                     </button>
@@ -182,7 +182,7 @@ export default function CoachWorkouts() {
                 <div className="mt-3">
                   <button
                     onClick={() => toggleUsers(workout._id)}
-                    className="text-sm text-purple-600 hover:text-purple-800"
+                    className="text-sm text-primary hover:text-primary/80"
                   >
                     {expandedWorkout === workout._id
                       ? "پنهان کردن کاربران"
@@ -190,8 +190,8 @@ export default function CoachWorkouts() {
                   </button>
 
                   {expandedWorkout === workout._id && (
-                    <div className="mt-2 p-3 bg-gray-50 rounded-lg">
-                      <h4 className="font-medium text-gray-700 mb-2">
+                    <div className="mt-2 p-3 bg-muted rounded-lg">
+                      <h4 className="font-medium text-foreground mb-2">
                         کاربران دارنده این برنامه:
                       </h4>
                       {usersMap[workout._id]?.length > 0 ? (
@@ -199,14 +199,14 @@ export default function CoachWorkouts() {
                           {usersMap[workout._id].map((user) => (
                             <li
                               key={user._id}
-                              className="text-sm text-gray-600"
+                              className="text-sm text-foreground"
                             >
                               • {user.name}
                             </li>
                           ))}
                         </ul>
                       ) : (
-                        <p className="text-sm text-gray-500">کاربری یافت نشد</p>
+                        <p className="text-sm text-muted-foreground">کاربری یافت نشد</p>
                       )}
                     </div>
                   )}
@@ -219,18 +219,18 @@ export default function CoachWorkouts() {
 
       {/* Modal اختصاص به کاربر */}
       {isModalOpen && (
-        <div className="fixed inset-0 bg-black/50 bg-opacity-50 flex items-center justify-center z-50">
-          <div className="bg-white rounded-lg p-6 w-full max-w-md mx-4">
-            <h3 className="text-lg font-bold mb-4 ">اختصاص برنامه به کاربر</h3>
+        <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4">
+          <div className="bg-card rounded-lg p-6 w-full max-w-md mx-4 border border-border">
+            <h3 className="text-lg font-bold text-foreground mb-4">اختصاص برنامه به کاربر</h3>
             
             {modalLoading ? (
-              <div className="py-4 text-center">در حال بارگذاری کاربران...</div>
+              <div className="py-4 text-center text-muted-foreground">در حال بارگذاری کاربران...</div>
             ) : (
               <>
                 <select
                   value={selectedUserId}
                   onChange={(e) => setSelectedUserId(e.target.value)}
-                  className="w-full px-3 py-2 border rounded-lg mb-4"
+                  className="w-full px-3 py-2 border border-border rounded-lg bg-background text-foreground mb-4"
                 >
                   <option value="">کاربری را انتخاب کنید</option>
                   {allUsers.map(user => (
@@ -240,11 +240,11 @@ export default function CoachWorkouts() {
                   ))}
                 </select>
                 
-                <div className="flex gap-2">
+                <div className="flex flex-col sm:flex-row gap-2">
                   <button
                     onClick={handleAssignWorkout}
                     disabled={!selectedUserId}
-                    className="bg-red-600 text-white px-4 py-2 rounded-lg hover:bg-red-700 disabled:opacity-50"
+                    className="bg-primary text-primary-foreground px-4 py-2 rounded-lg hover:bg-primary/80 disabled:opacity-50"
                   >
                     اختصاص برنامه
                   </button>
@@ -253,7 +253,7 @@ export default function CoachWorkouts() {
                       setIsModalOpen(false);
                       setSelectedUserId("");
                     }}
-                    className="bg-gray-200 text-gray-800 px-4 py-2 rounded-lg hover:bg-gray-300"
+                    className="bg-secondary text-secondary-foreground px-4 py-2 rounded-lg hover:bg-secondary/80"
                   >
                     انصراف
                   </button>
@@ -266,13 +266,13 @@ export default function CoachWorkouts() {
 
       {/* Modal جزئیات تمرین */}
       {detailModalOpen && selectedWorkout && (
-        <div className="fixed inset-0 bg-black/50 bg-opacity-50 flex items-center justify-center z-50">
-          <div className="bg-white rounded-lg p-6 w-full max-w-2xl mx-4 max-h-[90vh] overflow-y-auto">
+        <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4">
+          <div className="bg-card rounded-lg p-6 w-full max-w-2xl mx-4 max-h-[90vh] overflow-y-auto border border-border">
             <div className="flex justify-between items-center mb-4">
-              <h3 className="text-xl font-bold">{selectedWorkout.title}</h3>
+              <h3 className="text-xl font-bold text-foreground">{selectedWorkout.title}</h3>
               <button
                 onClick={() => setDetailModalOpen(false)}
-                className="text-gray-500 hover:text-gray-700"
+                className="text-muted-foreground hover:text-foreground"
               >
                 ✕
               </button>
@@ -280,31 +280,31 @@ export default function CoachWorkouts() {
             
             <div className="space-y-4">
               <div>
-                <h4 className="font-medium text-gray-700 mb-2">توضیحات</h4>
-                <p className="text-gray-600">{selectedWorkout.description}</p>
+                <h4 className="font-medium text-foreground mb-2">توضیحات</h4>
+                <p className="text-muted-foreground">{selectedWorkout.description}</p>
               </div>
               
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <div>
-                  <h4 className="font-medium text-gray-700 mb-2">مدت زمان</h4>
-                  <p>{selectedWorkout.duration} روز</p>
+                  <h4 className="font-medium text-foreground mb-2">مدت زمان</h4>
+                  <p className="text-foreground">{selectedWorkout.duration} روز</p>
                 </div>
                 <div>
-                  <h4 className="font-medium text-gray-700 mb-2">تاریخ ایجاد</h4>
-                  <p>{new Date(selectedWorkout.createdAt).toLocaleDateString('fa-IR')}</p>
+                  <h4 className="font-medium text-foreground mb-2">تاریخ ایجاد</h4>
+                  <p className="text-foreground">{new Date(selectedWorkout.createdAt).toLocaleDateString('fa-IR')}</p>
                 </div>
               </div>
               
               <div>
-                <h4 className="font-medium text-gray-700 mb-2">تمرینات</h4>
+                <h4 className="font-medium text-foreground mb-2">تمرینات</h4>
                 {selectedWorkout.exercises.length === 0 ? (
-                  <p className="text-gray-500">تمرینی تعریف نشده است</p>
+                  <p className="text-muted-foreground">تمرینی تعریف نشده است</p>
                 ) : (
                   <div className="space-y-3">
                     {selectedWorkout.exercises.map((exercise, index) => (
-                      <div key={index} className="border rounded-lg p-3">
-                        <div className="font-medium">{exercise.name}</div>
-                        <div className="text-sm text-gray-600 mt-1">
+                      <div key={index} className="border border-border rounded-lg p-3 bg-muted">
+                        <div className="font-medium text-foreground">{exercise.name}</div>
+                        <div className="text-sm text-muted-foreground mt-1">
                           ست: {exercise.sets} | تکرار: {exercise.reps} | استراحت: {exercise.restTime} ثانیه
                         </div>
                       </div>
@@ -317,7 +317,7 @@ export default function CoachWorkouts() {
             <div className="mt-6 flex justify-end">
               <button
                 onClick={() => setDetailModalOpen(false)}
-                className="bg-gray-200 text-gray-800 px-4 py-2 rounded-lg hover:bg-gray-300"
+                className="bg-secondary text-secondary-foreground px-4 py-2 rounded-lg hover:bg-secondary/80"
               >
                 بستن
               </button>

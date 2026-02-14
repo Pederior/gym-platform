@@ -54,7 +54,7 @@ export interface Product {
   _id?: string;
   id?: string;
   name: string;
-  price: number;
+  price: number | string;
   type: ProductType;
   category: string;
   description: string;

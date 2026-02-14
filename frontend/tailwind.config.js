@@ -1,6 +1,6 @@
 /** @type {import('tailwindcss').Config} */
 export default {
-  darkMode: ["class"],
+  darkMode: "class",
   content: ["./index.html", "./src/**/*.{js,ts,jsx,tsx}"],
   theme: {
     extend: {
@@ -24,14 +24,14 @@ export default {
           },
         },
         progress: {
-          '0%': { width: '0', opacity: '1' },
-          '100%': { opacity: '1' },
-        }
+          "0%": { width: "0", opacity: "1" },
+          "100%": { opacity: "1" },
+        },
       },
       animation: {
         hoverFloat: "hoverFloat 1.5s ease-in-out infinite",
         "fade-in": "fadeIn 0.6s ease-out",
-        'progress': 'progress 0.4s ease-in-out forwards',
+        progress: "progress 0.4s ease-in-out forwards",
       },
       borderWidth: {
         3: "3px",
@@ -43,48 +43,43 @@ export default {
         sm: "calc(var(--radius) - 4px)",
       },
       colors: {
-        crimson: 'hsl(var(--crimson))',
-        myred: 'hsl(var(--myred))',
-        background: "hsl(var(--background))",
-        foreground: "hsl(var(--foreground))",
-        card: {
-          DEFAULT: "hsl(var(--card))",
-          foreground: "hsl(var(--card-foreground))",
-        },
-        popover: {
-          DEFAULT: "hsl(var(--popover))",
-          foreground: "hsl(var(--popover-foreground))",
-        },
         primary: {
-          DEFAULT: "hsl(var(--primary))",
-          foreground: "hsl(var(--primary-foreground))",
+          DEFAULT: "oklch(var(--primary))",
+          foreground: "oklch(var(--primary-foreground))",
+          50: "rgb(var(--primary-rgb) / 0.5)",
+          80: "rgb(var(--primary-rgb) / 0.8)",
+          90: "rgb(var(--primary-rgb) / 0.9)",
         },
-        secondary: {
-          DEFAULT: "hsl(var(--secondary))",
-          foreground: "hsl(var(--secondary-foreground))",
+
+        background: "oklch(var(--background))",
+        foreground: "oklch(var(--foreground))",
+
+        card: {
+          DEFAULT: "oklch(var(--card))",
+          foreground: "oklch(var(--card-foreground))",
         },
+
         muted: {
-          DEFAULT: "hsl(var(--muted))",
-          foreground: "hsl(var(--muted-foreground))",
+          DEFAULT: "oklch(var(--muted))",
+          foreground: "oklch(var(--muted-foreground))",
         },
+
+        success: {
+          DEFAULT: "oklch(var(--success))",
+          foreground: "oklch(var(--success-foreground))",
+        },
+
+        warning: {
+          DEFAULT: "oklch(var(--warning))",
+          foreground: "oklch(var(--warning-foreground))",
+        },
+
         accent: {
-          DEFAULT: "hsl(var(--accent))",
-          foreground: "hsl(var(--accent-foreground))",
+          DEFAULT: "oklch(var(--accent))",
+          foreground: "oklch(var(--accent-foreground))",
         },
-        destructive: {
-          DEFAULT: "hsl(var(--destructive))",
-          foreground: "hsl(var(--destructive-foreground))",
-        },
-        border: "hsl(var(--border))",
-        input: "hsl(var(--input))",
-        ring: "hsl(var(--ring))",
-        chart: {
-          1: "hsl(var(--chart-1))",
-          2: "hsl(var(--chart-2))",
-          3: "hsl(var(--chart-3))",
-          4: "hsl(var(--chart-4))",
-          5: "hsl(var(--chart-5))",
-        },
+
+        border: "oklch(var(--border))",
       },
     },
   },

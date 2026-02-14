@@ -8,45 +8,34 @@ import PricingSection from "../components/layout/PricingSection";
 import TestimonialsSection from "../components/layout/TestimonialsSection";
 import ImageFitnessSection from "../components/layout/ImageFitnessSection";
 import Footer from "../components/layout/Footer";
-import useDocumentTitle from '../hooks/useDocumentTitle';
+import useDocumentTitle from "../hooks/useDocumentTitle";
 
 export default function Home() {
-  useDocumentTitle('صفحه اصلی');
+  useDocumentTitle("صفحه اصلی");
   return (
     <div className="min-h-screen">
       {/* Navbar */}
       <HeaderMain />
 
       {/* Hero Cards */}
-      <div className="flex justify-center gap-5 -mt-24">
-        <HeroCard
-        fadeTitle="فیتنس"
-          title="برای زنان"
-          description="تمرینات شدت بالا یکی از بهترین راه‌ها برای چربی‌سوزی هستند"
-          buttonText="اطلاعات بیشتر"
-          backgroundImage="/images/women-fitness.jpg"
-          width={600}
-          height={350}
-          titleSize="text-3xl"
-          descriptionSize="text-base"
-          buttonSize="text-base"
-          backGroundFade="bg-gradient-to-t from-red-500/50 to-black/50"
-        />
-        <HeroCard
-        fadeTitle="عضله"
-          title="برای مردان"
-          description="ترکیبی از انفوزیون های شدید قلب با استفاده از فاصله های خفیف تا دور شدن ..."
-          buttonText="اطلاعات بیشتر"
-          backgroundImage="/images/men-fitness.jpg"
-          width={600}
-          height={350}
-          titleSize="text-3xl"
-          descriptionSize="text-base"
-          buttonSize="text-base"
-          backGroundFade="bg-gradient-to-t from-red-500/50 to-black/50"
-        />
+      <div className="px-4 lg:-mt-24 md:-mt-12 -mt-12">
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-6 max-w-7xl mx-auto">
+          <HeroCard
+            fadeTitle="فیتنس"
+            title="برای زنان"
+            description="تمرینات شدت بالا یکی از بهترین راه‌ها برای چربی‌سوزی هستند"
+            buttonText="اطلاعات بیشتر"
+            backgroundImage="/images/women-fitness.jpg"
+          />
+          <HeroCard
+            fadeTitle="عضله"
+            title="برای مردان"
+            description="ترکیبی از انفوزیون های شدید قلب با استفاده از فاصله های خفیف تا دور شدن ..."
+            buttonText="اطلاعات بیشتر"
+            backgroundImage="/images/men-fitness.jpg"
+          />
+        </div>
       </div>
-
       {/* Welcome Part */}
       <ExerciseSection />
 
@@ -67,7 +56,6 @@ export default function Home() {
 
       {/* Footer */}
       <Footer />
-      
     </div>
   );
 }

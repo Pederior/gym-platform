@@ -21,48 +21,50 @@ const TestimonialsSection: React.FC = () => {
   ];
 
   return (
-    <section className="py-16 px-4 md:px-8 bg-white">
+    <section className="py-16 px-4 sm:px-6 md:px-8 bg-background">
       <div className="text-center mb-12">
-        <h4 className="font-light text-gray-500">نظرات مشتریان ما</h4>
-        <h2 className="text-3xl md:text-4xl font-light mt-4">
-          داستان های <span className="text-red-500 font-bold text-5xl">موفقیت</span> از زبان خودشان
+        <h4 className="font-light text-muted-foreground">نظرات مشتریان ما</h4>
+        <h2 className="text-2xl sm:text-3xl md:text-4xl font-light mt-4">
+          داستان های <span className="text-primary font-bold">موفقیت</span> از زبان خودشان
         </h2>
-        <div className="w-10 h-1 bg-red-500 mx-auto mt-4"></div>
+        <div className="w-10 h-1 bg-primary mx-auto mt-4"></div>
       </div>
 
-      <div className="w-10/12 grid grid-cols-1 md:grid-cols-2 gap-8 max-w-7xl mx-auto">
-        {testimonials.map((testimonial, index) => (
-          <div
-            key={index}
-            className="relative rounded-sm overflow-hidden border-b-4 border-red-500"
-            style={{
-              backgroundImage: `url(${testimonial.bg})`,
-              backgroundSize: "cover",
-              backgroundPosition: "top",
-              backgroundRepeat: "no-repeat",
-              height: "200px",
-            }}
-          >
-            <div className="absolute inset-0 bg-gradient-to-b from-red-950/70 to-black/70 flex flex-col p-6 items-center justify-center">
-              <img
-                src={testimonial.image}
-                alt={testimonial.name}
-                className="w-20 h-20 rounded-full border-4 border-red-500 object-cover shadow-lg mb-5"
-              />
-              <div>
-                <div className="flex items-center gap-2 text-md font-bold text-white mb-3">
-                  <span>{testimonial.name}</span>
-                  <span className="text-sm font-thin text-gray-300/50">
-                    {testimonial.role}
-                  </span>
+      <div className="max-w-7xl mx-auto px-4">
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
+          {testimonials.map((testimonial, index) => (
+            <div
+              key={index}
+              className="relative rounded-xl overflow-hidden border-b-4 border-primary shadow-lg hover:shadow-xl transition-shadow duration-300"
+              style={{
+                backgroundImage: `url(${testimonial.bg})`,
+                backgroundSize: "cover",
+                backgroundPosition: "center",
+                backgroundRepeat: "no-repeat",
+                aspectRatio: "3/2",
+              }}
+            >
+              <div className="absolute inset-0 bg-linear-to-b from-black/70 to-black/90 flex flex-col p-6 items-center justify-center">
+                <img
+                  src={testimonial.image}
+                  alt={testimonial.name}
+                  className="w-16 h-16 sm:w-20 sm:h-20 rounded-full border-4 border-primary object-cover shadow-lg mb-4"
+                />
+                <div className="text-center">
+                  <div className="flex flex-col sm:flex-row items-center justify-center gap-2 text-base font-bold text-white mb-3">
+                    <span>{testimonial.name}</span>
+                    <span className="text-sm font-normal text-muted-foreground">
+                      {testimonial.role}
+                    </span>
+                  </div>
+                  <p className="text-sm text-white leading-relaxed text-center">
+                    {testimonial.quote}
+                  </p>
                 </div>
               </div>
-              <p className="text-sm text-gray-200 leading-relaxed text-center">
-                {testimonial.quote}
-              </p>
             </div>
-          </div>
-        ))}
+          ))}
+        </div>
       </div>
     </section>
   );

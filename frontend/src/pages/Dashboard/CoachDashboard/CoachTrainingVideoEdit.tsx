@@ -17,7 +17,6 @@ interface TrainingVideo {
 }
 
 export default function CoachTrainingVideoEdit() {
-
   const { id } = useParams<{ id: string }>();
   const navigate = useNavigate();
   
@@ -68,21 +67,21 @@ export default function CoachTrainingVideoEdit() {
   };
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
-  const target = e.target;
-  
-  if (target.type === 'checkbox') {
-    const checkbox = target as HTMLInputElement;
-    setFormData(prev => ({ 
-      ...prev, 
-      [target.name]: checkbox.checked 
-    }));
-  } else {
-    setFormData(prev => ({ 
-      ...prev, 
-      [target.name]: target.value 
-    }));
-  }
-};
+    const target = e.target;
+    
+    if (target.type === 'checkbox') {
+      const checkbox = target as HTMLInputElement;
+      setFormData(prev => ({ 
+        ...prev, 
+        [target.name]: checkbox.checked 
+      }));
+    } else {
+      setFormData(prev => ({ 
+        ...prev, 
+        [target.name]: target.value 
+      }));
+    }
+  };
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -121,29 +120,29 @@ export default function CoachTrainingVideoEdit() {
   if (loading) {
     return (
       <div className="flex justify-center items-center h-64">
-        <div className="animate-spin rounded-full h-10 w-10 border-b-2 border-red-600"></div>
+        <div className="animate-spin rounded-full h-10 w-10 border-b-2 border-primary"></div>
       </div>
     );
   }
 
   return (
     <div className="space-y-6">
-      <div className="flex justify-between items-center">
-        <h1 className="text-2xl font-bold">ویرایش ویدیوی آموزشی</h1>
+      <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
+        <h1 className="text-xl sm:text-2xl font-bold text-foreground">ویرایش ویدیوی آموزشی</h1>
         <button
           onClick={() => navigate('/dashboard/coach/videos')}
-          className="text-gray-600 hover:text-gray-800"
+          className="text-muted-foreground hover:text-foreground"
         >
           انصراف
         </button>
       </div>
 
-      <form onSubmit={handleSubmit} className="bg-white p-6 rounded-xl shadow">
+      <form onSubmit={handleSubmit} className="bg-card p-4 sm:p-6 rounded-xl shadow border border-border">
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
           {/* Basic Info */}
           <div className="space-y-4">
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">
+              <label className="block text-sm font-medium text-foreground mb-1">
                 عنوان ویدیو *
               </label>
               <input
@@ -151,13 +150,13 @@ export default function CoachTrainingVideoEdit() {
                 name="title"
                 value={formData.title}
                 onChange={handleInputChange}
-                className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-red-500 focus:border-red-500"
+                className="w-full px-3 py-2 border border-border rounded-lg focus:ring-2 focus:ring-primary bg-background text-foreground"
                 placeholder="مثلاً: تمرین پرس سینه"
               />
             </div>
 
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">
+              <label className="block text-sm font-medium text-foreground mb-1">
                 توضیحات
               </label>
               <textarea
@@ -165,13 +164,13 @@ export default function CoachTrainingVideoEdit() {
                 value={formData.description}
                 onChange={handleInputChange}
                 rows={4}
-                className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-red-500 focus:border-red-500"
+                className="w-full px-3 py-2 border border-border rounded-lg focus:ring-2 focus:ring-primary bg-background text-foreground"
                 placeholder="توضیحات اختیاری برای ویدیو..."
               />
             </div>
 
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">
+              <label className="block text-sm font-medium text-foreground mb-1">
                 URL ویدیو *
               </label>
               <input
@@ -179,16 +178,16 @@ export default function CoachTrainingVideoEdit() {
                 name="videoUrl"
                 value={formData.videoUrl}
                 onChange={handleInputChange}
-                className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-red-500 focus:border-red-500"
+                className="w-full px-3 py-2 border border-border rounded-lg focus:ring-2 focus:ring-primary bg-background text-foreground"
                 placeholder="https://example.com/video.mp4"
               />
-              <p className="text-xs text-gray-500 mt-1">
+              <p className="text-xs text-muted-foreground mt-1">
                 لینک مستقیم به فایل ویدیو (MP4, WebM, یا YouTube)
               </p>
             </div>
 
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">
+              <label className="block text-sm font-medium text-foreground mb-1">
                 URL تصویر بندانگشتی
               </label>
               <input
@@ -196,7 +195,7 @@ export default function CoachTrainingVideoEdit() {
                 name="thumbnail"
                 value={formData.thumbnail}
                 onChange={handleInputChange}
-                className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-red-500 focus:border-red-500"
+                className="w-full px-3 py-2 border border-border rounded-lg focus:ring-2 focus:ring-primary bg-background text-foreground"
                 placeholder="https://example.com/thumbnail.jpg"
               />
             </div>
@@ -205,7 +204,7 @@ export default function CoachTrainingVideoEdit() {
           {/* Settings */}
           <div className="space-y-4">
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">
+              <label className="block text-sm font-medium text-foreground mb-1">
                 مدت زمان (ثانیه)
               </label>
               <input
@@ -214,20 +213,20 @@ export default function CoachTrainingVideoEdit() {
                 value={formData.duration}
                 onChange={handleInputChange}
                 min="0"
-                className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-red-500 focus:border-red-500"
+                className="w-full px-3 py-2 border border-border rounded-lg focus:ring-2 focus:ring-primary bg-background text-foreground"
                 placeholder="300"
               />
             </div>
 
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">
+              <label className="block text-sm font-medium text-foreground mb-1">
                 دسته‌بندی
               </label>
               <select
                 name="category"
                 value={formData.category}
                 onChange={handleInputChange}
-                className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-red-500 focus:border-red-500"
+                className="w-full px-3 py-2 border border-border rounded-lg focus:ring-2 focus:ring-primary bg-background text-foreground"
               >
                 {getCategoryOptions().map(option => (
                   <option key={option.value} value={option.value}>
@@ -238,14 +237,14 @@ export default function CoachTrainingVideoEdit() {
             </div>
 
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">
+              <label className="block text-sm font-medium text-foreground mb-1">
                 سطح دسترسی *
               </label>
               <select
                 name="accessLevel"
                 value={formData.accessLevel}
                 onChange={handleInputChange}
-                className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-red-500 focus:border-red-500"
+                className="w-full px-3 py-2 border border-border rounded-lg focus:ring-2 focus:ring-primary bg-background text-foreground"
               >
                 {getAccessLevelOptions().map(option => (
                   <option key={option.value} value={option.value}>
@@ -253,7 +252,7 @@ export default function CoachTrainingVideoEdit() {
                   </option>
                 ))}
               </select>
-              <p className="text-xs text-gray-500 mt-1">
+              <p className="text-xs text-muted-foreground mt-1">
                 تعیین کنید چه کاربرانی می‌توانند این ویدیو را ببینند
               </p>
             </div>
@@ -265,29 +264,29 @@ export default function CoachTrainingVideoEdit() {
                   name="isActive"
                   checked={formData.isActive}
                   onChange={handleInputChange}
-                  className="rounded border-gray-300 text-red-600 focus:ring-red-500"
+                  className="rounded border-border text-primary"
                 />
-                <span className="mr-2 text-sm text-gray-700">فعال باشد</span>
+                <span className="mr-2 text-sm text-foreground">فعال باشد</span>
               </label>
-              <p className="text-xs text-gray-500 mt-1">
+              <p className="text-xs text-muted-foreground mt-1">
                 اگر غیرفعال باشد، کاربران نمی‌توانند آن را ببینند
               </p>
             </div>
           </div>
         </div>
 
-        <div className="mt-8 flex justify-end gap-3">
+        <div className="mt-8 flex flex-col sm:flex-row justify-end gap-3">
           <button
             type="button"
             onClick={() => navigate('/dashboard/coach/videos')}
-            className="bg-gray-200 text-gray-800 px-6 py-2 rounded-lg font-medium hover:bg-gray-300"
+            className="bg-secondary text-secondary-foreground px-6 py-2 rounded-lg font-medium hover:bg-secondary/80"
           >
             انصراف
           </button>
           <button
             type="submit"
             disabled={submitting}
-            className="bg-red-600 hover:bg-red-700 text-white px-6 py-2 rounded-lg font-medium transition-colors disabled:opacity-50"
+            className="bg-primary hover:bg-primary/80 text-primary-foreground px-6 py-2 rounded-lg font-medium transition-colors disabled:opacity-50"
           >
             {submitting ? 'در حال به‌روزرسانی...' : 'به‌روزرسانی ویدیو'}
           </button>

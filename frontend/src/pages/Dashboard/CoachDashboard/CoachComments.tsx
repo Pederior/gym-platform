@@ -76,48 +76,48 @@ export default function CoachComments() {
 
   return (
     <div>
-      <h1 className="text-2xl font-bold mb-6">کامنت‌های مقالات من</h1>
+      <h1 className="text-xl sm:text-2xl font-bold text-foreground mb-6">کامنت‌های مقالات من</h1>
 
       {loading ? (
-        <div className="py-8 text-center">در حال بارگذاری...</div>
+        <div className="py-8 text-center text-muted-foreground">در حال بارگذاری...</div>
       ) : comments.length === 0 ? (
         <Card>
           <div className="text-center py-8">
-            <div className="text-4xl mb-4">💬</div>
-            <h3 className="font-bold text-gray-800 mb-2">کامنتی وجود ندارد</h3>
-            <p className="text-gray-600">برای مقالات شما کامنتی ثبت نشده است</p>
+            <div className="text-4xl mb-4 text-muted-foreground">💬</div>
+            <h3 className="font-bold text-foreground mb-2">کامنتی وجود ندارد</h3>
+            <p className="text-muted-foreground">برای مقالات شما کامنتی ثبت نشده است</p>
           </div>
         </Card>
       ) : (
         <div className="space-y-4">
           {comments.map(comment => (
             <Card key={comment._id} className="p-4 hover:shadow-md transition-shadow">
-              <div className="flex justify-between items-start mb-3">
+              <div className="flex flex-col sm:flex-row justify-between items-start gap-3 mb-3">
                 <div>
-                  <div className="font-bold text-gray-800">{comment.author.name}</div>
-                  <div className="text-sm text-gray-600">{comment.author.email}</div>
+                  <div className="font-bold text-foreground">{comment.author.name}</div>
+                  <div className="text-sm text-muted-foreground">{comment.author.email}</div>
+                </div>
+                <div className="text-right text-sm text-muted-foreground whitespace-nowrap">
+                  {new Date(comment.createdAt).toLocaleDateString('fa-IR')}
                 </div>
               </div>
               
               <div className="mb-3">
-                <p className="text-gray-700 whitespace-pre-wrap">{comment.content}</p>
+                <p className="text-muted-foreground whitespace-pre-wrap">{comment.content}</p>
               </div>
               
               {/* Parent comment (if reply) */}
               {comment.parent && (
-                <div className="bg-gray-50 p-3 rounded-lg mb-3">
-                  <div className="text-sm text-gray-600">
+                <div className="bg-muted p-3 rounded-lg mb-3">
+                  <div className="text-sm text-muted-foreground">
                     <strong>پاسخ به:</strong> {comment.parent.author.name}
                   </div>
-                  <p className="text-gray-700 text-sm mt-1">{comment.parent.content}</p>
+                  <p className="text-muted-foreground text-sm mt-1">{comment.parent.content}</p>
                 </div>
               )}
               
-              <div className="text-sm text-gray-500 mb-3">
-                <div className="flex justify-between">
-                  <span>مقاله: {comment.article.title}</span>
-                  <span>{new Date(comment.createdAt).toLocaleDateString('fa-IR')}</span>
-                </div>
+              <div className="text-sm text-muted-foreground mb-3">
+                <span>مقاله: {comment.article.title}</span>
                 <div className="mt-1">
                   لایک‌ها: {comment.likes}
                 </div>
@@ -126,13 +126,13 @@ export default function CoachComments() {
               <div className="flex gap-3">
                 <button
                   onClick={() => openReplyModal(comment)}
-                  className="text-blue-600 hover:text-blue-800"
+                  className="text-primary hover:text-primary/80"
                 >
                   پاسخ دادن
                 </button>
                 <button
                   onClick={() => handleDelete(comment._id)}
-                  className="text-red-600 hover:text-red-800"
+                  className="text-destructive hover:text-destructive/80"
                 >
                   حذف
                 </button>
@@ -144,49 +144,49 @@ export default function CoachComments() {
 
       {/* Reply Modal */}
       {replyModal.isOpen && replyModal.comment && (
-        <div className="fixed inset-0 bg-black/50 bg-opacity-50 flex items-center justify-center z-50 p-4">
-          <div className="bg-white rounded-lg w-full max-w-2xl">
-            <div className="p-4 border-b">
-              <h2 className="text-lg font-bold">پاسخ به کامنت</h2>
-              <p className="text-sm text-gray-600 mt-1">
+        <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4">
+          <div className="bg-card rounded-lg w-full max-w-2xl border border-border">
+            <div className="p-4 border-b border-border">
+              <h2 className="text-lg font-bold text-foreground">پاسخ به کامنت</h2>
+              <p className="text-sm text-muted-foreground mt-1">
                 مقاله: {replyModal.comment.article.title}
               </p>
             </div>
             
             <div className="p-4 space-y-4">
               {/* Original comment */}
-              <div className="bg-gray-50 p-3 rounded-lg">
-                <div className="font-bold text-gray-800 mb-1">
+              <div className="bg-muted p-3 rounded-lg">
+                <div className="font-bold text-foreground mb-1">
                   {replyModal.comment.author.name}
                 </div>
-                <p className="text-gray-700">{replyModal.comment.content}</p>
+                <p className="text-muted-foreground">{replyModal.comment.content}</p>
               </div>
               
               {/* Reply form */}
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">
+                <label className="block text-sm font-medium text-foreground mb-1">
                   پاسخ شما
                 </label>
                 <textarea
                   value={replyContent}
                   onChange={(e) => setReplyContent(e.target.value)}
                   rows={4}
-                  className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-red-500"
+                  className="w-full px-3 py-2 border border-border rounded-lg focus:ring-2 focus:ring-primary bg-background text-foreground"
                   placeholder="پاسخ خود را بنویسید..."
                 />
               </div>
               
-              <div className="flex gap-3 pt-2">
+              <div className="flex flex-col sm:flex-row gap-3 pt-2">
                 <button
                   onClick={handleReply}
                   disabled={!replyContent.trim()}
-                  className="bg-red-600 text-white px-4 py-2 rounded-lg hover:bg-red-700 disabled:opacity-50"
+                  className="bg-primary text-primary-foreground px-4 py-2 rounded-lg hover:bg-primary/80 disabled:opacity-50"
                 >
                   ارسال پاسخ
                 </button>
                 <button
                   onClick={closeReplyModal}
-                  className="bg-gray-200 text-gray-800 px-4 py-2 rounded-lg hover:bg-gray-300"
+                  className="bg-secondary text-secondary-foreground px-4 py-2 rounded-lg hover:bg-secondary/80"
                 >
                   انصراف
                 </button>

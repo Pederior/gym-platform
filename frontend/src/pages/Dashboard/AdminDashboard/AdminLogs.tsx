@@ -51,14 +51,14 @@ const actionLabels: Record<string, string> = {
 };
 
 const actionColors: Record<string, string> = {
-  login: 'bg-green-100 text-green-800',
-  logout: 'bg-gray-100 text-gray-800',
-  register: 'bg-blue-100 text-blue-800',
-  create_subscription: 'bg-purple-100 text-purple-800',
-  payment_success: 'bg-green-100 text-green-800',
-  payment_failed: 'bg-red-100 text-red-800',
-  create_ticket: 'bg-yellow-100 text-yellow-800',
-  complete_workout: 'bg-emerald-100 text-emerald-800'
+  login: 'bg-green-500/10 text-green-500',
+  logout: 'bg-muted/50 text-muted-foreground',
+  register: 'bg-primary/10 text-primary',
+  create_subscription: 'bg-accent/10 text-accent',
+  payment_success: 'bg-green-500/10 text-green-500',
+  payment_failed: 'bg-destructive/10 text-destructive',
+  create_ticket: 'bg-yellow-500/10 text-yellow-500',
+  complete_workout: 'bg-emerald-500/10 text-emerald-500'
 };
 
 export default function AdminLogs() {
@@ -114,7 +114,7 @@ export default function AdminLogs() {
 
   const getActionBadge = (action: string) => {
     const label = actionLabels[action] || action;
-    const color = actionColors[action] || 'bg-gray-100 text-gray-800';
+    const color = actionColors[action] || 'bg-muted/50 text-muted-foreground';
     return (
       <span className={`px-2 py-1 rounded-full text-xs font-medium ${color}`}>
         {label}
@@ -124,33 +124,33 @@ export default function AdminLogs() {
 
   const getUserRoleBadge = (role: string) => {
     const config: Record<string, { label: string; color: string }> = {
-      admin: { label: 'مدیر', color: 'bg-red-100 text-red-800' },
-      coach: { label: 'مربی', color: 'bg-blue-100 text-blue-800' },
-      user: { label: 'کاربر', color: 'bg-gray-100 text-gray-800' }
+      admin: { label: 'مدیر', color: 'bg-destructive/10 text-destructive' },
+      coach: { label: 'مربی', color: 'bg-primary/10 text-primary' },
+      user: { label: 'کاربر', color: 'bg-muted/50 text-muted-foreground' }
     };
     const { label, color } = config[role] || config.user;
-    return <span className={`px-1 py-0.5 rounded text-xs ${color}`}>{label}</span>;
+    return <span className={`px-1 py-0.5 rounded text-xs font-medium ${color}`}>{label}</span>;
   };
 
   if (loading) {
-    return <div className="p-8 text-center">در حال بارگذاری...</div>;
+    return <div className="p-4 sm:p-8 text-center text-muted-foreground">در حال بارگذاری...</div>;
   }
 
   return (
     <div>
-      <div className="flex justify-between items-center mb-6">
-        <h1 className="text-2xl font-bold">لاگ‌ها و امنیت</h1>
+      <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-6 gap-4">
+        <h1 className="text-xl sm:text-2xl font-bold text-foreground">لاگ‌ها و امنیت</h1>
       </div>
 
       {/* Filters */}
       <Card className="mb-6 p-4">
-        <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">عملیات</label>
+            <label className="block text-sm font-medium text-foreground mb-1">عملیات</label>
             <select
               value={filters.action}
               onChange={(e) => handleFilterChange('action', e.target.value)}
-              className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-red-500"
+              className="w-full px-3 py-2 border border-border rounded-lg focus:ring-2 focus:ring-primary bg-background text-foreground"
             >
               <option value="">همه عملیات</option>
               {Object.entries(actionLabels).map(([key, label]) => (
@@ -160,33 +160,33 @@ export default function AdminLogs() {
           </div>
           
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">کاربر</label>
+            <label className="block text-sm font-medium text-foreground mb-1">کاربر</label>
             <input
               type="text"
               value={filters.userId}
               onChange={(e) => handleFilterChange('userId', e.target.value)}
               placeholder="ID کاربر"
-              className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-red-500"
+              className="w-full px-3 py-2 border border-border rounded-lg focus:ring-2 focus:ring-primary bg-background text-foreground"
             />
           </div>
           
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">از تاریخ</label>
+            <label className="block text-sm font-medium text-foreground mb-1">از تاریخ</label>
             <input
               type="date"
               value={filters.startDate}
               onChange={(e) => handleFilterChange('startDate', e.target.value)}
-              className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-red-500"
+              className="w-full px-3 py-2 border border-border rounded-lg focus:ring-2 focus:ring-primary bg-background text-foreground"
             />
           </div>
           
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">تا تاریخ</label>
+            <label className="block text-sm font-medium text-foreground mb-1">تا تاریخ</label>
             <input
               type="date"
               value={filters.endDate}
               onChange={(e) => handleFilterChange('endDate', e.target.value)}
-              className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-red-500"
+              className="w-full px-3 py-2 border border-border rounded-lg focus:ring-2 focus:ring-primary bg-background text-foreground"
             />
           </div>
         </div>
@@ -195,39 +195,39 @@ export default function AdminLogs() {
       {/* Logs Table */}
       <Card>
         <div className="overflow-x-auto">
-          <table className="w-full">
+          <table className="w-full min-w-full">
             <thead>
-              <tr className="text-right text-sm text-gray-500 border-b">
-                <th className="pb-3">کاربر</th>
-                <th className="pb-3">عملیات</th>
-                <th className="pb-3">توضیحات</th>
-                <th className="pb-3">IP</th>
-                <th className="pb-3">تاریخ</th>
+              <tr className="text-right text-sm text-muted-foreground border-b border-border">
+                <th className="py-3 px-2">کاربر</th>
+                <th className="py-3 px-2">عملیات</th>
+                <th className="py-3 px-2">توضیحات</th>
+                <th className="py-3 px-2">IP</th>
+                <th className="py-3 px-2">تاریخ</th>
               </tr>
             </thead>
             <tbody>
               {logs.map(log => (
-                <tr key={log._id} className="border-b hover:bg-gray-50">
-                  <td>
-                    <div className="font-medium">{log.user.name}</div>
-                    <div className="text-xs text-gray-500 flex items-center gap-1">
+                <tr key={log._id} className="border-b border-border hover:bg-muted">
+                  <td className="py-3 px-2">
+                    <div className="font-medium text-foreground">{log.user.name}</div>
+                    <div className="text-xs text-muted-foreground flex items-center gap-1">
                       {log.user.email}
                       {getUserRoleBadge(log.user.role)}
                     </div>
                   </td>
-                  <td>{getActionBadge(log.action)}</td>
-                  <td className="max-w-xs truncate">
+                  <td className="py-3 px-2">{getActionBadge(log.action)}</td>
+                  <td className="py-3 px-2 max-w-xs truncate text-muted-foreground">
                     {log.description || '-'}
                   </td>
-                  <td className="text-xs">
+                  <td className="py-3 px-2 text-xs text-muted-foreground">
                     {log.ip || '-'}
                     {log.userAgent && (
-                      <div className="text-gray-400 mt-1 truncate" title={log.userAgent}>
+                      <div className="mt-1 truncate" title={log.userAgent}>
                         {log.userAgent.substring(0, 30)}...
                       </div>
                     )}
                   </td>
-                  <td>{new Date(log.timestamp).toLocaleString('fa-IR')}</td>
+                  <td className="py-3 px-2 text-muted-foreground">{new Date(log.timestamp).toLocaleString('fa-IR')}</td>
                 </tr>
               ))}
             </tbody>
@@ -236,15 +236,15 @@ export default function AdminLogs() {
 
         {/* Pagination */}
         {pagination.pages > 1 && (
-          <div className="flex justify-center mt-4 space-x-2 space-x-reverse">
+          <div className="flex justify-center mt-4 space-x-1 space-x-reverse">
             {Array.from({ length: pagination.pages }, (_, i) => i + 1).map(page => (
               <button
                 key={page}
                 onClick={() => handlePageChange(page)}
-                className={`px-3 py-1 rounded ${
+                className={`px-3 py-1 rounded text-sm ${
                   page === pagination.page
-                    ? 'bg-red-600 text-white'
-                    : 'bg-gray-200 text-gray-700 hover:bg-gray-300'
+                    ? 'bg-primary text-primary-foreground'
+                    : 'bg-secondary text-secondary-foreground hover:bg-secondary/80'
                 }`}
               >
                 {page}

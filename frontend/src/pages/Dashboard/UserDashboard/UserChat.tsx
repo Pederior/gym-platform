@@ -20,8 +20,8 @@ interface Message {
 }
 
 export default function UserChat() {
-    useDocumentTitle('چت با مربی');
-  
+  useDocumentTitle('چت با مربی');
+
   const { socket, isConnected } = useSocket();
   const { user: currentUser } = useAppSelector((state) => state.auth);
 
@@ -32,11 +32,10 @@ export default function UserChat() {
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const [loading, setLoading] = useState(true);
 
-  // ✅ فقط یک بار لود می‌شه
   const loadInitialData = useCallback(async () => {
     try {
       const [coachesRes, messagesRes] = await Promise.all([
-        api.get("/chat/coaches"), // ✅ لیست مربیان
+        api.get("/chat/coaches"),
         selectedCoach
           ? api.get(`/chat/${selectedCoach._id}`)
           : Promise.resolve({ data: { messages: [] } }),
@@ -46,7 +45,6 @@ export default function UserChat() {
       if (coachesRes.data.coaches.length > 0 && !selectedCoach) {
         const firstCoach = coachesRes.data.coaches[0];
         setSelectedCoach(firstCoach);
-        // بارگذاری پیام‌ها برای اولین مربی
         const msgs = await api.get(`/chat/${firstCoach._id}`);
         setMessages(msgs.data.messages);
       }
@@ -60,12 +58,10 @@ export default function UserChat() {
     }
   }, [selectedCoach]);
 
-  // ✅ فقط یک بار در ابتدا اجرا می‌شه
   useEffect(() => {
     loadInitialData();
   }, [loadInitialData]);
 
-  // ✅ تغییر مربی از طریق event handler
   const handleSelectCoach = async (coach: Coach) => {
     setSelectedCoach(coach);
     try {
@@ -76,19 +72,16 @@ export default function UserChat() {
     }
   };
 
-  // مدیریت eventهای socket
   useEffect(() => {
     if (!socket || !isConnected) return;
 
     const handleReceiveMessage = (message: Message) => {
-      // فقط پیام‌های مربی رو نشون بده
       if (message.sender === "coach") {
         setMessages((prev) => [...prev, message]);
       }
     };
 
     const handleMessageSent = (message: Message) => {
-      // پیام‌های ارسالی کاربر
       if (message.sender === "user") {
         setMessages((prev) => [...prev, message]);
       }
@@ -131,18 +124,18 @@ export default function UserChat() {
   };
 
   if (loading) {
-    return <div className="p-8">در حال بارگذاری...</div>;
+    return <div className="p-4 sm:p-8 text-center text-muted-foreground">در حال بارگذاری...</div>;
   }
 
   return (
     <div>
-      <h1 className="text-2xl font-bold mb-6">چت با مربی</h1>
+      <h1 className="text-xl sm:text-2xl font-bold text-foreground mb-6">چت با مربی</h1>
 
-      <div className="flex gap-6">
+      <div className="flex flex-col lg:flex-row gap-6">
         {/* لیست مربی‌ها */}
-        <div className="w-1/3">
+        <div className="lg:w-1/3">
           <Card>
-            <h2 className="font-bold mb-4">مربی‌ها</h2>
+            <h2 className="font-bold text-foreground mb-4">مربی‌ها</h2>
             <div className="space-y-2 max-h-96 overflow-y-auto">
               {coaches.map((coach) => (
                 <button
@@ -150,8 +143,8 @@ export default function UserChat() {
                   onClick={() => handleSelectCoach(coach)}
                   className={`w-full text-right p-3 rounded-lg transition ${
                     selectedCoach?._id === coach._id
-                      ? "bg-red-100 text-red-800"
-                      : "hover:bg-gray-100"
+                      ? "bg-primary/10 text-primary"
+                      : "hover:bg-muted"
                   }`}
                 >
                   {coach.name}
@@ -165,8 +158,8 @@ export default function UserChat() {
         <div className="flex-1">
           {selectedCoach ? (
             <Card>
-              <div className="border-b pb-3 mb-4">
-                <h2 className="font-bold">چت با {selectedCoach.name}</h2>
+              <div className="border-b border-border pb-3 mb-4">
+                <h2 className="font-bold text-foreground">چت با {selectedCoach.name}</h2>
               </div>
 
               <div className="h-96 overflow-y-auto mb-4 pl-2.5">
@@ -175,19 +168,19 @@ export default function UserChat() {
                     key={message._id}
                     className={`mb-3 ${
                       message.sender === "user" ? "text-right" : "text-left"
-                    }`}
+                    }` }
                   >
                     <div
-                      className={`inline-block p-3 rounded-lg max-w-xs  ${
+                      className={`inline-block p-3 rounded-lg max-w-xs ${
                         message.sender === "user"
-                          ? "bg-blue-100 text-blue-800"
-                          : "bg-gray-100 text-gray-800"
+                          ? "bg-primary/10 text-primary"
+                          : "bg-muted text-foreground"
                       }`}
                     >
                       {message.content}
                     </div>
                     <div
-                      className={`text-xs text-gray-500 mt-1 ${
+                      className={`text-xs text-muted-foreground mt-1 ${
                         message.sender === "user" ? "text-right" : "text-left"
                       }`}
                     >
@@ -205,12 +198,12 @@ export default function UserChat() {
                   onChange={(e) => setNewMessage(e.target.value)}
                   onKeyPress={(e) => e.key === "Enter" && handleSendMessage()}
                   placeholder="پیام خود را بنویسید..."
-                  className="flex-1 px-3 py-2 border rounded-lg focus:ring-2 focus:ring-red-500"
+                  className="flex-1 px-3 py-2 border border-border rounded-lg focus:ring-2 focus:ring-primary bg-background text-foreground"
                 />
                 <button
                   onClick={handleSendMessage}
                   disabled={!newMessage.trim() || !isConnected}
-                  className="bg-red-600 text-white px-4 py-2 rounded-lg hover:bg-red-700 disabled:opacity-50"
+                  className="bg-primary text-primary-foreground px-4 py-2 rounded-lg hover:bg-primary/80 disabled:opacity-50"
                 >
                   ارسال
                 </button>
@@ -218,7 +211,7 @@ export default function UserChat() {
             </Card>
           ) : (
             <Card>
-              <div className="text-center py-12 text-gray-500">
+              <div className="text-center py-12 text-muted-foreground">
                 لطفاً یک مربی را از لیست انتخاب کنید
               </div>
             </Card>

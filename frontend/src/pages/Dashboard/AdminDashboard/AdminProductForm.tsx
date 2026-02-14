@@ -125,32 +125,32 @@ export default function AdminProductForm() {
   if (loading) {
     return (
       <div className="flex justify-center items-center h-64">
-        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-red-500"></div>
+        <div className="animate-spin rounded-full h-10 w-10 border-b-2 border-primary"></div>
       </div>
     );
   }
 
   return (
     <div className="max-w-4xl mx-auto">
-      <div className="mb-6 flex items-center justify-between">
-        <h1 className="text-2xl font-bold text-gray-800">
+      <div className="mb-6 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
+        <h1 className="text-xl sm:text-2xl font-bold text-foreground">
           {isEdit ? 'ویرایش محصول' : 'افزودن محصول جدید'}
         </h1>
         <button
           onClick={() => navigate('/dashboard/admin/products')}
-          className="text-gray-600 hover:text-gray-800 transition flex items-center gap-2"
+          className="text-muted-foreground hover:text-foreground transition flex items-center gap-2 cursor-pointer"
         >
-          <FaArrowRight className="rotate-180" />
           بازگشت به لیست
+          <FaArrowRight className="rotate-180" />
         </button>
       </div>
 
-      <div className="bg-white rounded-lg shadow-sm p-6">
+      <div className="bg-card rounded-lg shadow-sm p-4 sm:p-6">
         <form onSubmit={handleSubmit} className="space-y-6">
           {/* Basic Info */}
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">
+              <label className="block text-sm font-medium text-foreground mb-2">
                 نام محصول *
               </label>
               <input
@@ -158,13 +158,13 @@ export default function AdminProductForm() {
                 value={formData.name}
                 onChange={(e) => setFormData({ ...formData, name: e.target.value })}
                 required
-                className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-red-500 focus:border-transparent"
+                className="w-full px-3 sm:px-4 py-2 border border-border rounded-lg focus:ring-2 focus:ring-primary bg-background text-foreground"
                 placeholder="مثلاً: پروتئین وی"
               />
             </div>
 
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">
+              <label className="block text-sm font-medium text-foreground mb-2">
                 قیمت (تومان) *
               </label>
               <input
@@ -173,7 +173,7 @@ export default function AdminProductForm() {
                 onChange={(e) => setFormData({ ...formData, price: Number(e.target.value) })}
                 required
                 min="0"
-                className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-red-500 focus:border-transparent"
+                className="w-full px-3 sm:px-4 py-2 border border-border rounded-lg focus:ring-2 focus:ring-primary bg-background text-foreground"
                 placeholder="مثلاً: 500000"
               />
             </div>
@@ -182,14 +182,14 @@ export default function AdminProductForm() {
           {/* Type and Category */}
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">
+              <label className="block text-sm font-medium text-foreground mb-2">
                 نوع محصول *
               </label>
               <select
                 value={formData.type}
                 onChange={(e) => setFormData({ ...formData, type: e.target.value as ProductType })}
                 required
-                className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-red-500 focus:border-transparent"
+                className="w-full px-3 sm:px-4 py-2 border border-border rounded-lg focus:ring-2 focus:ring-primary bg-background text-foreground"
               >
                 <option value="supplement">مکمل</option>
                 <option value="clothing">پوشاک</option>
@@ -199,7 +199,7 @@ export default function AdminProductForm() {
             </div>
 
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">
+              <label className="block text-sm font-medium text-foreground mb-2">
                 دسته‌بندی *
               </label>
               <input
@@ -207,7 +207,7 @@ export default function AdminProductForm() {
                 value={formData.category}
                 onChange={(e) => setFormData({ ...formData, category: e.target.value })}
                 required
-                className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-red-500 focus:border-transparent"
+                className="w-full px-3 sm:px-4 py-2 border border-border rounded-lg focus:ring-2 focus:ring-primary bg-background text-foreground"
                 placeholder="مثلاً: پروتئین‌ها"
               />
             </div>
@@ -215,7 +215,7 @@ export default function AdminProductForm() {
 
           {/* Description */}
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-2">
+            <label className="block text-sm font-medium text-foreground mb-2">
               توضیحات *
             </label>
             <textarea
@@ -223,23 +223,23 @@ export default function AdminProductForm() {
               onChange={(e) => setFormData({ ...formData, description: e.target.value })}
               required
               rows={4}
-              className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-red-500 focus:border-transparent"
+              className="w-full px-3 sm:px-4 py-2 border border-border rounded-lg focus:ring-2 focus:ring-primary bg-background text-foreground"
               placeholder="توضیحات کامل محصول..."
             />
           </div>
 
           {/* Image Upload */}
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-2">
+            <label className="block text-sm font-medium text-foreground mb-2">
               تصویر محصول
             </label>
-            <div className="border-2 border-dashed border-gray-300 rounded-lg p-6 text-center">
+            <div className="border-2 border-dashed border-border rounded-lg p-4 sm:p-6 text-center">
               {previewImage ? (
                 <div className="space-y-4">
                   <img
                     src={previewImage}
                     alt="Preview"
-                    className="mx-auto max-h-64 rounded-lg"
+                    className="mx-auto max-h-48 sm:max-h-64 rounded-lg"
                   />
                   <div>
                     <input
@@ -251,7 +251,7 @@ export default function AdminProductForm() {
                     />
                     <label
                       htmlFor="image-upload"
-                      className="inline-block px-4 py-2 bg-red-500 text-white rounded-lg hover:bg-red-600 cursor-pointer transition"
+                      className="inline-block px-3 sm:px-4 py-2 bg-primary text-primary-foreground rounded-lg hover:bg-primary/80 cursor-pointer transition"
                     >
                       تغییر تصویر
                     </label>
@@ -270,11 +270,11 @@ export default function AdminProductForm() {
                     htmlFor="image-upload"
                     className="cursor-pointer flex flex-col items-center justify-center"
                   >
-                    <div className="w-16 h-16 bg-red-100 rounded-full flex items-center justify-center mb-3">
-                      <span className="text-red-600 text-3xl">+</span>
+                    <div className="w-12 h-12 sm:w-16 sm:h-16 bg-primary/10 rounded-full flex items-center justify-center mb-2 sm:mb-3">
+                      <span className="text-primary text-2xl sm:text-3xl">+</span>
                     </div>
-                    <p className="text-gray-600 mb-2">کلیک کنید یا فایل را اینجا بکشید</p>
-                    <p className="text-sm text-gray-500">PNG, JPG, GIF (حداکثر 5MB)</p>
+                    <p className="text-muted-foreground mb-1 sm:mb-2">کلیک کنید یا فایل را اینجا بکشید</p>
+                    <p className="text-xs text-muted-foreground">PNG, JPG, GIF (حداکثر 5MB)</p>
                   </label>
                 </div>
               )}
@@ -283,26 +283,26 @@ export default function AdminProductForm() {
 
           {/* Compatible Plans */}
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-2">
+            <label className="block text-sm font-medium text-foreground mb-2">
               پلن‌های سازگار
             </label>
-            <div className="grid grid-cols-2 md:grid-cols-3 gap-3">
+            <div className="grid grid-cols-2 md:grid-cols-3 gap-2 sm:gap-3">
               {(['bronze', 'silver', 'gold'] as PlanType[]).map((plan) => (
                 <label
                   key={plan}
-                  className={`flex items-center gap-2 p-3 border rounded-lg cursor-pointer transition ${
+                  className={`flex items-center gap-2 p-2 sm:p-3 border rounded-lg cursor-pointer transition ${
                     formData.compatiblePlans?.includes(plan)
-                      ? 'border-red-500 bg-red-50'
-                      : 'border-gray-300 hover:border-red-300'
+                      ? 'border-primary bg-primary/10'
+                      : 'border-border hover:border-primary/50'
                   }`}
                 >
                   <input
                     type="checkbox"
                     checked={formData.compatiblePlans?.includes(plan)}
                     onChange={() => handlePlanToggle(plan)}
-                    className="w-4 h-4 text-red-500 rounded focus:ring-red-500"
+                    className="w-3 h-3 sm:w-4 sm:h-4 text-primary rounded focus:ring-primary"
                   />
-                  <span className="capitalize font-medium">
+                  <span className="capitalize font-medium text-sm sm:text-base">
                     {plan === 'bronze' ? 'برنز' : plan === 'silver' ? 'نقره‌ای' : 'طلایی'}
                   </span>
                 </label>
@@ -312,14 +312,14 @@ export default function AdminProductForm() {
 
           {/* Status */}
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-2">
+            <label className="block text-sm font-medium text-foreground mb-2">
               وضعیت *
             </label>
             <select
               value={formData.status}
               onChange={(e) => setFormData({ ...formData, status: e.target.value as ProductStatus })}
               required
-              className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-red-500 focus:border-transparent"
+              className="w-full px-3 sm:px-4 py-2 border border-border rounded-lg focus:ring-2 focus:ring-primary bg-background text-foreground"
             >
               <option value="active">فعال</option>
               <option value="inactive">غیرفعال</option>
@@ -328,18 +328,18 @@ export default function AdminProductForm() {
           </div>
 
           {/* Submit Button */}
-          <div className="pt-4 border-t border-gray-200">
+          <div className="pt-4 border-t border-border">
             <button
               type="submit"
               disabled={submitting}
-              className={`w-full bg-red-500 text-white px-6 py-3 rounded-lg hover:bg-red-600 transition flex items-center justify-center gap-2 ${
+              className={`w-full bg-primary text-primary-foreground px-4 sm:px-6 py-2 sm:py-3 rounded-lg hover:bg-primary/80 transition flex items-center justify-center gap-2 cursor-pointer ${
                 submitting ? 'opacity-75 cursor-not-allowed' : ''
               }`}
             >
               {submitting ? (
                 <>
-                  <span className="animate-spin">⏳</span>
-                  در حال ثبت...
+                  <span className="animate-spin text-sm">⏳</span>
+                  <span>در حال ثبت...</span>
                 </>
               ) : (
                 <>

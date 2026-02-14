@@ -94,23 +94,23 @@ export default function ProfileEdit() {
 
   return (
     <div className="max-w-2xl">
-      <h1 className="text-2xl font-bold mb-6">ویرایش پروفایل</h1>
+      <h1 className="text-2xl font-bold mb-6 text-foreground">ویرایش پروفایل</h1>
 
-      <div className="bg-white p-6 rounded-xl shadow">
+      <div className="bg-card p-6 rounded-xl shadow border border-border">
         <form onSubmit={handleSubmit} className="space-y-6">
           {/* Avatar */}
           <div className="flex flex-col items-center">
             <div className="relative">
-              <div className="w-24 h-24 rounded-xl bg-gray-200 border-2 border-dashed flex items-center justify-center overflow-hidden">
+              <div className="w-24 h-24 rounded-xl bg-muted border-2 border-dashed flex items-center justify-center overflow-hidden">
                 {avatarPreview ? (
                   <img src={avatarPreview} alt="Preview" className="w-full h-full object-cover" />
                 ) : user?.avatar ? (
                   <img src={user.avatar} alt="Current" className="w-full h-full object-cover" />
                 ) : (
-                  <span className="text-gray-500">آواتار</span>
+                  <span className="text-muted-foreground">آواتار</span>
                 )}
               </div>
-              <label className="absolute bottom-0 right-0 bg-blue-500 text-white px-1 pt-1 rounded-lg cursor-pointer">
+              <label className="absolute bottom-0 right-0 bg-primary text-primary-foreground px-1 pt-1 rounded-lg cursor-pointer">
                 ✎
                 <input
                   type="file"
@@ -125,7 +125,7 @@ export default function ProfileEdit() {
 
           {/* Name */}
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">
+            <label className="block text-sm font-medium text-muted-foreground mb-1">
               نام کامل
             </label>
             <input
@@ -133,14 +133,14 @@ export default function ProfileEdit() {
               name="name"
               value={formData.name}
               onChange={handleInputChange}
-              className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-red-500"
+              className="w-full px-3 py-2 border border-border rounded-lg focus:outline-none focus:ring-2 focus:ring-primary bg-background text-foreground"
               required
             />
           </div>
 
           {/* Email */}
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">
+            <label className="block text-sm font-medium text-muted-foreground mb-1">
               ایمیل
             </label>
             <input
@@ -148,14 +148,14 @@ export default function ProfileEdit() {
               name="email"
               value={formData.email}
               onChange={handleInputChange}
-              className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-red-500"
+              className="w-full px-3 py-2 border border-border rounded-lg focus:outline-none focus:ring-2 focus:ring-primary bg-background text-foreground"
               required
             />
           </div>
 
           {/* Password */}
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">
+            <label className="block text-sm font-medium text-muted-foreground mb-1">
               رمز عبور جدید (اختیاری)
             </label>
             <input
@@ -163,14 +163,14 @@ export default function ProfileEdit() {
               name="password"
               value={formData.password}
               onChange={handleInputChange}
-              className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-red-500"
+              className="w-full px-3 py-2 border border-border rounded-lg focus:outline-none focus:ring-2 focus:ring-primary bg-background text-foreground"
               placeholder="فقط اگر می‌خواهید تغییر دهید"
             />
           </div>
 
           {/* Confirm Password */}
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">
+            <label className="block text-sm font-medium text-muted-foreground mb-1">
               تکرار رمز عبور
             </label>
             <input
@@ -178,25 +178,24 @@ export default function ProfileEdit() {
               name="confirmPassword"
               value={formData.confirmPassword}
               onChange={handleInputChange}
-              className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-red-500"
+              className="w-full px-3 py-2 border border-border rounded-lg focus:outline-none focus:ring-2 focus:ring-primary bg-background text-foreground"
               placeholder="تکرار رمز عبور جدید"
             />
           </div>
 
           {/* Submit Button */}
-          <div className="flex space-x-3 justify-end">
-            
+          <div className="flex space-x-3 justify-end rtl:space-x-reverse gap-2">
             <button
               type="button"
               onClick={() => navigate("/dashboard/profile")}
-              className="px-4 py-2 border border-gray-300 rounded-lg text-gray-700 hover:bg-gray-50 cursor-pointer"
+              className="px-4 py-2 border border-border rounded-lg text-muted-foreground hover:bg-muted cursor-pointer"
             >
               انصراف
             </button>
             <button
               type="submit"
               disabled={loading}
-              className="px-4 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700 disabled:opacity-50 cursor-pointer"
+              className="px-4 py-2 bg-primary hover:bg-primary/80 text-primary-foreground rounded-lg disabled:opacity-50 cursor-pointer"
             >
               {loading ? "در حال ذخیره..." : "ذخیره تغییرات"}
             </button>

@@ -1,4 +1,3 @@
-// components/UserTrainingVideos.tsx
 import { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
 import api from "../../../services/api";
@@ -17,7 +16,6 @@ interface TrainingVideo {
 export default function UserTrainingVideos() {
   useDocumentTitle("ویدیوهای آموزشی");
 
-  //   const navigate = useNavigate();
   const [videos, setVideos] = useState<TrainingVideo[]>([]);
   const [loading, setLoading] = useState(true);
   const [activeCategory, setActiveCategory] = useState<string>("all");
@@ -28,7 +26,7 @@ export default function UserTrainingVideos() {
   
   const getFullUrl = (url: string) => {
     if (url && url.startsWith("/uploads/")) {
-      return `http://localhost:5000${url}`;
+      return `${window.location.origin}${url}`;
     }
     return url;
   };
@@ -56,11 +54,11 @@ export default function UserTrainingVideos() {
 
   const getAccessLevelColor = (level: string) => {
     const colors: Record<string, string> = {
-      bronze: "bg-blue-100 text-blue-800",
-      silver: "bg-gray-100 text-gray-800",
-      gold: "bg-yellow-100 text-yellow-800",
+      bronze: "bg-primary/10 text-primary",
+      silver: "bg-muted-foreground/10 text-muted-foreground",
+      gold: "bg-accent/10 text-accent",
     };
-    return colors[level] || "bg-gray-100 text-gray-800";
+    return colors[level] || "bg-muted/50 text-muted-foreground";
   };
 
   const filteredVideos =
@@ -79,14 +77,14 @@ export default function UserTrainingVideos() {
   if (loading) {
     return (
       <div className="flex justify-center items-center h-64">
-        <div className="animate-spin rounded-full h-10 w-10 border-b-2 border-red-600"></div>
+        <div className="animate-spin rounded-full h-10 w-10 border-b-2 border-primary"></div>
       </div>
     );
   }
 
   return (
     <div className="space-y-6">
-      <h1 className="text-2xl font-bold">ویدیوهای آموزشی</h1>
+      <h1 className="text-xl sm:text-2xl font-bold text-foreground">ویدیوهای آموزشی</h1>
 
       {/* Category Filter */}
       <div className="flex flex-wrap gap-2">
@@ -94,10 +92,10 @@ export default function UserTrainingVideos() {
           <button
             key={category.id}
             onClick={() => setActiveCategory(category.id)}
-            className={`px-4 py-2 rounded-lg text-sm font-medium transition-colors ${
+            className={`px-3 sm:px-4 py-2 rounded-lg text-sm font-medium transition-colors cursor-pointer ${
               activeCategory === category.id
-                ? "bg-red-600 text-white"
-                : "bg-gray-100 text-gray-700 hover:bg-gray-200"
+                ? "bg-primary text-primary-foreground"
+                : "bg-secondary text-secondary-foreground hover:bg-secondary/80"
             }`}
           >
             {category.name}
@@ -107,10 +105,10 @@ export default function UserTrainingVideos() {
 
       {/* Videos Grid */}
       {filteredVideos.length === 0 ? (
-        <div className="bg-white p-8 rounded-xl shadow text-center">
-          <div className="text-6xl mb-4">🎬</div>
-          <h3 className="font-bold text-gray-800 mb-2">ویدیویی یافت نشد</h3>
-          <p className="text-gray-600">
+        <div className="bg-card p-8 rounded-xl shadow border border-border text-center">
+          <div className="text-6xl mb-4 text-muted-foreground">🎬</div>
+          <h3 className="font-bold text-foreground mb-2">ویدیویی یافت نشد</h3>
+          <p className="text-muted-foreground">
             ممکنه ویدیویی برای سطح اشتراک شما وجود نداشته باشه
           </p>
         </div>
@@ -122,7 +120,7 @@ export default function UserTrainingVideos() {
               to={`/dashboard/user/videos/${video._id}`}
               className="block"
             >
-              <div className="bg-white rounded-xl shadow hover:shadow-md transition-shadow overflow-hidden">
+              <div className="bg-card rounded-xl shadow hover:shadow-md transition-shadow overflow-hidden border border-border">
                 <div className="relative">
                   {video.thumbnail ? (
                     <img
@@ -131,8 +129,8 @@ export default function UserTrainingVideos() {
                       className="w-full h-48 object-cover"
                     />
                   ) : (
-                    <div className="w-full h-48 bg-gray-200 flex items-center justify-center">
-                      <span className="text-4xl">🎬</span>
+                    <div className="w-full h-48 bg-muted flex items-center justify-center">
+                      <span className="text-4xl text-muted-foreground">🎬</span>
                     </div>
                   )}
                   <div className="absolute top-2 right-2 bg-black/70 text-white px-2 py-1 rounded text-xs">
@@ -143,7 +141,7 @@ export default function UserTrainingVideos() {
 
                 <div className="p-4">
                   <div className="flex justify-between items-start mb-2">
-                    <h3 className="font-bold text-lg text-gray-800 line-clamp-1">
+                    <h3 className="font-bold text-lg text-foreground line-clamp-1">
                       {video.title}
                     </h3>
                     <span
@@ -157,11 +155,11 @@ export default function UserTrainingVideos() {
                     </span>
                   </div>
 
-                  <p className="text-gray-600 text-sm line-clamp-2 mb-3">
+                  <p className="text-muted-foreground text-sm line-clamp-2 mb-3">
                     {video.description}
                   </p>
 
-                  <div className="flex items-center text-xs text-gray-500">
+                  <div className="flex items-center text-xs text-muted-foreground">
                     <span>{getCategoryLabel(video.category)}</span>
                   </div>
                 </div>
