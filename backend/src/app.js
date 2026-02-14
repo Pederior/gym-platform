@@ -60,6 +60,8 @@ app.use(
 
 app.use(helmet());
 
+
+
 app.use('/uploads', (req, res, next) => {
   res.header('Cross-Origin-Resource-Policy', 'cross-origin');
   res.header('Cross-Origin-Embedder-Policy', 'require-corp');
@@ -78,6 +80,10 @@ app.use(express.urlencoded({ extended: true, limit: "10mb" }));
 
 // Serve static files from uploads folder
 app.use('/uploads', express.static(path.join(__dirname, '../uploads')));
+
+app.get("/", (req, res) => {
+  res.status(200).json({ message: "Server is live!" });
+});
 
 // Routes
 app.use("/api/auth", authRoutes);
@@ -115,6 +121,8 @@ app.use("/api/admin/logs", logRoutes);
 // Upload
 app.use("/api/upload", uploadRoutes);
 app.use('/uploads', express.static(path.join(__dirname, '../uploads')));
+
+
 
 // Health check
 app.get("/api/health", (req, res) => {
