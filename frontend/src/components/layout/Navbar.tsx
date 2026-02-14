@@ -155,7 +155,7 @@ export default function Navbar() {
   };
 
   return (
-    <nav className="bg-gradient-to-r from-black via-zinc-900/20 to-red-600/90 flex shadow-sm z-50">
+    <nav className="bg-linear-to-r from-black via-zinc-900/20 to-red-600/90 flex shadow-sm z-50">
       <div className="flex justify-between h-24 w-full px-4 sm:px-6 lg:px-8">
         {/* لوگو */}
         <div className="flex items-center">

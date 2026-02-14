@@ -42,25 +42,25 @@ export default function UserTicketCreate() {
     }
   };
 
-  const getCategoryLabel = (category: string) => {
-    const labels: Record<string, string> = {
-      technical: 'فنی',
-      financial: 'مالی',
-      subscription: 'اشتراک',
-      other: 'سایر'
-    };
-    return labels[category] || category;
-  };
+  // const getCategoryLabel = (category: string) => {
+  //   const labels: Record<string, string> = {
+  //     technical: 'فنی',
+  //     financial: 'مالی',
+  //     subscription: 'اشتراک',
+  //     other: 'سایر'
+  //   };
+  //   return labels[category] || category;
+  // };
 
-  const getPriorityLabel = (priority: string) => {
-    const labels: Record<string, string> = {
-      low: 'پایین',
-      medium: 'متوسط',
-      high: 'بالا',
-      urgent: 'فوری'
-    };
-    return labels[priority] || priority;
-  };
+  // const getPriorityLabel = (priority: string) => {
+  //   const labels: Record<string, string> = {
+  //     low: 'پایین',
+  //     medium: 'متوسط',
+  //     high: 'بالا',
+  //     urgent: 'فوری'
+  //   };
+  //   return labels[priority] || priority;
+  // };
 
   return (
     <div>

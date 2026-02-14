@@ -5,8 +5,7 @@ import { toast } from "react-hot-toast";
 import {
   coachService,
   type WorkoutPlan,
-  type WorkoutUser,
-  getAllUsers
+  type WorkoutUser
 } from "../../../services/coachService";
 import useDocumentTitle from '../../../hooks/useDocumentTitle';
 import api from "../../../services/api";

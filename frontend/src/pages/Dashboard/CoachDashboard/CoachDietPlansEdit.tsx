@@ -1,5 +1,27 @@
-// ... importها بدون تغییر ...
+import { useState, useEffect } from 'react';
+import { useNavigate, useParams } from 'react-router-dom';
+// import useDocumentTitle from '../../../hooks/useDocumentTitle';
+import api from '../../../services/api';
+import { toast } from 'react-hot-toast';
 
+interface DietMeal {
+  name: string;
+  time: string;
+  foods: {
+    name: string;
+    portion: string;
+    calories: number;
+  }[];
+  notes: string;
+}
+
+interface DietPlan {
+  _id: string;
+  title: string;
+  description: string;
+  duration: number;
+  diets: DietMeal[];
+}
 export default function CoachDietPlansEdit() {
   const { id } = useParams<{ id: string }>();
   const navigate = useNavigate();
@@ -41,12 +63,93 @@ export default function CoachDietPlansEdit() {
     }
   };
 
-  // ... توابع بدون تغییر ...
+  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
+    const { name, value } = e.target;
+    setFormData(prev => ({ ...prev, [name]: value }));
+  };
+
+  const handleDurationChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
+    setFormData(prev => ({ ...prev, duration: parseInt(e.target.value) }));
+  };
+
+  const addFoodToMeal = (mealIndex: number) => {
+    const newMeals = [...meals];
+    newMeals[mealIndex].foods.push({ name: '', portion: '', calories: 0 });
+    setMeals(newMeals);
+  };
+
+  const removeFoodFromMeal = (mealIndex: number, foodIndex: number) => {
+    if (meals[mealIndex].foods.length <= 1) return;
+    
+    const newMeals = [...meals];
+    newMeals[mealIndex].foods.splice(foodIndex, 1);
+    setMeals(newMeals);
+  };
+
+  const handleFoodChange = (mealIndex: number, foodIndex: number, field: string, value: string | number) => {
+    const newMeals = [...meals];
+    newMeals[mealIndex].foods[foodIndex] = {
+      ...newMeals[mealIndex].foods[foodIndex],
+      [field]: value
+    };
+    setMeals(newMeals);
+  };
+
+  const handleMealFieldChange = (mealIndex: number, field: string, value: string) => {
+    const newMeals = [...meals];
+    newMeals[mealIndex] = {
+      ...newMeals[mealIndex],
+      [field]: value
+    };
+    setMeals(newMeals);
+  };
+
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    
+    if (!formData.title.trim()) {
+      toast.error('لطفاً عنوان برنامه را وارد کنید');
+      return;
+    }
+
+    // اعتبارسنجی وعده‌ها
+    for (let i = 0; i < meals.length; i++) {
+      if (!meals[i].name.trim() || !meals[i].time.trim()) {
+        toast.error(`لطفاً اطلاعات وعده ${i + 1} را کامل کنید`);
+        return;
+      }
+      
+      for (let j = 0; j < meals[i].foods.length; j++) {
+        if (!meals[i].foods[j].name.trim() || !meals[i].foods[j].portion.trim()) {
+          toast.error(`لطفاً اطلاعات غذای ${j + 1} در وعده ${i + 1} را کامل کنید`);
+          return;
+        }
+      }
+    }
+
+    setSubmitting(true);
+    try {
+      await api.put(`/diet-plans/${id}`, {
+        title: formData.title,
+        description: formData.description,
+        duration: formData.duration,
+        diets: meals
+      });
+
+      toast.success('برنامه غذایی با موفقیت به‌روزرسانی شد');
+      navigate('/dashboard/coach/diet-plans');
+    } catch (err: any) {
+      console.error('Update diet plan error:', err);
+      toast.error(err.response?.data?.message || 'خطا در به‌روزرسانی برنامه غذایی');
+    } finally {
+      setSubmitting(false);
+    }
+  };
 
   if (loading) {
     return (
       <div className="flex justify-center items-center h-64">
-        <div className="animate-spin rounded-full h-10 w-10 border-b-2 border-primary"></div>
+        <div className="animate-spin rounded-full h-10 w-10 border-b-2 border-red-600"></div>
       </div>
     );
   }

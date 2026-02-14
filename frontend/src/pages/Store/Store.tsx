@@ -9,18 +9,23 @@ import { Swiper, SwiperSlide } from "swiper/react";
 import { FaRegFolder } from "react-icons/fa6";
 import api from "../../services/api";
 import "swiper/css";
-// import ProductSorting from "./ProductSorting";
-// import ProductsPerPage from "./ProductsPerPage";
 import type { Product } from "../../types";
 import { RiShoppingCartLine } from "react-icons/ri";
 import { toast } from "react-hot-toast";
 import useDocumentTitle from "../../hooks/useDocumentTitle";
 
-// تعریف نوع دسته‌بندی
 interface Category {
   id: string;
   name: string;
   count: number;
+}
+
+// ✅ اینترفیس جدید برای پاسخ API
+interface ProductsResponse {
+  products: Product[];
+  totalPages: number;
+  currentPage: number;
+  totalProducts: number;
 }
 
 export default function Store() {
@@ -34,6 +39,7 @@ export default function Store() {
   const [sortBy, setSortBy] = useState("menu_order");
   const [perPage, setPerPage] = useState(8);
   const [page, setPage] = useState(1);
+  const [totalPages, setTotalPages] = useState(1); // ✅ اضافه شد
   const [cart, setCart] = useState<Product[]>([]);
   const [search, setSearch] = useState("");
 
@@ -67,11 +73,17 @@ export default function Store() {
           url += `&category=${encodeURIComponent(activeCategory)}`;
         }
 
-        const res = await api.get(url);
+        const res = await api.get<ProductsResponse>(url);
+        
+        // ✅ استخراج اطلاعات صفحه‌بندی
         setProducts(res.data.products || []);
+        setTotalPages(res.data.totalPages || 1);
+        
       } catch (err) {
         console.error("Error fetching products:", err);
         toast.error("خطا در بارگذاری محصولات");
+        setProducts([]);
+        setTotalPages(1);
       } finally {
         setLoading(false);
       }
@@ -92,15 +104,15 @@ export default function Store() {
     localStorage.setItem("cart", JSON.stringify(cart));
   }, [cart]);
 
-  const handleSortChange = (value: string) => {
-    setSortBy(value);
-    setPage(1);
-  };
+  // const handleSortChange = (value: string) => {
+  //   setSortBy(value);
+  //   setPage(1);
+  // };
 
-  const handlePerPageChange = (value: number) => {
-    setPerPage(value);
-    setPage(1);
-  };
+  // const handlePerPageChange = (value: number) => {
+  //   setPerPage(value);
+  //   setPage(1);
+  // };
 
   const addToCart = (product: Product) => {
     const existingItem = cart.find((item) => item._id === product._id);
@@ -131,8 +143,20 @@ export default function Store() {
 
   const handleSearch = (e: React.FormEvent) => {
     e.preventDefault();
-    // اینجا می‌تونی API call با پارامتر search انجام بدی
     console.log("Searching for:", search);
+  };
+
+  // ✅ توابع جدید برای مدیریت صفحه‌بندی
+  const goToPreviousPage = () => {
+    if (page > 1) {
+      setPage(page - 1);
+    }
+  };
+
+  const goToNextPage = () => {
+    if (page < totalPages) {
+      setPage(page + 1);
+    }
   };
 
   return (
@@ -229,7 +253,6 @@ export default function Store() {
               </button>
             </SwiperSlide>
 
-            {/* دسته‌بندی‌های دینامیک */}
             {categories.map((cat) => (
               <SwiperSlide key={cat.name} style={{ width: "230px" }}>
                 <button
@@ -342,21 +365,45 @@ export default function Store() {
         )}
 
         {/* Pagination */}
-        {products.length > 0 && (
-          <div className="mt-8 flex justify-center">
+        {products.length > 0 && totalPages > 1 && (
+          <div className="mt-8 flex justify-center items-center gap-2">
             <button
-              onClick={() => setPage((p) => Math.max(1, p - 1))}
+              onClick={goToPreviousPage}
               disabled={page === 1}
-              className="px-4 py-2 mx-1 bg-muted text-foreground rounded disabled:opacity-50 hover:bg-muted/80"
+              className="px-4 py-2 bg-muted text-foreground rounded disabled:opacity-50 disabled:cursor-not-allowed hover:bg-muted/80"
             >
               قبلی
             </button>
-            <span className="px-4 py-2 mx-1 bg-primary text-primary-foreground rounded">
-              صفحه {page}
-            </span>
+            
+            {/* نمایش شماره صفحات */}
+            {Array.from({ length: Math.min(totalPages, 5) }, (_, i) => {
+              // محاسبه شماره صفحه برای نمایش
+              let pageNum = page <= 3 ? i + 1 : 
+                           page >= totalPages - 2 ? totalPages - 4 + i :
+                           page - 2 + i;
+              
+              if (pageNum < 1) pageNum = 1;
+              if (pageNum > totalPages) pageNum = totalPages;
+              
+              return (
+                <button
+                  key={pageNum}
+                  onClick={() => setPage(pageNum)}
+                  className={`px-4 py-2 rounded ${
+                    page === pageNum
+                      ? "bg-primary text-primary-foreground"
+                      : "bg-muted text-foreground hover:bg-muted/80"
+                  }`}
+                >
+                  {pageNum}
+                </button>
+              );
+            })}
+
             <button
-              onClick={() => setPage((p) => p + 1)}
-              className="px-4 py-2 mx-1 bg-muted text-foreground rounded hover:bg-muted/80"
+              onClick={goToNextPage}
+              disabled={page === totalPages}
+              className="px-4 py-2 bg-muted text-foreground rounded disabled:opacity-50 disabled:cursor-not-allowed hover:bg-muted/80"
             >
               بعدی
             </button>

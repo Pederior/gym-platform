@@ -223,7 +223,7 @@ export default function AboutUs() {
               <div className="bg-primary md:w-13 w-10 h-1 mt-4"></div>
             </h2>
 
-            {skills.map((skill, index) => (
+            {skills.map((skill) => (
               <div key={skill.name} className="w-full my-4">
                 <span className="block text-base font-semibold text-muted-foreground">
                   {skill.name}

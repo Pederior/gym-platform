@@ -173,6 +173,19 @@ export const coachService = {
   async deleteComment(id: string) {
     await api.delete(`/coach/comments/${id}`);
   },
+
+  async uploadImage(formData: FormData) {
+    const res = await api.post<{ success: true; imageUrl: string }>(
+      "/coach/upload-image",
+      formData,
+      {
+        headers: {
+          "Content-Type": "multipart/form-data",
+        },
+      },
+    );
+    return res.data;
+  },
 };
 
 export const getUserProgress = async () => {
