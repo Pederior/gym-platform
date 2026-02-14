@@ -16,329 +16,40 @@ Gym Platform is a full-stack application for managing gym operations. It include
 ## High-level repo layout
 
 ```
-├───backend
-│   │   .env
-│   │   .env.example
-│   │   package-lock.json
-│   │   package.json
-│   │   server.js
-│   │   test.js
-│   │
-│   ├───backup
-│   │   └───gym_platform
-│   │           
-│   ├───src
-│   │   │   app.js
-│   │   │
-│   │   ├───config
-│   │   │       db.js
-│   │   │
-│   │   ├───controllers
-│   │   │       admin.controller.js
-│   │   │       adminArticle.controller.js
-│   │   │       adminComment.controller.js
-│   │   │       adminTicket.controller.js
-│   │   │       article.controller.js
-│   │   │       auth.controller.js
-│   │   │       chat.controller.js
-│   │   │       class.controller.js
-│   │   │       coach.controller.js
-│   │   │       coachComment.controller.js
-│   │   │       comment.controller.js
-│   │   │       dietPlan.controller.js
-│   │   │       financial.controller.js
-│   │   │       log.controller.js
-│   │   │       notification.controller.js
-│   │   │       order.controller.js
-│   │   │       payment.controller.js
-│   │   │       product.controller.js
-│   │   │       productAdmin.controller.js
-│   │   │       subscription.controller.js
-│   │   │       ticket.controller.js
-│   │   │       trainingVideo.controller.js
-│   │   │       user.controller.js
-│   │   │       userSubscription.controller.js
-│   │   │       userTrainingVideo.controller.js
-│   │   │       userWorkout.controller.js
-│   │   │       workout.controller.js
-│   │   │
-│   │   ├───middleware
-│   │   │       activityLogger.js
-│   │   │       auth.middleware.js
-│   │   │       role.middleware.js
-│   │   │       upload.js
-│   │   │       upload.middleware.js
-│   │   │
-│   │   ├───models
-│   │   │       Article.js
-│   │   │       Class.js
-│   │   │       ClubSettings.js
-│   │   │       Comment.js
-│   │   │       DietPlan.js
-│   │   │       Equipment.js
-│   │   │       Invoice.js
-│   │   │       Log.js
-│   │   │       Message.js
-│   │   │       Notification.js
-│   │   │       Order.js
-│   │   │       Payment.js
-│   │   │       Product.js
-│   │   │       Room.js
-│   │   │       Subscription.js
-│   │   │       SubscriptionPlan.js
-│   │   │       Ticket.js
-│   │   │       TrainingVideo.js
-│   │   │       User.js
-│   │   │       UserDietPlan.js
-│   │   │       UserProgress.js
-│   │   │       UserTrainingVideo.js
-│   │   │       UserWorkout.js
-│   │   │       WorkoutPlan.js
-│   │   │
-│   │   └───routes
-│   │           admin.routes.js
-│   │           adminArticle.routes.js
-│   │           adminComment.routes.js
-│   │           adminTicket.routes.js
-│   │           article.routes.js
-│   │           auth.routes.js
-│   │           chat.routes.js
-│   │           class.routes.js
-│   │           coach.routes.js
-│   │           coachArticle.routes.js
-│   │           coachComment.routes.js
-│   │           comment.routes.js
-│   │           dashboard.routes.js
-│   │           dietPlan.routes.js
-│   │           financial.routes.js
-│   │           log.routes.js
-│   │           notification.routes.js
-│   │           order.routes.js
-│   │           payment.routes.js
-│   │           product.routes.js
-│   │           productAdmin.routes.js
-│   │           subscription.routes.js
-│   │           ticket.routes.js
-│   │           trainingVideo.routes.js
-│   │           upload.routes.js
-│   │           user.routes.js
-│   │           userSubscription.routes.js
-│   │           userTrainingVideo.routes.js
-│   │           userWorkout.routes.js
-│   │           workout.routes.js
-│   │
-│   └───uploads
-│       │   
-│       ├───images
-│       │       
-│       ├───products
-│       │       
-│       └───videos
-└───frontend
-    │   .env
-    │   .gitignore
-    │   components.json
-    │   eslint.config.js
-    │   index.html
-    │   package-lock.json
-    │   package.json
-    │   postcss.config.js
-    │   README.md
-    │   tailwind.config.js
-    │   tsconfig.app.json
-    │   tsconfig.json
-    │   tsconfig.node.json
-    │   vite.config.ts
-    │
-    ├───public
-    │   └───images
-    └───src
-        │   App.css
-        │   App.tsx
-        │   index.css
-        │   main.tsx
-        │
-        ├───assets
-        │       react.svg
-        │
-        ├───components
-        │   │   AppInitializer.tsx
-        │   │
-        │   ├───Chat
-        │   │       ChatBox.tsx
-        │   │       MessageList.tsx
-        │   │       SocketContext.tsx
-        │   │       SocketProvider.tsx
-        │   │
-        │   ├───Features
-        │   │       HeroCard.tsx
-        │   │       RootDarkMode.tsx
-        │   │       UnderLine.tsx
-        │   │
-        │   ├───layout
-        │   │       ClassSection.tsx
-        │   │       ExerciseSection.tsx
-        │   │       Footer.tsx
-        │   │       HeaderDash.tsx
-        │   │       HeaderMain.tsx
-        │   │       ImageFitnessSection.tsx
-        │   │       MuscleBuilding.tsx
-        │   │       Navbar.tsx
-        │   │       PricingSection.tsx
-        │   │       SideBar.tsx
-        │   │       TestimonialsSection.tsx
-        │   │       TopBar.tsx
-        │   │       VideoOverlay.tsx
-        │   │
-        │   └───ui
-        │           Button.tsx
-        │           Card.tsx
-        │           Input.tsx
-        │
-        ├───hooks
-        │       useAuth.ts
-        │       useDocumentTitle.tsx
-        │
-        ├───lib
-        │       utils.ts
-        │
-        ├───pages
-        │   │   AboutUs.tsx
-        │   │   FAQ.tsx
-        │   │   Home.tsx
-        │   │   NotFound.tsx
-        │   │   Profile.tsx
-        │   │   ProfileEdit.tsx
-        │   │
-        │   ├───Articles
-        │   │       ArticleDetail.tsx
-        │   │       Articles.tsx
-        │   │
-        │   ├───Auth
-        │   │       Login.tsx
-        │   │       Register.tsx
-        │   │
-        │   ├───Classes
-        │   │       ClassBooking.tsx
-        │   │       ClassList.tsx
-        │   │
-        │   ├───Dashboard
-        │   │   │   Header.tsx
-        │   │   │   Layout.tsx
-        │   │   │   Sidebar.tsx
-        │   │   │
-        │   │   ├───AdminDashboard
-        │   │   │       AdminArticleEdit.tsx
-        │   │   │       AdminArticleForm.tsx
-        │   │   │       AdminArticles.tsx
-        │   │   │       AdminClasses.tsx
-        │   │   │       AdminClubSettings.tsx
-        │   │   │       AdminComments.tsx
-        │   │   │       AdminDashboard.tsx
-        │   │   │       AdminInvoices.tsx
-        │   │   │       AdminLogs.tsx
-        │   │   │       AdminPayments.tsx
-        │   │   │       AdminPricingSettings.tsx
-        │   │   │       AdminProductForm.tsx
-        │   │   │       AdminProducts.tsx
-        │   │   │       AdminPrograms.tsx
-        │   │   │       AdminReports.tsx
-        │   │   │       AdminReservations.tsx
-        │   │   │       AdminSubscriptionPlans.tsx
-        │   │   │       AdminSubscriptions.tsx
-        │   │   │       AdminTicketDetails.tsx
-        │   │   │       AdminTickets.tsx
-        │   │   │       AdminUsers.tsx
-        │   │   │       AdminUsersCreate.tsx
-        │   │   │       AdminUsersEdit.tsx
-        │   │   │       KpiCard.tsx
-        │   │   │       LineChartComponent.tsx
-        │   │   │
-        │   │   ├───CoachDashboard
-        │   │   │       CoachAddWorkoutsToUsers.tsx
-        │   │   │       CoachArticleEdit.tsx
-        │   │   │       CoachArticleForm.tsx
-        │   │   │       CoachArticles.tsx
-        │   │   │       CoachChat.tsx
-        │   │   │       CoachClasses.tsx
-        │   │   │       CoachClassesCreate.tsx
-        │   │   │       CoachClassesEdit.tsx
-        │   │   │       CoachComments.tsx
-        │   │   │       CoachDashboard.tsx
-        │   │   │       CoachDietPlans.tsx
-        │   │   │       CoachDietplansCreate.tsx
-        │   │   │       CoachDietPlansEdit.tsx
-        │   │   │       CoachProgress.tsx
-        │   │   │       CoachStudents.tsx
-        │   │   │       CoachTrainingVideoCreate.tsx
-        │   │   │       CoachTrainingVideoEdit.tsx
-        │   │   │       CoachTrainingVideos.tsx
-        │   │   │       CoachWorkouts.tsx
-        │   │   │       CoachWorkoutsCreate.tsx
-        │   │   │       CoachWorkoutsEdit.tsx
-        │   │   │
-        │   │   └───UserDashboard
-        │   │           UserChat.tsx
-        │   │           UserClasses.tsx
-        │   │           UserDashboard.tsx
-        │   │           UserDietPlans.tsx
-        │   │           UserPayments.tsx
-        │   │           UserProgress.tsx
-        │   │           UserStore.tsx
-        │   │           UserSubscriptions.tsx
-        │   │           UserTicketCreate.tsx
-        │   │           UserTicketDetail.tsx
-        │   │           UserTickets.tsx
-        │   │           UserTrainingVideoPlayer.tsx
-        │   │           UserTrainingVideos.tsx
-        │   │           UserWorkouts.tsx
-        │   │           UserWorkoutSession.tsx
-        │   │
-        │   ├───Store
-        │   │       Cart.tsx
-        │   │       OrderSuccess.tsx
-        │   │       ProductSorting.tsx
-        │   │       ProductsPerPage.tsx
-        │   │       Store.tsx
-        │   │
-        │   └───WorkOuts
-        │           WorkoutDetail.tsx
-        │           WorkoutList.tsx
-        │
-        ├───routes
-        │       index.tsx
-        │       indexOld.tsx
-        │       ProtectedRoute.tsx
-        │       Test.tsx
-        │
-        ├───services
-        │       adminService.ts
-        │       api.ts
-        │       authService.ts
-        │       classService.ts
-        │       coachService.ts
-        │       financialService.ts
-        │       productService.ts
-        │       userService.ts
-        │
-        ├───store
-        │   │   hook.ts
-        │   │   store.ts
-        │   │
-        │   └───features
-        │           authSlice.ts
-        │           chatSlice.ts
-        │           darkModeSlice.ts
-        │           userSlice.ts
-        │           workoutSlice.ts
-        │
-        ├───types
-        │       css-modules.d.ts
-        │       index.ts
-        │
-        └───utils
-                constants.ts
-                subscriptionUtils.ts
+backend/
+  package.json
+  server.js
+  src/
+    app.js
+    config/
+      db.js
+    controllers/
+      (user.controller.js, class.controller.js, product.controller.js, ...)
+    models/
+      (User.js, Class.js, Product.js, ...)
+    routes/
+      (user.routes.js, product.routes.js, ...)
+    middleware/
+    uploads/
+      images/
+      products/
+      videos/
+  backup/
+    gym_platform/   # BSON exports of collections
+frontend/
+  package.json
+  vite.config.ts
+  index.html
+  src/
+    main.tsx
+    App.tsx
+    pages/
+    components/
+    services/
+    store/
+    assets/
+README.md
+
 ```
 
 ## Key Features
