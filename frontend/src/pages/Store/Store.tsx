@@ -20,7 +20,6 @@ interface Category {
   count: number;
 }
 
-// ✅ اینترفیس جدید برای پاسخ API
 interface ProductsResponse {
   products: Product[];
   totalPages: number;
@@ -31,15 +30,14 @@ interface ProductsResponse {
 export default function Store() {
   useDocumentTitle("فروشگاه");
 
+  // ✅ فقط stateهای لازم رو نگه دار
   const [activeCategory, setActiveCategory] = useState<string>("");
   const [products, setProducts] = useState<Product[]>([]);
   const [categories, setCategories] = useState<Category[]>([]);
   const [loading, setLoading] = useState(true);
   const [categoriesLoading, setCategoriesLoading] = useState(true);
-  const [sortBy, setSortBy] = useState("menu_order");
-  const [perPage, setPerPage] = useState(8);
-  const [page, setPage] = useState(1);
-  const [totalPages, setTotalPages] = useState(1); // ✅ اضافه شد
+  const [page, setPage] = useState(1); // فقط برای pagination لازمه
+  const [totalPages, setTotalPages] = useState(1);
   const [cart, setCart] = useState<Product[]>([]);
   const [search, setSearch] = useState("");
 
@@ -68,14 +66,13 @@ export default function Store() {
       try {
         setLoading(true);
 
-        let url = `/products?sort=${sortBy}&limit=${perPage}&page=${page}`;
+        // ✅ بدون sortBy و perPage
+        let url = `/products?page=${page}`;
         if (activeCategory) {
           url += `&category=${encodeURIComponent(activeCategory)}`;
         }
 
         const res = await api.get<ProductsResponse>(url);
-        
-        // ✅ استخراج اطلاعات صفحه‌بندی
         setProducts(res.data.products || []);
         setTotalPages(res.data.totalPages || 1);
         
@@ -89,7 +86,7 @@ export default function Store() {
       }
     };
     fetchProducts();
-  }, [page, sortBy, perPage, activeCategory, categoriesLoading]);
+  }, [page, activeCategory, categoriesLoading]);
 
   // Load cart from localStorage on mount
   useEffect(() => {
@@ -104,16 +101,7 @@ export default function Store() {
     localStorage.setItem("cart", JSON.stringify(cart));
   }, [cart]);
 
-  // const handleSortChange = (value: string) => {
-  //   setSortBy(value);
-  //   setPage(1);
-  // };
-
-  // const handlePerPageChange = (value: number) => {
-  //   setPerPage(value);
-  //   setPage(1);
-  // };
-
+  // ✅ فقط توابع لازم
   const addToCart = (product: Product) => {
     const existingItem = cart.find((item) => item._id === product._id);
 
@@ -146,7 +134,6 @@ export default function Store() {
     console.log("Searching for:", search);
   };
 
-  // ✅ توابع جدید برای مدیریت صفحه‌بندی
   const goToPreviousPage = () => {
     if (page > 1) {
       setPage(page - 1);
@@ -288,7 +275,7 @@ export default function Store() {
         {/* Products Grid */}
         {loading ? (
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
-            {[...Array(perPage)].map((_, i) => (
+            {[...Array(8)].map((_, i) => (
               <div
                 key={i}
                 className="bg-card rounded-lg overflow-hidden animate-pulse border border-border"
@@ -377,7 +364,6 @@ export default function Store() {
             
             {/* نمایش شماره صفحات */}
             {Array.from({ length: Math.min(totalPages, 5) }, (_, i) => {
-              // محاسبه شماره صفحه برای نمایش
               let pageNum = page <= 3 ? i + 1 : 
                            page >= totalPages - 2 ? totalPages - 4 + i :
                            page - 2 + i;

@@ -63,7 +63,7 @@ export default function UserDashboard() {
         );
         
         const workouts = Array.isArray(workoutsRes.data.data)
-          ? workoutsRes.data.data.filter((w) => w && w._id && w.title)
+          ? workoutsRes.data.data.filter((w: any) => w && w._id && w.title)
           : [];
 
         const dietPlans = Array.isArray(dietPlansRes.data.data)
