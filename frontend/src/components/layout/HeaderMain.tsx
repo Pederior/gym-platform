@@ -12,17 +12,13 @@ export default function HeaderMain() {
   useEffect(() => {
     const updateFontSize = () => {
       if (window.innerWidth < 640) {
-        // موبایل
-        setFontSize("text-2xl sm:text-2xl");
+        setFontSize("text-xl");
       } else if (window.innerWidth < 768) {
-        // تبلت کوچک
-        setFontSize("text-3xl");
+        setFontSize("text-2xl");
       } else if (window.innerWidth < 1024) {
-        // تبلت بزرگ
         setFontSize("text-3xl");
       } else {
-        // دسکتاپ
-        setFontSize("text-4xl md:text-5xl");
+        setFontSize("text-4xl");
       }
     };
 
@@ -43,7 +39,15 @@ export default function HeaderMain() {
         </div>
         <div className="min-h-screen flex items-center">
           <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center text-white">
-            <div className={`font-bold ${fontSize} leading-relaxed`}>
+            <div 
+              className={`font-bold ${fontSize} leading-relaxed mb-6 sm:mb-8 transition-all duration-300`}
+              style={{
+                minHeight: '120px', 
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center'
+              }}
+            >
               <Typewriter
                 onInit={(typewriter) => {
                   typewriter
@@ -67,7 +71,7 @@ export default function HeaderMain() {
               />
             </div>
             
-            <p className="text-base sm:text-lg md:text-xl max-w-2xl mx-auto my-6 sm:my-8">
+            <p className="text-base sm:text-lg md:text-xl max-w-2xl mx-auto mb-6 sm:mb-8">
               بهترین مربیان، جدیدترین تجهیزات، و برنامه‌های شخصی‌سازی شده برای
               شما
             </p>

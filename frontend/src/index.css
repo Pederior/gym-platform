@@ -250,11 +250,13 @@
   white-space: normal !important;
   word-break: break-word;
   line-height: 1.4;
+  text-align: center;
 }
 
 .typewriter-cursor {
   border-left: 2px solid #fff;
   animation: blink 1s infinite;
+  margin-right: -2px; 
 }
 
 @keyframes blink {
