@@ -12,16 +12,20 @@ export default function HeaderMain() {
   useEffect(() => {
     const updateFontSize = () => {
       if (window.innerWidth < 640) {
-        setFontSize("text-2xl sm:text-3xl");
+        // موبایل
+        setFontSize("text-xl sm:text-2xl");
       } else if (window.innerWidth < 768) {
-        setFontSize("text-3xl");
+        // تبلت کوچک
+        setFontSize("text-2xl");
       } else if (window.innerWidth < 1024) {
-        setFontSize("text-4xl");
+        // تبلت بزرگ
+        setFontSize("text-3xl");
       } else {
-        // دسکتاپه
-        setFontSize("text-5xl");
+        // دسکتاپ
+        setFontSize("text-4xl md:text-5xl");
       }
     };
+
     updateFontSize();
     window.addEventListener("resize", updateFontSize);
     return () => window.removeEventListener("resize", updateFontSize);
@@ -30,7 +34,7 @@ export default function HeaderMain() {
   return (
     <>
       <div
-        className="min-h-screen bg-cover bg-center flex flex-col items-center "
+        className="min-h-screen bg-cover bg-center flex flex-col items-center"
         style={{ backgroundImage: "url('/images/HeaderBg.jpg')" }}
       >
         <div className="max-w-7xl mx-auto w-full">
@@ -38,18 +42,18 @@ export default function HeaderMain() {
           <Navbar />
         </div>
         <div className="min-h-screen flex items-center">
-          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center text-white">
-            <span className={`${fontSize} block typewriter-container`}>
+          <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center text-white">
+            <div className={`font-bold ${fontSize} leading-relaxed`}>
               <Typewriter
                 onInit={(typewriter) => {
                   typewriter
-                    .typeString("قدرتت رو بیدار کن. امروز شروع کن.")
+                    .typeString("قدرتت رو بیدار کن.<br>امروز شروع کن.")
                     .pauseFor(2000)
                     .deleteAll()
-                    .typeString("فینیکس کلاب — تولد دوباره‌ی بهترین نسخه‌ی تو.")
+                    .typeString("فینیکس کلاب —<br>تولد دوباره‌ی بهترین نسخه‌ی تو.")
                     .pauseFor(2000)
                     .deleteAll()
-                    .typeString("اینجا جاییه که تغییر واقعی شروع می‌شه.")
+                    .typeString("اینجا جاییه که<br>تغییر واقعی شروع می‌شه.")
                     .pauseFor(2000)
                     .start();
                 }}
@@ -57,21 +61,25 @@ export default function HeaderMain() {
                   loop: true,
                   delay: 30,
                   deleteSpeed: 20,
+                  wrapperClassName: 'typewriter-wrapper',
+                  cursorClassName: 'typewriter-cursor'
                 }}
               />
-            </span>
-            <p className="text-lg md:text-xl max-w-2xl mx-auto my-8">
+            </div>
+            
+            <p className="text-base sm:text-lg md:text-xl max-w-2xl mx-auto my-6 sm:my-8">
               بهترین مربیان، جدیدترین تجهیزات، و برنامه‌های شخصی‌سازی شده برای
               شما
             </p>
+            
             <Link
               to={user ? "/classes" : "/register"}
-              className="bg-red-600 text-white px-6 py-3 rounded-lg font-bold hover:bg-red-500 no-underline"
+              className="bg-red-600 text-white px-4 sm:px-6 py-2 sm:py-3 rounded-lg font-bold hover:bg-red-500 no-underline inline-block"
             >
               {token && user ? (
                 <span>پیش به سوی بی نهایت</span>
               ) : (
-                <span> همین الان عضو شوید!</span>
+                <span>همین الان عضو شوید!</span>
               )}
             </Link>
           </div>
