@@ -4,14 +4,14 @@ import Sidebar from './Sidebar';
 import Header from './Header';
 
 export default function Layout() {
-  const [isSidebarCollapsed, setIsSidebarCollapsed] = useState(false);
+  const [isSidebarCollapsed, setIsSidebarCollapsed] = useState(false); 
+  const [isMobileSidebarOpen, setIsMobileSidebarOpen] = useState(false); 
   const [isMobile, setIsMobile] = useState(false);
 
   useEffect(() => {
     const checkScreenSize = () => {
       const mobile = window.innerWidth < 768;
       setIsMobile(mobile);
-      if (mobile) setIsSidebarCollapsed(true);
     };
 
     checkScreenSize();
@@ -21,16 +21,18 @@ export default function Layout() {
 
   const toggleSidebar = () => {
     if (isMobile) {
-      setIsSidebarCollapsed(!isSidebarCollapsed);
+      setIsMobileSidebarOpen(!isMobileSidebarOpen);
     } else {
       setIsSidebarCollapsed(!isSidebarCollapsed);
     }
   };
 
+  const shouldShowSidebar = isMobile ? isMobileSidebarOpen : !isSidebarCollapsed;
+
   return (
     <div className="flex h-screen bg-background">
       <Sidebar 
-        isCollapsed={isSidebarCollapsed} 
+        isCollapsed={!shouldShowSidebar} 
         onToggle={toggleSidebar}
         isMobile={isMobile}  
       />

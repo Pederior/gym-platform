@@ -13,10 +13,10 @@ export default function HeaderMain() {
     const updateFontSize = () => {
       if (window.innerWidth < 640) {
         // موبایل
-        setFontSize("text-xl sm:text-2xl");
+        setFontSize("text-2xl sm:text-2xl");
       } else if (window.innerWidth < 768) {
         // تبلت کوچک
-        setFontSize("text-2xl");
+        setFontSize("text-3xl");
       } else if (window.innerWidth < 1024) {
         // تبلت بزرگ
         setFontSize("text-3xl");

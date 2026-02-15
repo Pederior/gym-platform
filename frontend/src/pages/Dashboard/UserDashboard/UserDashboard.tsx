@@ -163,7 +163,7 @@ export default function UserDashboard() {
                 • مشاوره مستقیم با مربی
               </p>
               <button
-                onClick={() => (window.location.href = "/subscription")}
+                onClick={() => (window.location.href = "/dashboard/user/subscription")}
                 className="bg-primary hover:bg-primary/80 text-primary-foreground px-6 py-3 rounded-lg font-bold transition-colors"
               >
                 خرید اشتراک الان
