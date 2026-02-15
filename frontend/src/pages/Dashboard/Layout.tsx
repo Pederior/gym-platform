@@ -4,16 +4,14 @@ import Sidebar from './Sidebar';
 import Header from './Header';
 
 export default function Layout() {
-  const [isSidebarOpen, setIsSidebarOpen] = useState(false);
+  const [isSidebarCollapsed, setIsSidebarCollapsed] = useState(false);
   const [isMobile, setIsMobile] = useState(false);
 
   useEffect(() => {
     const checkScreenSize = () => {
       const mobile = window.innerWidth < 768;
       setIsMobile(mobile);
-      if (!mobile) {
-        setIsSidebarOpen(true);
-      }
+      if (mobile) setIsSidebarCollapsed(true);
     };
 
     checkScreenSize();
@@ -22,21 +20,29 @@ export default function Layout() {
   }, []);
 
   const toggleSidebar = () => {
-    setIsSidebarOpen(!isSidebarOpen);
+    if (isMobile) {
+      setIsSidebarCollapsed(!isSidebarCollapsed);
+    } else {
+      setIsSidebarCollapsed(!isSidebarCollapsed);
+    }
   };
 
   return (
     <div className="flex h-screen bg-background">
       <Sidebar 
-        isCollapsed={!isSidebarOpen} 
+        isCollapsed={isSidebarCollapsed} 
         onToggle={toggleSidebar}
         isMobile={isMobile}  
       />
       
       {/* Main content */}
-      <div className="flex flex-col flex-1">
+      <div 
+        className={`flex-1 overflow-y-auto transition-all duration-300 ${
+          isMobile ? 'mr-0' : (isSidebarCollapsed ? 'mr-16' : 'mr-64')
+        }`}
+      >
         <Header onToggleSidebar={toggleSidebar} isMobile={isMobile} />
-        <main className="flex-1 p-4 sm:p-6 overflow-y-auto">
+        <main className="p-4 sm:p-6">
           <Outlet />
         </main>
       </div>
