@@ -27,14 +27,15 @@ export default function Layout() {
     }
   };
 
-  const shouldShowSidebar = isMobile ? isMobileSidebarOpen : !isSidebarCollapsed;
+  const sidebarProps = isMobile 
+    ? { isCollapsed: !isMobileSidebarOpen, isMobile: true }
+    : { isCollapsed: isSidebarCollapsed, isMobile: false };
 
   return (
     <div className="flex h-screen bg-background">
       <Sidebar 
-        isCollapsed={!shouldShowSidebar} 
+        {...sidebarProps}
         onToggle={toggleSidebar}
-        isMobile={isMobile}  
       />
       
       {/* Main content */}

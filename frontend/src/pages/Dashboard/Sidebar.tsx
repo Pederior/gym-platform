@@ -1,4 +1,10 @@
-import { useState, useMemo, type ReactNode, useEffect, useCallback } from "react";
+import {
+  useState,
+  useMemo,
+  type ReactNode,
+  useEffect,
+  useCallback,
+} from "react";
 import { TbSmartHome, TbUser } from "react-icons/tb";
 import { GiMuscleUp } from "react-icons/gi";
 import { useAppSelector } from "../../store/hook";
@@ -311,25 +317,33 @@ const Sidebar = ({ isCollapsed, onToggle, isMobile = false }: SidebarProps) => {
   useEffect(() => {
     if (isMobile && !isCollapsed) {
       const handleClickOutside = (e: MouseEvent) => {
-        const sidebar = document.querySelector('[data-sidebar]');
+        const sidebar = document.querySelector("[data-sidebar]");
         if (sidebar && !sidebar.contains(e.target as Node)) {
           closeSidebar();
         }
       };
 
-      document.addEventListener('click', handleClickOutside);
-      return () => document.removeEventListener('click', handleClickOutside);
+      document.addEventListener("click", handleClickOutside);
+      return () => document.removeEventListener("click", handleClickOutside);
     }
   }, [isMobile, isCollapsed, closeSidebar]);
 
-  if (isMobile && isCollapsed) return null;
+  if (isMobile && isCollapsed) {
+    return null; 
+  }
 
   return (
     <aside
       data-sidebar
-      className={`h-screen fixed right-0 top-0 overflow-y-auto transition-all duration-300 z-50 ${
-        isCollapsed ? "w-16 bg-primary" : "w-64 bg-primary"
-      } ${isMobile ? "shadow-lg" : ""}`}
+      className={`h-screen ${
+        isMobile 
+          ? 'fixed right-0 top-0 z-50 shadow-lg transform transition-transform duration-300' 
+          : 'sticky top-0 transition-all duration-300'
+      } ${
+        isCollapsed 
+          ? (isMobile ? '-translate-x-full' : 'w-16 bg-primary') 
+          : 'w-64 bg-primary'
+      }`}
     >
       <div
         className={`p-3 md:p-4 border-b border-primary-50 flex items-center justify-between ${
