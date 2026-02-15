@@ -39,22 +39,24 @@ export default function HeaderMain() {
         </div>
         <div className="min-h-screen flex items-center">
           <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center text-white">
-            <span className={`${fontSize} font-bold block typewriter-container`}>
+            <span className={`${fontSize} block typewriter-container`}>
               <Typewriter
                 onInit={(typewriter) => {
                   typewriter
-                    .typeString("بدنت رو بساز. زندگی‌ات رو عوض کن.")
-                    .start()
+                    .typeString("قدرتت رو بیدار کن. امروز شروع کن.")
                     .pauseFor(2000)
                     .deleteAll()
-                    .typeString("فینیکس کلاب - زیبایی‌ات رو از درون بساز.")
-                    .start()
-                    .pauseFor(2000);
+                    .typeString("فینیکس کلاب — تولد دوباره‌ی بهترین نسخه‌ی تو.")
+                    .pauseFor(2000)
+                    .deleteAll()
+                    .typeString("اینجا جاییه که تغییر واقعی شروع می‌شه.")
+                    .pauseFor(2000)
+                    .start();
                 }}
                 options={{
                   loop: true,
                   delay: 30,
-                  deleteSpeed: 20, 
+                  deleteSpeed: 20,
                 }}
               />
             </span>
