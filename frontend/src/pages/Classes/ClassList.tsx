@@ -74,7 +74,6 @@ export default function ClassList() {
       toast.success("کلاس با موفقیت رزرو شد!");
       closeModal();
 
-      // آپدیت لیست کلاس‌ها
       const res = await api.get("/classes");
       setClasses(res.data.classes || []);
     } catch (err: any) {
@@ -107,7 +106,6 @@ export default function ClassList() {
     return "bg-green-500";
   };
 
-  // ✅ نمایش صفحه بارگذاری یا خطا برای کاربران مهمان
   if (!token) {
     return (
       <div className="min-h-screen flex items-center justify-center bg-background">

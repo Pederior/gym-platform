@@ -51,10 +51,10 @@ export default function AdminPayments() {
                   <th className="py-3 px-2">تاریخ</th>
                 </tr>
               </thead>
-              <tbody>
+            <tbody>
                 {payments.map(p => (
                   <tr key={p._id} className="border-b border-border hover:bg-muted">
-                    <td className="py-3 px-2 text-foreground">{p.user.name}</td>
+                    <td className="py-3 px-2 text-foreground">{p.user?.name || 'نامشخص'}</td>
                     <td className="py-3 px-2 text-foreground">{p.amount.toLocaleString()} تومان</td>
                     <td className="py-3 px-2 text-foreground">{p.method}</td>
                     <td className="py-3 px-2">{getStatusBadge(p.status)}</td>

@@ -239,3 +239,9 @@
   background-color: crimson;
   transform: translateX(-50%) rotate(45deg);
 }
+
+.typewriter-container {
+  word-break: keep-all;
+  white-space: nowrap;
+  overflow: hidden;
+}

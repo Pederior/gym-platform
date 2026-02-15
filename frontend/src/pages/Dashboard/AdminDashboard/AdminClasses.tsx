@@ -119,7 +119,7 @@ export default function AdminClasses() {
                 {classes.map(cls => (
                   <tr key={cls._id} className="border-b border-border hover:bg-muted">
                     <td className="py-3 px-2 text-foreground">{cls.title}</td>
-                    <td className="py-3 px-2 text-foreground">{cls.coach.name}</td>
+                    <td className="py-3 px-2 text-foreground">{cls.coach?.name || 'مربی نامشخص'}</td>
                     <td className="py-3 px-2 text-muted-foreground">{new Date(cls.dateTime).toLocaleDateString('fa-IR')}</td>
                     <td className="py-3 px-2 text-foreground">{cls.reservedBy.length}/{cls.capacity}</td>
                     <td className="py-3 px-2 text-foreground">{cls.price.toLocaleString()} تومان</td>

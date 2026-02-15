@@ -156,7 +156,7 @@ export default function AdminArticles() {
                   </div>
                   <div className="mt-3 text-sm">
                     <div className="text-foreground">
-                      <strong>نویسنده:</strong> {article.author.name} ({article.author.email})
+                      <strong>نویسنده:</strong> {article.author?.name || 'نامشخص'} ({article.author.email})
                     </div>
                   </div>
                 </div>

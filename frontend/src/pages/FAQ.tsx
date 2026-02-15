@@ -86,7 +86,7 @@ export default function FAQ() {
   };
 
   return (
-    <div className="min-h-screen">
+    <div className="min-h-screen bg-background">
       {/* Header */}
       <div
         className="w-full bg-cover bg-center relative"
@@ -95,28 +95,28 @@ export default function FAQ() {
         }}
       >
         <div className="absolute inset-0 bg-black/40"></div>
-        <div className="max-w-7xl mx-auto relative z-10">
-          <TopBar iconColor="gray-300" textColor="white" />
+        <div className="max-w-7xl mx-auto relative z-10 px-4">
+          <TopBar iconColor="text-muted-foreground" textColor="text-white" />
           <Navbar />
         </div>
-        <div className="max-w-7xl mx-auto flex justify-between my-5 pb-5 relative z-10">
+        <div className="max-w-7xl mx-auto flex justify-between my-5 pb-5 relative z-10 px-4">
           <div className="flex text-lg text-white gap-2">
             <Link to="/">
               <HiHome className="font-bold" />
             </Link>
-            <MdKeyboardDoubleArrowLeft className="text-gray-300/70" />
+            <MdKeyboardDoubleArrowLeft className="text-muted-foreground/70" />
             <span className="text-sm">سوالات متداول</span>
           </div>
         </div>
       </div>
 
       {/* Body */}
-      <div className="container mx-auto px-4 py-12">
+      <div className="container mx-auto px-4 sm:px-6 py-12">
         <div className="text-center mb-12">
-          <h1 className="text-4xl md:text-5xl font-bold text-gray-800 mb-6">
-            سوالات <span className="text-red-500">متداول</span>
+          <h1 className="text-3xl sm:text-4xl md:text-5xl font-bold text-foreground mb-6">
+            سوالات <span className="text-primary">متداول</span>
           </h1>
-          <p className="text-xl text-gray-600 max-w-3xl mx-auto">
+          <p className="text-lg sm:text-xl text-muted-foreground max-w-3xl mx-auto">
             پاسخ به مهم‌ترین سوالات شما درباره خدمات و امکانات فینیکس کلاب
           </p>
         </div>
@@ -126,20 +126,20 @@ export default function FAQ() {
             {faqData.map((faq) => (
               <div
                 key={faq.id}
-                className="bg-white rounded-lg shadow-sm hover:shadow-md transition-shadow border border-gray-200 overflow-hidden"
+                className="bg-card rounded-lg shadow-sm hover:shadow-md transition-shadow border border-border overflow-hidden"
               >
                 <button
                   onClick={() => toggleQuestion(faq.id)}
                   className="w-full p-6 text-right flex justify-between items-center focus:outline-none"
                 >
-                  <h3 className="text-lg font-semibold text-gray-800">
+                  <h3 className="text-lg font-semibold text-foreground">
                     {faq.question}
                   </h3>
                   <span
                     className={`transform transition-transform duration-300 ${openId === faq.id ? "rotate-180" : ""}`}
                   >
                     <svg
-                      className="w-5 h-5 text-gray-500"
+                      className="w-5 h-5 text-muted-foreground"
                       fill="none"
                       stroke="currentColor"
                       viewBox="0 0 24 24"
@@ -155,7 +155,7 @@ export default function FAQ() {
                 </button>
 
                 {openId === faq.id && (
-                  <div className="px-6 pb-6 pt-2 text-gray-600 animate-fade-in">
+                  <div className="px-6 pb-6 pt-2 text-muted-foreground animate-fade-in">
                     <p>{faq.answer}</p>
                   </div>
                 )}
@@ -165,21 +165,21 @@ export default function FAQ() {
 
           {/* Contact Section */}
           <div className="mt-16 text-center">
-            <div className="bg-linear-to-r from-red-500 to-red-600 rounded-2xl p-8 text-white">
+            <div className="bg-linear-to-r from-primary to-primary/80 rounded-2xl p-8 text-primary-foreground">
               <h2 className="text-2xl font-bold mb-4">سوال دیگری دارید؟</h2>
-              <p className="mb-6 text-red-100">
+              <p className="mb-6 text-primary-foreground/80">
                 اگر سوال شما در لیست بالا پاسخ داده نشده است، با ما تماس بگیرید.
               </p>
               <div className="flex flex-col sm:flex-row gap-4 justify-center">
                 <Link
                   to="/contact"
-                  className="bg-white text-red-600 px-6 py-3 rounded-lg font-medium hover:bg-gray-100 transition-colors"
+                  className="bg-background text-primary px-6 py-3 rounded-lg font-medium hover:bg-muted transition-colors"
                 >
                   تماس با پشتیبانی
                 </Link>
                 <a
                   href="tel:02133457890"
-                  className="border-2 border-white text-white px-6 py-3 rounded-lg font-medium hover:bg-white hover:text-red-600 transition-colors"
+                  className="border-2 border-primary-foreground/80 text-primary-foreground/80 px-6 py-3 rounded-lg font-medium hover:bg-primary-foreground/10 hover:text-primary-foreground transition-colors"
                 >
                   ☎️ ۰۲۱۳۳۴۵۷۸۹۰
                 </a>

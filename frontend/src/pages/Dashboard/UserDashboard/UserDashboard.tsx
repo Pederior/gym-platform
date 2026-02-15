@@ -104,6 +104,9 @@ export default function UserDashboard() {
     );
   }
 
+  const hasSubscription = user?.subscription && 
+    new Date(user.subscription.expiresAt) > new Date();
+
   return (
     <div className="space-y-8">
       <h1 className="text-2xl font-bold text-foreground">
@@ -139,6 +142,36 @@ export default function UserDashboard() {
           </p>
         </div>
       </div>
+
+      {!hasSubscription && (
+        <div className="bg-linear-to-r from-primary/10 to-accent/10 border border-primary/20 rounded-xl p-6">
+          <div className="flex flex-col md:flex-row items-center gap-6">
+            <div className="text-5xl">🚀</div>
+            <div className="text-center md:text-right flex-1">
+              <h2 className="text-xl font-bold text-foreground mb-2">
+                اشتراک خود را فعال کنید!
+              </h2>
+              <p className="text-muted-foreground mb-4">
+                با خرید اشتراک، به تمام امکانات اختصاصی دسترسی پیدا کنید:
+                <br />
+                • برنامه‌های تمرینی شخصی‌سازی‌شده
+                <br />
+                • برنامه‌های غذایی حرفه‌ای
+                <br />
+                • ویدیوهای آموزشی انحصاری
+                <br />
+                • مشاوره مستقیم با مربی
+              </p>
+              <button
+                onClick={() => (window.location.href = "/subscription")}
+                className="bg-primary hover:bg-primary/80 text-primary-foreground px-6 py-3 rounded-lg font-bold transition-colors"
+              >
+                خرید اشتراک الان
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
 
       {/* Current Workout Section */}
       {currentWorkout && currentWorkout._id && currentWorkout.title ? (
@@ -183,7 +216,6 @@ export default function UserDashboard() {
               </button>
               <button
                 onClick={() => {
-                  /* ثبت پیشرفت */
                 }}
                 className="border border-primary text-primary hover:bg-primary/10 px-4 py-2 rounded-lg text-sm font-medium transition-colors cursor-pointer"
               >
@@ -215,7 +247,7 @@ export default function UserDashboard() {
       )}
 
       {/* Subscription Info */}
-      {user?.subscription && (
+      {hasSubscription && user?.subscription && (
         <div className="bg-card p-6 rounded-xl shadow border border-border">
           <h2 className="font-bold text-lg text-foreground mb-3">اشتراک فعلی</h2>
           <div className="flex flex-wrap items-center gap-4">

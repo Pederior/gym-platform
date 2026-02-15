@@ -7,12 +7,10 @@ export default function Layout() {
   const [isSidebarCollapsed, setIsSidebarCollapsed] = useState(false);
   const [isMobile, setIsMobile] = useState(false);
 
-  // تشخیص اندازه صفحه
   useEffect(() => {
     const checkScreenSize = () => {
       const mobile = window.innerWidth < 768;
       setIsMobile(mobile);
-      // در موبایل، sidebar اولیه باید بسته باشد
       if (mobile) setIsSidebarCollapsed(true);
     };
 
@@ -22,8 +20,6 @@ export default function Layout() {
   }, []);
 
   const toggleSidebar = () => {
-    // فقط در موبایل: toggle بین open/close
-    // در دسکتاپ: toggle بین expanded/collapsed
     if (isMobile) {
       setIsSidebarCollapsed(!isSidebarCollapsed);
     } else {
@@ -33,11 +29,10 @@ export default function Layout() {
 
   return (
     <div className="flex h-screen bg-background">
-      {/* Sidebar - فقط یکبار رندر شود */}
       <Sidebar 
         isCollapsed={isSidebarCollapsed} 
         onToggle={toggleSidebar}
-        isMobile={isMobile}  // 👈 اضافه شده
+        isMobile={isMobile}  
       />
       
       {/* Main content */}

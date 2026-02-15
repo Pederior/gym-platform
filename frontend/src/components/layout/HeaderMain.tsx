@@ -3,8 +3,30 @@ import TopBar from "./TopBar";
 import { Link } from "react-router-dom";
 import Typewriter from "typewriter-effect";
 import { useAppSelector } from "../../store/hook";
+import { useEffect, useState } from "react";
+
 export default function HeaderMain() {
   const { user, token } = useAppSelector((state) => state.auth);
+  const [fontSize, setFontSize] = useState("text-4xl");
+
+  useEffect(() => {
+    const updateFontSize = () => {
+      if (window.innerWidth < 640) {
+        setFontSize("text-2xl sm:text-3xl");
+      } else if (window.innerWidth < 768) {
+        setFontSize("text-3xl");
+      } else if (window.innerWidth < 1024) {
+        setFontSize("text-4xl");
+      } else {
+        // دسکتاپه
+        setFontSize("text-5xl");
+      }
+    };
+    updateFontSize();
+    window.addEventListener("resize", updateFontSize);
+    return () => window.removeEventListener("resize", updateFontSize);
+  }, []);
+
   return (
     <>
       <div
@@ -17,7 +39,7 @@ export default function HeaderMain() {
         </div>
         <div className="min-h-screen flex items-center">
           <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center text-white">
-            <span className="text-5xl">
+            <span className={`${fontSize} font-bold block typewriter-container`}>
               <Typewriter
                 onInit={(typewriter) => {
                   typewriter
@@ -31,6 +53,8 @@ export default function HeaderMain() {
                 }}
                 options={{
                   loop: true,
+                  delay: 30,
+                  deleteSpeed: 20, 
                 }}
               />
             </span>

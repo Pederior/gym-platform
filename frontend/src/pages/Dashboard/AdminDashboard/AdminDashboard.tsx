@@ -29,6 +29,7 @@ const AdminDashboard: React.FC = () => {
       try {
         const response = await api.get("/dashboard/admin/summary");
         setSummary(response.data.data);
+        console.log(response)
       } catch (err: any) {
         console.error(
           "Error fetching dashboard data:",

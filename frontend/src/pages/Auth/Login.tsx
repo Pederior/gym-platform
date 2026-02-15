@@ -71,12 +71,11 @@ export default function Login() {
               name="email"
               value={formData.email}
               onChange={handleChange}
-              className="w-full px-3 py-2 border rounded focus:outline-none focus:ring-2 focus:ring-red-500 bg-white"
+              className="w-full px-3 py-2 border rounded focus:outline-none focus:ring-2 focus:ring-red-500 bg-white text-black"
               required
             />
           </div>
 
-          {/* ✅ فیلد رمز عبور با دکمه چشم */}
           <div className="mb-6 relative">
             <label className="block text-sm font-medium mb-1 text-white text-right">
               رمز عبور
@@ -86,7 +85,7 @@ export default function Login() {
               name="password"
               value={formData.password}
               onChange={handleChange}
-              className="w-full px-3 py-2 border rounded focus:outline-none focus:ring-2 focus:ring-red-500 bg-white pr-10"
+              className="w-full px-3 py-2 border rounded focus:outline-none focus:ring-2 focus:ring-red-500 bg-white pr-10 text-black"
               required
             />
             <button

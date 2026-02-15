@@ -237,7 +237,9 @@ export default function AdminTicketDetail() {
           <Card>
             <h3 className="text-lg font-bold text-foreground mb-4">گفتگو</h3>
             <div className="space-y-4 max-h-96 overflow-y-auto">
-              {ticket.messages.map((message) => (
+              {ticket.messages.map((message) => {
+                if (!message.sender) return null;
+                return (
                 <div
                   key={message._id}
                   className={`flex ${
@@ -295,7 +297,8 @@ export default function AdminTicketDetail() {
                     </p>
                   </div>
                 </div>
-              ))}
+                );
+              })}
             </div>
           </Card>
 
