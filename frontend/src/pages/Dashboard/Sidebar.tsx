@@ -1,8 +1,8 @@
-import { useState, useMemo, type ReactNode } from "react";
+import { useState, useMemo, type ReactNode, useCallback, useEffect } from "react";
 import { TbSmartHome, TbUser } from "react-icons/tb";
 import { GiMuscleUp } from "react-icons/gi";
 import { useAppSelector } from "../../store/hook";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import {
   MdOutlineJoinFull,
   MdClass,
@@ -57,13 +57,39 @@ const Sidebar = ({ isCollapsed, onToggle, isMobile = false }: SidebarProps) => {
   const [openMenu, setOpenMenu] = useState<string | null>(null);
   const { user } = useAppSelector((state) => state.auth);
   const role = user?.role || "user";
+  const navigate = useNavigate();
 
-  const toggleMenu = (menu: string) => {
+  const closeSidebar = useCallback(() => {
     if (isMobile && !isCollapsed) {
+      onToggle();
+      setOpenMenu(null);
+    }
+  }, [isMobile, isCollapsed, onToggle]); // ✅ dependency array کامل
+
+  // ✅ بعد useEffect رو درست می‌نویسیم
+  useEffect(() => {
+    if (isMobile && !isCollapsed) {
+      const handleClickOutside = (e: MouseEvent) => {
+        const sidebar = document.querySelector("[data-sidebar]");
+        if (sidebar && !sidebar.contains(e.target as Node)) {
+          closeSidebar();
+        }
+      };
+
+      document.addEventListener("click", handleClickOutside);
+      return () => document.removeEventListener("click", handleClickOutside);
+    }
+  }, [isMobile, isCollapsed, closeSidebar]); // ✅ closeSidebar هم dependency هست
+
+  // ✅ toggleMenu رو هم بهینه می‌کنیم
+  const toggleMenu = (menu: string) => {
+    if (isMobile) {
+      // در موبایل فقط منو رو باز/بسته می‌کنیم
       setOpenMenu(openMenu === menu ? null : menu);
       return;
     }
 
+    // در دسکتاپ منطق قبلی
     if (isCollapsed) {
       onToggle();
       setTimeout(() => {
@@ -337,11 +363,7 @@ const Sidebar = ({ isCollapsed, onToggle, isMobile = false }: SidebarProps) => {
                 className={`flex items-center w-full p-2 md:p-3 rounded-lg hover:bg-primary-80 transition-colors text-primary-foreground ${
                   isCollapsed ? "justify-center px-0" : "text-right"
                 }
-                  ${
-                    isMobile && !isCollapsed
-                      ? "py-3 text-base" 
-                      : ""
-                  }`}
+                  ${isMobile && !isCollapsed ? "py-3 text-base" : ""}`}
                 title={isCollapsed ? item.title : undefined}
               >
                 <span
@@ -367,15 +389,17 @@ const Sidebar = ({ isCollapsed, onToggle, isMobile = false }: SidebarProps) => {
                 )}
               </button>
             ) : (
-              <Link
-                to={item.to || "#"}
+              <button
+                onClick={(e) => {
+                  e.preventDefault();
+                  if (item.to) {
+                    navigate(item.to);
+                    closeSidebar();
+                  }
+                }}
                 className={`flex items-center w-full p-2 md:p-3 rounded-lg hover:bg-primary-80 transition-colors text-primary-foreground ${
                   isCollapsed ? "justify-center px-0" : "text-right"
-                } ${
-                  isMobile && !isCollapsed 
-                    ? "py-3 text-base" 
-                    : ""
-                }`}
+                } ${isMobile && !isCollapsed ? "py-3 text-base" : ""}`}
                 title={isCollapsed ? item.title : undefined}
               >
                 <span
@@ -388,7 +412,7 @@ const Sidebar = ({ isCollapsed, onToggle, isMobile = false }: SidebarProps) => {
                     {item.title}
                   </span>
                 )}
-              </Link>
+              </button>
             )}
 
             {item.children &&
@@ -404,9 +428,14 @@ const Sidebar = ({ isCollapsed, onToggle, isMobile = false }: SidebarProps) => {
                   }}
                 >
                   {item.children.map((child, childIdx) => (
-                    <Link
+                    // ✅ تغییر: به جای Link از button استفاده می‌کنیم
+                    <button
                       key={childIdx}
-                      to={child.to}
+                      onClick={(e) => {
+                        e.preventDefault();
+                        navigate(child.to);
+                        closeSidebar(); // ✅ بستن بعد از کلیک
+                      }}
                       className={`w-full flex items-center p-2 text-xs md:text-sm rounded hover:bg-primary-90 text-primary-foreground transition-colors text-right ${
                         isMobile ? "py-2 text-base" : ""
                       }`}
@@ -415,7 +444,7 @@ const Sidebar = ({ isCollapsed, onToggle, isMobile = false }: SidebarProps) => {
                         {child.icon}
                       </span>
                       <span>{child.label}</span>
-                    </Link>
+                    </button>
                   ))}
                 </div>
               )}
