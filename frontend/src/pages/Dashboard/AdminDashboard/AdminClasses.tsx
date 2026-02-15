@@ -7,7 +7,7 @@ import useDocumentTitle from '../../../hooks/useDocumentTitle';
 interface Class {
   _id: string
   title: string
-  coach: { name: string }
+  coach: { name: string; _id: string }
   dateTime: string
   capacity: number
   reservedBy: any[]
@@ -25,6 +25,9 @@ export default function AdminClasses() {
   const [coaches, setCoaches] = useState<Coach[]>([])
   const [loading, setLoading] = useState(true)
   const [isModalOpen, setIsModalOpen] = useState(false)
+  const [isEditModalOpen, setIsEditModalOpen] = useState(false)
+  const [editingClass, setEditingClass] = useState<Class | null>(null)
+  
   const [formData, setFormData] = useState({
     title: '',
     coach: '',
@@ -38,7 +41,7 @@ export default function AdminClasses() {
     const fetchClasses = async () => {
       try {
         const res = await api.get('/classes')
-        setClasses(res.data.classes)
+        setClasses(res.data.classes || [])
       } catch (err: any) {
         toast.error(err.response?.data?.message || 'خطا در بارگذاری کلاس‌ها')
       } finally {
@@ -49,7 +52,7 @@ export default function AdminClasses() {
     const fetchCoaches = async () => {
       try {
         const res = await api.get('/users?role=coach')
-        setCoaches(res.data.users)
+        setCoaches(res.data.users || [])
       } catch (err: any) {
         toast.error(err.response?.data?.message || 'خطا در بارگذاری مربیان')
       }
@@ -60,7 +63,33 @@ export default function AdminClasses() {
   }, [])
 
   const openModal = () => setIsModalOpen(true)
-  const closeModal = () => setIsModalOpen(false)
+  const closeModal = () => {
+    setIsModalOpen(false)
+    setFormData({
+      title: '',
+      coach: '',
+      dateTime: '',
+      capacity: 10,
+      price: 0
+    })
+  }
+
+  const openEditModal = (cls: Class) => {
+    setEditingClass(cls)
+    setFormData({
+      title: cls.title,
+      coach: cls.coach._id,
+      dateTime: new Date(cls.dateTime).toISOString().slice(0, 16),
+      capacity: cls.capacity,
+      price: cls.price
+    })
+    setIsEditModalOpen(true)
+  }
+
+  const closeEditModal = () => {
+    setIsEditModalOpen(false)
+    setEditingClass(null)
+  }
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
     const { name, value } = e.target
@@ -74,16 +103,41 @@ export default function AdminClasses() {
     e.preventDefault()
     setSubmitting(true)
     try {
-      await api.post('/classes', formData)
-      toast.success('کلاس جدید با موفقیت ایجاد شد')
-      // رفرش لیست
+      if (editingClass) {
+        await api.put(`/classes/${editingClass._id}`, formData)
+        toast.success('کلاس با موفقیت به‌روز شد')
+      } else {
+        await api.post('/classes', formData)
+        toast.success('کلاس جدید با موفقیت ایجاد شد')
+      }
+      
       const res = await api.get('/classes')
-      setClasses(res.data.classes)
-      closeModal()
+      setClasses(res.data.classes || [])
+      
+      if (editingClass) {
+        closeEditModal()
+      } else {
+        closeModal()
+      }
     } catch (err: any) {
-      toast.error(err.response?.data?.message || 'خطا در ایجاد کلاس')
+      toast.error(err.response?.data?.message || 'خطا در ذخیره کلاس')
     } finally {
       setSubmitting(false)
+    }
+  }
+
+  const handleDelete = async (classId: string, className: string) => {
+    if (!confirm(`آیا مطمئن هستید که می‌خواهید کلاس "${className}" را حذف کنید؟`)) {
+      return
+    }
+
+    try {
+      await api.delete(`/classes/${classId}`)
+      toast.success('کلاس با موفقیت حذف شد')
+      const res = await api.get('/classes')
+      setClasses(res.data.classes || [])
+    } catch (err: any) {
+      toast.error(err.response?.data?.message || 'خطا در حذف کلاس')
     }
   }
 
@@ -102,6 +156,8 @@ export default function AdminClasses() {
       <Card>
         {loading ? (
           <div className="py-8 text-center text-muted-foreground">در حال بارگذاری...</div>
+        ) : classes.length === 0 ? (
+          <div className="py-8 text-center text-muted-foreground">کلاسی یافت نشد</div>
         ) : (
           <div className="overflow-x-auto">
             <table className="w-full min-w-full">
@@ -120,12 +176,26 @@ export default function AdminClasses() {
                   <tr key={cls._id} className="border-b border-border hover:bg-muted">
                     <td className="py-3 px-2 text-foreground">{cls.title}</td>
                     <td className="py-3 px-2 text-foreground">{cls.coach?.name || 'مربی نامشخص'}</td>
-                    <td className="py-3 px-2 text-muted-foreground">{new Date(cls.dateTime).toLocaleDateString('fa-IR')}</td>
+                    <td className="py-3 px-2 text-muted-foreground">
+                      {new Date(cls.dateTime).toLocaleDateString('fa-IR')} 
+                      {' '}
+                      {new Date(cls.dateTime).toLocaleTimeString('fa-IR', { hour: '2-digit', minute: '2-digit' })}
+                    </td>
                     <td className="py-3 px-2 text-foreground">{cls.reservedBy.length}/{cls.capacity}</td>
                     <td className="py-3 px-2 text-foreground">{cls.price.toLocaleString()} تومان</td>
                     <td className="py-3 px-2">
-                      <button className="text-primary hover:text-primary/80 ml-3 cursor-pointer">ویرایش</button>
-                      <button className="text-destructive hover:text-destructive/80 cursor-pointer">حذف</button>
+                      <button 
+                        onClick={() => openEditModal(cls)}
+                        className="text-primary hover:text-primary/80 ml-3 cursor-pointer text-sm"
+                      >
+                        ویرایش
+                      </button>
+                      <button 
+                        onClick={() => handleDelete(cls._id, cls.title)}
+                        className="text-destructive hover:text-destructive/80 cursor-pointer text-sm"
+                      >
+                        حذف
+                      </button>
                     </td>
                   </tr>
                 ))}
@@ -136,11 +206,13 @@ export default function AdminClasses() {
       </Card>
 
       {/* Modal ایجاد کلاس */}
-      {isModalOpen && (
+      {(isModalOpen || isEditModalOpen) && (
         <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4">
           <div className="bg-card rounded-lg w-full max-w-md border border-border">
             <div className="p-4 border-b border-border">
-              <h2 className="text-lg font-bold text-foreground">ایجاد کلاس جدید</h2>
+              <h2 className="text-lg font-bold text-foreground">
+                {editingClass ? 'ویرایش کلاس' : 'ایجاد کلاس جدید'}
+              </h2>
             </div>
             <form onSubmit={handleSubmit} className="p-4 space-y-4">
               <div>
@@ -160,7 +232,7 @@ export default function AdminClasses() {
                   name="coach"
                   value={formData.coach}
                   onChange={handleChange}
-                  className="w-full px-3 py-2 border border-border rounded-lg focus:ring-2 focus:ring-primary bg-background text-foreground text-center"
+                  className="w-full px-3 py-2 border border-border rounded-lg focus:ring-2 focus:ring-primary bg-background text-foreground"
                   required
                 >
                   <option value="">انتخاب مربی</option>
@@ -210,11 +282,11 @@ export default function AdminClasses() {
                   disabled={submitting}
                   className="bg-primary text-primary-foreground px-4 py-2 rounded-lg hover:bg-primary/80 disabled:opacity-50"
                 >
-                  {submitting ? 'در حال ایجاد...' : 'ایجاد کلاس'}
+                  {submitting ? 'در حال ذخیره...' : editingClass ? 'به‌روزرسانی' : 'ایجاد کلاس'}
                 </button>
                 <button
                   type="button"
-                  onClick={closeModal}
+                  onClick={editingClass ? closeEditModal : closeModal}
                   className="bg-secondary text-secondary-foreground px-4 py-2 rounded-lg hover:bg-secondary/80"
                 >
                   انصراف
